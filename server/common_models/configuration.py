@@ -9,11 +9,16 @@ class Configuration(BaseDocument):
     structure = {
         'mina_app_id': unicode,
         'mina_app_secret': unicode,
-        'admin_code_hash': unicode,
+        'passcode_hash': unicode,
     }
     default_values = {
         'mina_app_id': u'',
         'mina_app_secret': u'',
-        'admin_code_hash': u'',
+        'passcode_hash': u'',
     }
-    required_fields = ['admin_code_hash']
+    required_fields = ['passcode_hash']
+
+    def get_conf(self, code):
+        return self.find_one({
+            'passcode_hash': {'$ne': u''}
+        })

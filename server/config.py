@@ -18,6 +18,7 @@ class Config(object):
 
     LOG_FOLDER = os.path.join(DEPLOY_DIR, 'log')
     TEMPORARY_FOLDER = os.path.join(DEPLOY_DIR, 'tmp')
+    UPLOADS_FOLDER = os.path.join(DEPLOY_DIR, 'uploads')
 
     # url
     ALLOW_ORIGINS = ['*']
@@ -93,9 +94,10 @@ class ProductionConfig(Config):
     DENY_PUBLIC_ACCESS = True
     SEND_MAIL = True
 
-    DEPLOY_DIR = '/data/deployment_data/totoro'
+    DEPLOY_DIR = '/data/totoro/deployment_data'
     LOG_FOLDER = os.path.join(DEPLOY_DIR, 'log')
     TEMPORARY_FOLDER = os.path.join(DEPLOY_DIR, 'tmp')
+    UPLOADS_FOLDER = os.path.join(DEPLOY_DIR, 'uploads')
 
     # mongodb
     MONGODB_DATABASE = 'totoro'

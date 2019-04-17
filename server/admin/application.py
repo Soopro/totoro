@@ -39,7 +39,8 @@ def create_app(config_name='default'):
 
     ensure_dirs(
         app.config.get('LOG_FOLDER'),
-        app.config.get('TEMPORARY_FOLDER')
+        app.config.get('TEMPORARY_FOLDER'),
+        app.config.get('UPLOADS_FOLDER')
     )
 
     # database connections

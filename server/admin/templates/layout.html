@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Big Chooper</title>
+  <link rel="shortcut icon"
+        href="{{url_for('static', filename='favicon.png')}}">
+  <link rel="stylesheet" type="text/css"
+        href="{{url_for('static', filename='css/bootstrap.min.css')}}">
+  <link rel="stylesheet" type="text/css"
+        href="{{url_for('static', filename='css/style.css')}}">
+</head>
+
+{%
+  set navs = [
+    {'key': 'dashboard', 'url': '/', 'name': 'Dashboard'},
+    {'key': 'user', 'url': url_for('user.index'), 'name': 'Users'},
+    {'key': 'org', 'url': url_for('org.index'), 'name': 'Orgs'},
+    {'key': 'post', 'url': url_for('post.index'), 'name': 'Posts'},
+    {'key': 'media', 'url': url_for('media.index'), 'name': 'Media Files'},
+    {'key': 'wechat', 'url': url_for('wechat.index'), 'name': 'WeChat'},
+    {'key': 'report', 'url': url_for('report.index'), 'name': 'Report'},
+    {'key': 'logout', 'url': url_for('auth.logout'), 'name': 'Logout'},
+  ]
+%}
+
+<body>
+  {% block nav %}
+  <nav class="container">
+    <ul class="nav nav-tabs">
+      {% for nav in navs %}
+      <li class="{{'active' if active_nav == nav.key}}">
+        <a href="{{nav.url}}">{{nav.name}}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endblock %}
+
+  {% if page_title %}
+  <header class="container">
+    <h1>{{page_title}}</h1>
+  </header>
+  {% endif %}
+
+  <section class="container">
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-info" role="alert">
+          {{message}}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+  </section>
+
+  {% block body %}
+  {% endblock %}
+
+<script src="{{url_for('static', filename='lib/jquery.min.js')}}"></script>
+<script src="{{url_for('static', filename='lib/bootstrap.min.js')}}"></script>
+{% block scripts %}
+{% endblock %}
+
+</body>

@@ -50,8 +50,9 @@ class Media(BaseDocument):
             '_id': ObjectId(_id)
         })
 
-    def find_one_by_key(self, key):
+    def find_one_by_scope_key(self, scope, key):
         return self.find_one({
+            'scope': scope,
             'key': key
         })
 

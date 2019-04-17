@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% set page_title = 'Media Files' %}
+{% set active_nav = 'media' %}
+
+{% block body %}
+{% include '_media_nav_.html' %}
+
+<section class="container">
+  <nav>
+    <ul class="pager">
+      {% if p.prev %}
+      <li class="previous">
+        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
+      </li>
+      {% endif %}
+      {% if p.next %}
+      <li class="next {{'disabled' if not p.next}}">
+        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th width="30%">Preview</th>
+        <th width="25%">Filename</th>
+        <th width="15%">Creation</th>
+        <th class="text-center"
+            width="10%">Owner</th>
+        <th class="text-center"
+            width="10%">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for media in mediafiles %}
+      <tr>
+        <td>
+          <a href="{{media.src|safe_src(media.updated)}}"
+             target="_blank">
+            <img src="{{media.src|safe_src(media.updated)}}"
+                 width="60"
+                 height="60" />
+          </a>
+        </td>
+        <td>{{media.filename}}</td>
+        <td>{{media.creation|dateformat}}</td>
+        <td class="text-center">
+          <a class="btn btn-info {{'disabled' if not media.user_id}}"
+             href="{{url_for('user.detail', user_id=media.user_id)
+                     if media.user_id else '#'}}">
+            <span class="glyphicon glyphicon-user"></span>
+          </a>
+        </td>
+        <td class="text-center">
+          <a class="btn btn-danger"
+             href="{{url_for('.remove', media_id=media._id,
+                                        master=master,
+                                        paged=p.paged)}}">
+            <span class="glyphicon glyphicon-trash"></span>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <nav>
+    <ul class="pager">
+      {% if p.prev %}
+      <li class="previous">
+        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
+      </li>
+      {% endif %}
+      {% if p.next %}
+      <li class="next {{'disabled' if not p.next}}">
+        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</section>
+
+{% if master %}
+<section class="container">
+  <hr>
+  <form class="media-uploader"
+        action="{{url_for('.upload', master=master)}}"
+        accept="image/*"
+        method="POST"
+        enctype="multipart/form-data">
+    <div class="form-group">
+      <input type=file name=file>
+      <img class="media-preview" src="#"/>
+    </div>
+    <div class="form-group">
+      <button type="submit" style="display:none">Upload</button>
+    </div>
+  </form>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  $(".media-uploader input[name='file']").change(function(e) {
+    file = (this.files && this.files[0]) ? this.files[0] : null;
+    if (!file) {
+      $('.media-preview').attr('src', '#');
+      $(".media-uploader button[type=submit]").hide();
+      return
+    }
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      $('.media-preview').attr('src', reader.result);
+    }
+    reader.readAsDataURL(file);
+    $(".media-uploader button[type=submit]").show();
+});
+</script>
+{% endblock %}

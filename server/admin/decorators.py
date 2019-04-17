@@ -10,10 +10,11 @@ from utils.misc import hmac_sha
 def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
-        if not session.get('user') or \
-           session['user'] != hmac_sha(current_app.secret_key,
-                                       get_remote_addr()):
+        hmac_key = u'{}{}'.format(current_app.secret_key, get_remote_addr())
+        configure = current_app.mongodb.Configuration.get_conf()
+        if not configure or not session.get('admin') or \
+           session['admin'] != hmac_sha(hmac_key, configure['passcode_hash']):
             session.clear()
-            return redirect(url_for('auth.login'))
+            return redirect(url_for('gate.login'))
         return f(*args, **kwargs)
     return wrapper

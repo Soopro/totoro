@@ -1,0 +1,106 @@
+{% extends "layout.html" %}
+{% set page_title = 'Users' %}
+{% set active_nav = 'user' %}
+
+{% block body %}
+{% set sub_active = 'deleted' if request.args.deleted else 'available' %}
+{% include '_user_nav_.html' with context %}
+
+<section class="container">
+  <nav>
+    <ul class="pager">
+      {% if p.prev %}
+      <li class="previous">
+        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
+      </li>
+      {% endif %}
+      {% if p.next %}
+      <li class="next {{'disabled' if not p.next}}">
+        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th width="10%">#</th>
+        <th width="10%">Avatar</th>
+        <th width="20%">Name</th>
+        <th width="20%">ID</th>
+        <th width="10%">Creation</th>
+
+        <th class="text-center"
+            width="10%">Verified</th>
+        <th class="text-center"
+            width="20%">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{loop.index0 + p.start}}</td>
+        <td>
+          {% if user.meta.avatar %}
+          <img width="48" height="48" src="{{user.meta.avatar}}"/>
+          {% endif %}
+        </td>
+        <td>
+          {% if user.meta.name %}
+            <b>{{user.meta.name}}</b>
+          {% else %}
+            <i><small>&lt;No Name&gt;</small></i>
+          {% endif %}
+
+        </td>
+        <td>
+          {{user._id}}
+        </td>
+        <td>{{user.creation|dateformat}}</td>
+        <td class="text-center">
+          {% if user.verified %}
+          <span class="glyphicon glyphicon-certificate"
+                style="color:green"></span>
+          {% else %}
+          <span class="glyphicon glyphicon-minus"
+                style="color:#ddd;"></span>
+          {% endif %}
+        </td>
+        <td class="text-center">
+          {% if not user.deleted %}
+          <a class="btn {{'btn-success'
+                          if user.supervisor else 'btn-primary'
+                          if user.status == 1 else 'btn-default'}}"
+             href="{{url_for('.detail', user_id=user._id)}}">
+            {% if user.status == 2 %}
+            <span class="glyphicon glyphicon-ban-circle"></span>
+            {% elif user.supervisor %}
+            <span class="glyphicon glyphicon-king"></span>
+            {% else %}
+            <span class="glyphicon glyphicon-user"></span>
+            {% endif %}
+          </a>
+          {% else %}
+          <span class="glyphicon glyphicon-trash"></span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <nav>
+    <ul class="pager">
+      {% if p.prev %}
+      <li class="previous">
+        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
+      </li>
+      {% endif %}
+      {% if p.next %}
+      <li class="next {{'disabled' if not p.next}}">
+        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</section>
+{% endblock %}
