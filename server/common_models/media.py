@@ -35,9 +35,6 @@ class Media(BaseDocument):
             'unique': True,
         },
         {
-            'fields': ['user_id']
-        },
-        {
             'fields': ['size']
         },
         {

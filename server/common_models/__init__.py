@@ -3,7 +3,6 @@ from __future__ import absolute_import
 
 from .user import *
 from .media import *
-from .org import *
-from .post import *
-from .wechat import *
-from .report import *
+from .book import *
+from .configuration import *
+from .notify import *
