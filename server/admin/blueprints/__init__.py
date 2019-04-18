@@ -15,8 +15,8 @@ def register_blueprints(app):
     from admin.blueprints.media import blueprint as media_module
     app.register_blueprint(media_module, url_prefix='/media')
 
-    from admin.blueprints.notify import blueprint as notify_module
-    app.register_blueprint(notify_module, url_prefix='/notify')
+    # from admin.blueprints.notify import blueprint as notify_module
+    # app.register_blueprint(notify_module, url_prefix='/notify')
 
     from admin.blueprints.configuration import blueprint as conf_module
     app.register_blueprint(conf_module, url_prefix='/configuration')
