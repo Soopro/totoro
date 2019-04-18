@@ -70,7 +70,7 @@ def update(book_id):
     status = request.form.get('status')
 
     book = _find_book(book_id)
-    book['slug'] = _uniqueify_book_slug(slug)
+    book['slug'] = _uniqueify_book_slug(slug, book)
     book['tags'] = [tag.strip() for tag in tags]
     book['category'] = [cat.strip() for cat in category]
     book['volumes'] = [vol.strip() for vol in volumes]

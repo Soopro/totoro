@@ -36,13 +36,13 @@ def detail(notify_id=None):
 @blueprint.route('/<notify_id>', methods=['POST'])
 @login_required
 def update(notify_id):
-    slug = request.form.get('slug')
+    slug = request.form['slug']
     template_id = request.form.get('template_id')
     source = request.form.get('source')
     params = request.form.get('params')
 
     notify = _find_notify(notify_id)
-    notify['slug'] = slug
+    notify['slug'] = _uniqueify_notify_slug(slug, notify)
     notify['template_id'] = template_id
     notify['source'] = source
     try:
@@ -61,6 +61,19 @@ def remove(notify_id):
     notify = _find_notify(notify_id)
     notify.delete()
     return_url = url_for('.index')
+    return redirect(return_url)
+
+
+@blueprint.route('/create', methods=['POST'])
+@login_required
+def create():
+    slug = request.form['slug']
+
+    notify = current_app.mongodb.Notify()
+    notify['slug'] = _uniqueify_notify_slug(slug)
+    notify.save()
+    flash('Created.')
+    return_url = url_for('.detail', notify_id=notify['_id'])
     return redirect(return_url)
 
 
