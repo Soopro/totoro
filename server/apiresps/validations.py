@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 import re
+import json
 from sys import getsizeof
 from bson import ObjectId
 
@@ -20,12 +21,12 @@ class ValidationParameterBlank(ValidationError):
 
 class ValidationParameterMaxLimit(ValidationError):
     response_code = 200003
-    status_message = 'PARAMETER_REACHES_THE_MAX_LENGTH'
+    status_message = 'PARAMETER_REACHES_MAX_LENGTH'
 
 
 class ValidationParameterMinLimit(ValidationError):
     response_code = 200004
-    status_message = 'PARAMETER_REACHES_THE_MIN_LENGTH'
+    status_message = 'PARAMETER_REACHES_MIN_LENGTH'
 
 
 class ValidationParameterInvalidObjectType(ValidationError):
@@ -56,7 +57,7 @@ class ParamStructure(object):
     len_max = None
     value_min = None
     value_max = None
-    sizeof = 1024 * 120
+    sizeof = 1024 * 6
 
     def __init__(self, value, name=None, non_empty=None):
         self.value = value
@@ -123,7 +124,13 @@ class ParamStructure(object):
             raise ValidationParameterValueMax(self.name)
 
     def _validate_sizeof(self):
-        if getsizeof(self.value) > self.sizeof:
+        if isinstance(self.value, (list, dict, tuple)):
+            _value = json.dumps(self.value)
+        elif isinstance(self.value, set):
+            _value = json.dumps(list(self.value))
+        else:
+            _value = self.value
+        if getsizeof(_value) > self.sizeof:
             raise ValidationParameterSize(self.name)
 
     def validator(self):
@@ -182,12 +189,13 @@ class DescStructure(ParamStructure):
 
 
 class TextStructure(ParamStructure):
+    sizeof = 1024 * 120
     len_max = 60000
     value_type = unicode
 
 
 class DictStructure(ParamStructure):
-    sizeof = 1024 * 12
+    sizeof = 1024 * 60
     value_type = dict
 
 
@@ -196,7 +204,7 @@ class DevDictStructure(DictStructure):
 
 
 class ListStructure(ParamStructure):
-    sizeof = 1024 * 12
+    sizeof = 1024 * 60
     value_type = list
 
 
@@ -217,6 +225,12 @@ class IntegerStructure(ParamStructure):
     value_type = int
 
 
+class PercentStructure(ParamStructure):
+    value_type = int
+    value_min = 0
+    value_max = 100
+
+
 class BoolStructure(ParamStructure):
     value_type = bool
 
@@ -224,6 +238,14 @@ class BoolStructure(ParamStructure):
 class UrlStructure(ParamStructure):
     len_max = 600
     value_type = unicode
+
+    def validator(self):
+        try:
+            matched = re.match(r'^(?:[\w]+:)?\/\/[a-zA-Z0-9]',
+                               self.value, flags=re.I)
+        except Exception:
+            matched = False
+        return self.value and bool(matched)
 
 
 class ProtocolStructure(ParamStructure):
@@ -286,6 +308,7 @@ class Struct(object):
     Bool = BoolStructure
     Flag = FlagBitStructure
     Int = IntegerStructure
+    Percent = PercentStructure
 
     File = FileStructure
     Filename = FilenameStructure

@@ -12,6 +12,7 @@ class Book(BaseDocument):
 
     structure = {
         'slug': unicode,
+        'code': unicode,
         'tags': [unicode],
         'category': [unicode],
         'volumes': [unicode],
@@ -22,7 +23,7 @@ class Book(BaseDocument):
         'updated': int,
     }
     sensitive_fields = ['meta']
-    required_fields = ['slug']
+    required_fields = ['slug', 'code']
     default_values = {
         'tags': [],
         'category': [],
@@ -36,6 +37,10 @@ class Book(BaseDocument):
     indexes = [
         {
             'fields': ['slug'],
+            'unique': True,
+        },
+        {
+            'fields': ['code'],
             'unique': True,
         },
         {

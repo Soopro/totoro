@@ -48,8 +48,8 @@
   <section class="container">
   {% with messages = get_flashed_messages() %}
     {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-info" role="alert">
+      {% for status, message in messages %}
+        <div class="alert alert-{{status or 'info'}}" role="alert">
           {{message}}
         </div>
       {% endfor %}

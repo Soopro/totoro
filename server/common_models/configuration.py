@@ -18,7 +18,7 @@ class Configuration(BaseDocument):
     }
     required_fields = ['passcode_hash']
 
-    def get_conf(self, code):
+    def get_conf(self):
         return self.find_one({
             'passcode_hash': {'$ne': u''}
         })

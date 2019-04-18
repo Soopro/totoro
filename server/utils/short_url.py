@@ -6,8 +6,7 @@ import random
 
 
 def encode_short_url(length=6, case_sensitive=False):
-    end = len(short_url.DEFAULT_ALPHABET)**(length - 1)
-    random_num = random.randint(0, end)
+    random_num = random.randint(0, len(short_url.DEFAULT_ALPHABET)**length)
     random_str = short_url.encode_url(random_num, length)
     if not case_sensitive:
         random_str = random_str.upper()

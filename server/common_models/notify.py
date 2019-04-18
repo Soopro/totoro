@@ -8,7 +8,7 @@ class Notify(BaseDocument):
     structure = {
         'slug': unicode,
         'template_id': unicode,
-        'template': unicode,
+        'source': unicode,
         'params': dict,
     }
     required_fields = ['slug', 'template_id']
@@ -31,3 +31,6 @@ class Notify(BaseDocument):
         return self.find_one({
             'slug': unicode(slug)
         })
+
+    def find_all(self):
+        return self.find()

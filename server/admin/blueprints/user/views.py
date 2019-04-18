@@ -9,7 +9,6 @@ from flask import (Blueprint,
                    redirect,
                    render_template)
 
-from utils.auth import generate_hashed_password
 from utils.model import make_paginator
 from utils.misc import parse_int
 
@@ -54,29 +53,15 @@ def index():
 @login_required
 def detail(user_id=None):
     User = current_app.mongodb.User
-    UserVerification = current_app.mongodb.UserVerification
-    if user_id:
-        user = User.find_one_by_id(user_id)
-    else:
-        user = {
-            'status': User.STATUS_DEACTIVATED
-        }
+
+    user = _find_user(user_id)
     allowed_status = [
         {'key': User.STATUS_DEACTIVATED, 'text': 'Deactivated'},
         {'key': User.STATUS_ACTIVATED, 'text': 'Activated'},
         {'key': User.STATUS_BANNED, 'text': 'Banned'}
     ]
-    if user.get('_id'):
-        verification = UserVerification.find_one_by_uid(user['_id'])
-    else:
-        verification = None
-    if not verification:
-        verification = {
-            'status': UserVerification.STATUS_PENDING
-        }
     return render_template('user_detail.html',
                            user=user,
-                           verification=verification,
                            allowed_status=allowed_status)
 
 
@@ -85,8 +70,7 @@ def detail(user_id=None):
 def update(user_id):
     status = request.form.get('status')
 
-    User = current_app.mongodb.User
-    user = User.find_one_by_id(user_id)
+    user = _find_user(user_id)
     user['status'] = parse_int(status)
     user.save()
     flash('Saved.')
@@ -97,11 +81,15 @@ def update(user_id):
 @blueprint.route('/<user_id>/remove')
 @login_required
 def remove(user_id):
-    verification = current_app.mongodb.\
-        UserVerification.find_one_by_uid(user_id)
-    if verification:
-        verification.delete()
-    user = current_app.mongodb.User.find_one_by_id(user_id)
+    user = _find_user(user_id)
     user.remove()
     return_url = url_for('.index')
     return redirect(return_url)
+
+
+# helpers
+def _find_user(user_id):
+    user = current_app.mongodb.User.find_one_by_id(user_id)
+    if not user:
+        raise Exception('User not found...')
+    return user

@@ -9,7 +9,7 @@ from flask import (Blueprint,
 from admin.decorators import login_required
 
 
-blueprint = Blueprint('base', __name__, template_folder='pages')
+blueprint = Blueprint('dashboard', __name__, template_folder='pages')
 
 
 @blueprint.route('/')

@@ -1,0 +1,14 @@
+<section class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="btn-group">
+        <a class="btn btn-default {{'active' if sub_active == 'available'}}"
+                href="{{url_for('.index')}}">Available Users</a>
+        <a class="btn btn-default {{'active' if sub_active == 'inactive'}}"
+                href="{{url_for('.inactive')}}">Inactive Users</a>
+        <a class="btn btn-danger {{'active' if sub_active == 'deleted'}}"
+                href="{{url_for('.index', deleted=1)}}">Deleted</a>
+      </div>
+    </div>
+  </div>
+</section>

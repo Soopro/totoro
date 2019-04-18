@@ -56,8 +56,13 @@ def initialize():
 @blueprint.route('/initialize', methods=['POST'])
 def exec_initialize():
     passcode = request.form['passcode']
-    mina_app_id = request.form['mina_app_id']
-    mina_app_secret = request.form['mina_app_secret']
+    passcode2 = request.form['passcode2']
+    mina_app_id = request.form.get('mina_app_id', u'')
+    mina_app_secret = request.form.get('mina_app_secret', u'')
+
+    if passcode != passcode2:
+        raise Exception('Passcode not match ...')
+
     configure = current_app.mongodb.Configuration.get_conf()
     configure['passcode_hash'] = generate_hashed_password(passcode)
     configure['mina_app_id'] = mina_app_id
