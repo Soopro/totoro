@@ -15,22 +15,18 @@ class User(BaseDocument):
         'password_hash': unicode,
         'openid': unicode,
         'unionid': unicode,
-        'subscribed': bool,
         'meta': dict,
         'creation': int,
         'updated': int,
-        'deleted': int,
         'status': int,
     }
     sensitive_fields = ['meta']
     required_fields = ['login', 'openid', 'password_hash']
     default_values = {
         'unionid': u'',
-        'subscribed': False,
         'meta': {},
         'creation': now,
         'updated': now,
-        'deleted': 0,
         'status': STATUS_DEACTIVATED
     }
     indexes = [
@@ -38,45 +34,32 @@ class User(BaseDocument):
             'fields': ['creation'],
         },
         {
-            'fields': ['deleted'],
+            'fields': ['status'],
         }
     ]
 
-    def find_alive(self):
+    def find_all(self):
+        return self.find().sort('creation', INDEX_DESC).limit(self.MAX_QUERY)
+
+    def find_activated(self):
         return self.find({
-            'deleted': 0,
+            'status': self.STATUS_ACTIVATED
         }).sort('creation', INDEX_DESC).limit(self.MAX_QUERY)
 
-    def find_dead(self):
+    def find_by_status(self, status):
         return self.find({
-            'deleted': 1,
+            'status': status
         }).sort('creation', INDEX_DESC).limit(self.MAX_QUERY)
 
     def find_one_by_id(self, user_id):
         return self.find_one({
             '_id': ObjectId(user_id),
-            'deleted': 0,
         })
 
     def find_one_by_login(self, login):
         return self.find_one({
             'login': login,
-            'deleted': 0,
-        })
-
-    def find_one_dead_by_id(self, user_id):
-        return self.find_one({
-            '_id': ObjectId(user_id),
-            'deleted': 1,
         })
 
     def count_used(self):
-        return self.find({
-            'deleted': 0,
-        }).count()
-
-    def remove(self):
-        self['updated'] = now()
-        self['deleted'] = 1
-        self.save()
-        return self['_id']
+        return self.find().count()

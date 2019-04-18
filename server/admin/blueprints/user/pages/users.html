@@ -3,8 +3,29 @@
 {% set active_nav = 'user' %}
 
 {% block body %}
-{% set sub_active = 'deleted' if request.args.deleted else 'available' %}
-{% include '_user_nav_.html' with context %}
+<nav class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="btn-group">
+        <a class="btn btn-default {{'active' if status == None}}"
+                href="{{url_for('.index')}}">All</a>
+      </div>
+      <div class="btn-group">
+        <a class="btn btn-default {{'active' if status == 1}}"
+                href="{{url_for('.index', status=1)}}">Paid Members</a>
+      </div>
+      <div class="btn-group">
+        <a class="btn btn-default {{'active' if status == 1}}"
+                href="{{url_for('.index', status=0)}}">Vistors</a>
+      </div>
+      <div class="btn-group">
+        <a class="btn btn-default {{'active' if status == 2}}"
+                href="{{url_for('.index', status=2)}}">Banned</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
 
 <section class="container">
   <nav>
@@ -25,13 +46,13 @@
     <thead>
       <tr>
         <th width="10%">#</th>
-        <th width="10%">Avatar</th>
-        <th width="20%">Name</th>
-        <th width="20%">ID</th>
+        <th width="15%">Avatar</th>
+        <th width="25%">Name</th>
+        <th width="10%">Gender</th>
         <th width="10%">Creation</th>
 
         <th class="text-center"
-            width="10%">Verified</th>
+            width="10%">Status</th>
         <th class="text-center"
             width="20%">Action</th>
       </tr>
@@ -54,35 +75,26 @@
 
         </td>
         <td>
-          {{user._id}}
+          {{user.meta.gender or '-'}}
         </td>
         <td>{{user.creation|dateformat}}</td>
         <td class="text-center">
-          {% if user.verified %}
-          <span class="glyphicon glyphicon-certificate"
-                style="color:green"></span>
-          {% else %}
+          {% if user.status == 0 %}
           <span class="glyphicon glyphicon-minus"
                 style="color:#ddd;"></span>
+          {% elif user.status == 1 %}
+          <span class="glyphicon glyphicon-certificate"
+                style="color:green"></span>
+          {% elif user.status == 2 %}
+          XXXXX
+          {% else %}
           {% endif %}
         </td>
         <td class="text-center">
-          {% if not user.deleted %}
-          <a class="btn {{'btn-success'
-                          if user.supervisor else 'btn-primary'
-                          if user.status == 1 else 'btn-default'}}"
+          <a class="btn btn-primary"
              href="{{url_for('.detail', user_id=user._id)}}">
-            {% if user.status == 2 %}
-            <span class="glyphicon glyphicon-ban-circle"></span>
-            {% elif user.supervisor %}
-            <span class="glyphicon glyphicon-king"></span>
-            {% else %}
             <span class="glyphicon glyphicon-user"></span>
-            {% endif %}
           </a>
-          {% else %}
-          <span class="glyphicon glyphicon-trash"></span>
-          {% endif %}
         </td>
       </tr>
       {% endfor %}

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Big Chooper</title>
+  <title>Totoro System</title>
   <link rel="shortcut icon"
         href="{{url_for('static', filename='favicon.png')}}">
   <link rel="stylesheet" type="text/css"
@@ -17,12 +17,11 @@
   set navs = [
     {'key': 'dashboard', 'url': '/', 'name': 'Dashboard'},
     {'key': 'user', 'url': url_for('user.index'), 'name': 'Users'},
-    {'key': 'org', 'url': url_for('org.index'), 'name': 'Orgs'},
-    {'key': 'post', 'url': url_for('post.index'), 'name': 'Posts'},
+    {'key': 'book', 'url': url_for('book.index'), 'name': 'Books'},
     {'key': 'media', 'url': url_for('media.index'), 'name': 'Media Files'},
-    {'key': 'wechat', 'url': url_for('wechat.index'), 'name': 'WeChat'},
-    {'key': 'report', 'url': url_for('report.index'), 'name': 'Report'},
-    {'key': 'logout', 'url': url_for('auth.logout'), 'name': 'Logout'},
+    {'key': 'notify', 'url': url_for('notify.index'), 'name': 'Notifies'},
+    {'key': 'configuration', 'url': url_for('configuration.index'), 'name': 'Configuration'},
+    {'key': 'logout', 'url': url_for('gate.logout'), 'name': 'Logout'},
   ]
 %}
 
@@ -39,11 +38,11 @@
   </nav>
   {% endblock %}
 
-  {% if page_title %}
+  {% block header %}
   <header class="container">
-    <h1>{{page_title}}</h1>
+    <h1>{% block title %}{% endblock %}</h1>
   </header>
-  {% endif %}
+  {% endblock %}
 
   <section class="container">
   {% with messages = get_flashed_messages() %}

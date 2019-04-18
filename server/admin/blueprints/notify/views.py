@@ -55,7 +55,7 @@ def update(notify_id):
 @login_required
 def remove(notify_id):
     notify = _find_notify(notify_id)
-    notify.remove()
+    notify.delete()
     return_url = url_for('.index')
     return redirect(return_url)
 

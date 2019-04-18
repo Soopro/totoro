@@ -90,13 +90,9 @@ def update(book_id):
 
 @blueprint.route('/<book_id>/remove')
 @login_required
-def remove(user_id):
-    verification = current_app.mongodb.\
-        UserVerification.find_one_by_uid(user_id)
-    if verification:
-        verification.delete()
-    user = current_app.mongodb.User.find_one_by_id(user_id)
-    user.remove()
+def remove(book_id):
+    book = _find_book(book_id)
+    book.delete()
     return_url = url_for('.index')
     return redirect(return_url)
 

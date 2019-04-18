@@ -69,13 +69,13 @@ class Config(object):
 
 class DevelopmentConfig(Config):
     # mongodb
-    MONGODB_DATABASE = 'dev'
+    MONGODB_DATABASE = 'dev_totoro'
 
 
 class TestCaseConfig(Config):
     UNITTEST = True
     SECRET_KEY = 'secret'
-    MONGODB_DATABASE = 'test'
+    MONGODB_DATABASE = 'test_totoro'
 
 
 class TestingConfig(Config):

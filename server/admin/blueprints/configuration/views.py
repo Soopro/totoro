@@ -10,7 +10,7 @@ from flask import (Blueprint,
                    redirect,
                    render_template)
 
-from utils.auth import generate_hashed_password
+from utils.auth import generate_hashed_password, check_hashed_password
 from utils.request import get_remote_addr
 from utils.misc import hmac_sha
 
@@ -22,23 +22,30 @@ blueprint = Blueprint('configuration', __name__, template_folder='pages')
 
 @blueprint.route('/')
 @login_required
-def configuration():
+def index():
     configure = _get_configuration()
     return render_template('configuration.html', configure=configure)
 
 
 @blueprint.route('/', methods=['POST'])
 @login_required
-def update_configuration():
+def update():
     mina_app_id = request.form.get('mina_app_id')
     mina_app_secret = request.form.get('mina_app_secret')
+    old_passcode = request.form.get('old_passcode')
     passcode = request.form.get('passcode')
     passcode2 = request.form.get('passcode2')
 
     configure = _get_configuration()
     configure['mina_app_id'] = mina_app_id
     configure.encrypt('mina_app_secret', mina_app_secret)
-    if passcode and passcode == passcode2:
+    if old_passcode:
+        checked = check_hashed_password(configure['passcode_hash'],
+                                        old_passcode)
+        if not checked:
+            raise Exception('Old passcode is wrong ...')
+        elif passcode != passcode2:
+            raise Exception('New passcode is not match ...')
         configure['passcode_hash'] = generate_hashed_password(passcode)
         hmac_key = u'{}{}'.format(current_app.secret_key, get_remote_addr())
         session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])

@@ -22,22 +22,23 @@ blueprint = Blueprint('user', __name__, template_folder='pages')
 @login_required
 def index():
     paged = parse_int(request.args.get('paged'), 1, True)
-    deleted = parse_int(request.args.get('deleted'), 0)
+    status = request.args.get('status')
 
     User = current_app.mongodb.User
-    if deleted:
-        users = User.find_dead()
+    if status is not None:
+        status = parse_int(status)
+        users = User.find_by_status(status)
     else:
-        users = User.find_alive()
+        users = User.find_all()
 
-    p = make_paginator(users, paged, 12)
+    p = make_paginator(users, paged, 60)
 
     prev_url = url_for(request.endpoint,
                        paged=p.previous_page,
-                       deleted=deleted)
+                       status=status)
     next_url = url_for(request.endpoint,
                        paged=p.next_page,
-                       deleted=deleted)
+                       status=status)
 
     paginator = {
         'next': next_url if p.has_next else None,
@@ -46,7 +47,10 @@ def index():
         'start': p.start_index,
         'end': p.end_index,
     }
-    return render_template('users.html', users=users, p=paginator)
+    return render_template('users.html',
+                           users=users,
+                           status=status,
+                           p=paginator)
 
 
 @blueprint.route('/<user_id>')
@@ -82,7 +86,7 @@ def update(user_id):
 @login_required
 def remove(user_id):
     user = _find_user(user_id)
-    user.remove()
+    user.delete()
     return_url = url_for('.index')
     return redirect(return_url)
 

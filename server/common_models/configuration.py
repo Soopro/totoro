@@ -22,3 +22,6 @@ class Configuration(BaseDocument):
         return self.find_one({
             'passcode_hash': {'$ne': u''}
         })
+
+    def clear_conf(self):
+        return self.collection.remove({})

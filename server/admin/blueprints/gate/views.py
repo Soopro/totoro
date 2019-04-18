@@ -63,15 +63,13 @@ def exec_initialize():
     if passcode != passcode2:
         raise Exception('Passcode not match ...')
 
-    configure = current_app.mongodb.Configuration.get_conf()
+    current_app.mongodb.Configuration.clear_conf()
+    configure = current_app.mongodb.Configuration()
     configure['passcode_hash'] = generate_hashed_password(passcode)
     configure['mina_app_id'] = mina_app_id
-    configure['mina_app_secret'] = mina_app_secret
-    if not configure:
-        return redirect('/initialize')
-    elif session.get('admin'):
-        return redirect('/')
-    return render_template('login.html')
+    configure.encrypt('mina_app_secret', mina_app_secret)
+    configure.save()
+    return redirect(url_for('.login'))
 
 
 @blueprint.route('/logout')
