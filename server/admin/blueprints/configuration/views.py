@@ -42,7 +42,7 @@ def update():
     configure.encrypt('mina_app_secret', mina_app_secret)
     configure.save()
     flash('Saved.')
-    return_url = url_for('.configuration')
+    return_url = url_for('.index')
     return redirect(return_url)
 
 

@@ -1,8 +1,8 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from functools import wraps, g
-from flask import current_app, session, redirect, url_for
+from functools import wraps
+from flask import current_app, session, redirect, url_for, g
 from utils.request import get_remote_addr
 from utils.misc import hmac_sha
 
