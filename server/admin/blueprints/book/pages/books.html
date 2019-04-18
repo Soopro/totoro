@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% set active_nav = 'book' %}
+
+{% block title %}Books{% endblock %}
+
+{% block body %}
+
+<section class="container">
+  <nav>
+    <ul class="pager">
+      {% if p.prev %}
+      <li class="previous">
+        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
+      </li>
+      {% endif %}
+      {% if p.next %}
+      <li class="next {{'disabled' if not p.next}}">
+        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th width="10%">#</th>
+        <th width="15%">Image</th>
+        <th width="20%">Title</th>
+        <th width="10%">Slug</th>
+        <th width="10%">Code</th>
+        <th width="5%">qty.</th>
+        <th width="10%">Updated</th>
+        <th class="text-center"
+            width="20%">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <td>{{loop.index0 + p.start}}</td>
+        <td>
+          {% if book.meta.cover_src %}
+          <img width="48" height="48" src="{{book.meta.cover_src}}"/>
+          {% endif %}
+        </td>
+        <td>
+          {% if book.meta.title %}
+            <b>{{book.meta.title}}</b>
+          {% else %}
+            <i><small>&lt;No Title&gt;</small></i>
+          {% endif %}
+
+        </td>
+        <td>
+          {{book.slug}}
+        </td>
+        <td>{{book.code}}</td>
+        <td>{{book.volumes|length}}</td>
+        <td>{{book.updated|dateformat}}</td>
+
+        <td class="text-center">
+          <a class="btn btn-primary"
+             href="{{url_for('.detail', book_id=book._id)}}">
+            <span class="glyphicon glyphicon-user"></span>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <nav>
+    <ul class="pager">
+      {% if p.prev %}
+      <li class="previous">
+        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
+      </li>
+      {% endif %}
+      {% if p.next %}
+      <li class="next {{'disabled' if not p.next}}">
+        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</section>
+{% endblock %}

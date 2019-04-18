@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
-{% set page_title = 'Media Files' %}
 {% set active_nav = 'media' %}
 
+{% block title %}Media Files{% endblock %}
+
 {% block body %}
-{% include '_media_nav_.html' %}
 
 <section class="container">
   <nav>
@@ -24,11 +24,9 @@
   <table class="table table-hover">
     <thead>
       <tr>
-        <th width="30%">Preview</th>
-        <th width="25%">Filename</th>
-        <th width="15%">Creation</th>
-        <th class="text-center"
-            width="10%">Owner</th>
+        <th width="20%">Preview</th>
+        <th width="40%">Filename</th>
+        <th width="10%">Creation</th>
         <th class="text-center"
             width="10%">Action</th>
       </tr>
@@ -37,9 +35,9 @@
       {% for media in mediafiles %}
       <tr>
         <td>
-          <a href="{{media.src|safe_src(media.updated)}}"
+          <a href="{{media.src}}"
              target="_blank">
-            <img src="{{media.src|safe_src(media.updated)}}"
+            <img src="{{media.src}}"
                  width="60"
                  height="60" />
           </a>

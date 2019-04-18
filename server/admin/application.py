@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import Flask, make_response
+from flask import Flask, make_response, g
 from redis import ConnectionPool, Redis
 from mongokit import Connection as MongodbConn
 
@@ -72,6 +72,11 @@ def create_app(config_name='default'):
 
     # register blueprints
     register_blueprints(app)
+
+    # register before request handlers
+    @app.before_request
+    def app_before_request():
+        g.configure = app.mongodb.Configuration.get_conf() or {}
 
     # errors
     @app.errorhandler(Exception)

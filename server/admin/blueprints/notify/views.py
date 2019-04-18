@@ -9,6 +9,8 @@ from flask import (Blueprint,
                    redirect,
                    render_template)
 
+from utils.misc import slug_uuid_suffix, process_slug
+
 from admin.decorators import login_required
 
 import json
@@ -34,11 +36,13 @@ def detail(notify_id=None):
 @blueprint.route('/<notify_id>', methods=['POST'])
 @login_required
 def update(notify_id):
+    slug = request.form.get('slug')
     template_id = request.form.get('template_id')
     source = request.form.get('source')
     params = request.form.get('params')
 
     notify = _find_notify(notify_id)
+    notify['slug'] = slug
     notify['template_id'] = template_id
     notify['source'] = source
     try:
@@ -66,3 +70,17 @@ def _find_notify(notify_id):
     if not notify:
         raise Exception('Notify not found...')
     return notify
+
+
+def _uniqueify_notify_slug(slug, notify=None):
+    slug = process_slug(slug)
+    if notify and slug == notify['slug']:
+        # don't process if the content_file it self.
+        return slug
+
+    _book = current_app.mongodb.Notify.find_one_by_slug(slug)
+    if _book is not None:
+        slug = slug_uuid_suffix(slug)
+        slug = _uniqueify_notify_slug(slug, notify)
+
+    return slug

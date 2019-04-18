@@ -29,7 +29,7 @@ class Notify(BaseDocument):
 
     def find_one_by_slug(self, slug):
         return self.find_one({
-            'slug': unicode(slug)
+            'slug': slug
         })
 
     def find_all(self):

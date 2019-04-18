@@ -7,11 +7,13 @@ from document import BaseDocument
 class Configuration(BaseDocument):
 
     structure = {
+        'title': unicode,
         'mina_app_id': unicode,
         'mina_app_secret': unicode,
         'passcode_hash': unicode,
     }
     default_values = {
+        'title': u'',
         'mina_app_id': u'',
         'mina_app_secret': u'',
         'passcode_hash': u'',

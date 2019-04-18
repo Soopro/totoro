@@ -1,11 +1,12 @@
 {% extends "layout.html" %}
-{% set page_title = None %}
 {% set active_nav = 'dashboard' %}
+
+{% block header %}{% endblock %}
 
 {% block body %}
 <section class="container">
   <div class="jumbotron">
-    <h1>{{'Who is your daddy!'|upper}}</h1>
+    <h1>{{configure.title|upper or 'Totoro System'|upper}}</h1>
     <hr>
     <p>Users: {{count.users}}</p>
     <p>Books: {{count.books}}</p>

@@ -8,7 +8,8 @@ from flask import (Blueprint,
                    redirect,
                    url_for,
                    flash,
-                   render_template)
+                   render_template,
+                   g)
 
 from utils.auth import check_hashed_password, generate_hashed_password
 from utils.request import get_remote_addr
@@ -22,7 +23,7 @@ blueprint = Blueprint('gate', __name__, template_folder='pages')
 
 @blueprint.route('/login')
 def login():
-    configure = current_app.mongodb.Configuration.get_conf()
+    configure = g.configure
     if not configure:
         return redirect(url_for('.initialize'))
     elif session.get('admin'):
@@ -32,7 +33,7 @@ def login():
 
 @blueprint.route('/login', methods=['POST'])
 def exec_login():
-    configure = current_app.mongodb.Configuration.get_conf()
+    configure = g.configure
     passcode = request.form['passcode']
     if not configure:
         return redirect(url_for('.initialize'))
@@ -47,7 +48,7 @@ def exec_login():
 
 @blueprint.route('/initialize')
 def initialize():
-    configure = current_app.mongodb.Configuration.get_conf()
+    configure = g.configure
     if configure:
         return redirect(url_for('.login'))
     return render_template('initialize.html')

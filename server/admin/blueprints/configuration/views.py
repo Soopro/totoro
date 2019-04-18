@@ -8,7 +8,8 @@ from flask import (Blueprint,
                    flash,
                    url_for,
                    redirect,
-                   render_template)
+                   render_template,
+                   g)
 
 from utils.auth import generate_hashed_password, check_hashed_password
 from utils.request import get_remote_addr
@@ -23,41 +24,45 @@ blueprint = Blueprint('configuration', __name__, template_folder='pages')
 @blueprint.route('/')
 @login_required
 def index():
-    configure = _get_configuration()
+    configure = g.configure
+    configure['mina_app_secret'] = configure.decrypt('mina_app_secret')
     return render_template('configuration.html', configure=configure)
 
 
 @blueprint.route('/', methods=['POST'])
 @login_required
 def update():
+    title = request.form.get('title')
     mina_app_id = request.form.get('mina_app_id')
     mina_app_secret = request.form.get('mina_app_secret')
-    old_passcode = request.form.get('old_passcode')
-    passcode = request.form.get('passcode')
-    passcode2 = request.form.get('passcode2')
 
-    configure = _get_configuration()
+    configure = g.configure
+    configure['title'] = title
     configure['mina_app_id'] = mina_app_id
     configure.encrypt('mina_app_secret', mina_app_secret)
-    if old_passcode:
-        checked = check_hashed_password(configure['passcode_hash'],
-                                        old_passcode)
-        if not checked:
-            raise Exception('Old passcode is wrong ...')
-        elif passcode != passcode2:
-            raise Exception('New passcode is not match ...')
-        configure['passcode_hash'] = generate_hashed_password(passcode)
-        hmac_key = u'{}{}'.format(current_app.secret_key, get_remote_addr())
-        session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
     configure.save()
     flash('Saved.')
     return_url = url_for('.configuration')
     return redirect(return_url)
 
 
-# helpers
-def _get_configuration():
-    configuration = current_app.mongodb.Configuration.get_conf()
-    if not configuration:
-        raise Exception('Configuration not found...')
-    return configuration
+@blueprint.route('/', methods=['POST'])
+@login_required
+def change_passcode():
+    old_passcode = request.form.get('old_passcode')
+    passcode = request.form.get('passcode')
+    passcode2 = request.form.get('passcode2')
+
+    configure = g.configure
+    if not check_hashed_password(configure['passcode_hash'], old_passcode):
+        raise Exception('Old passcode is wrong ...')
+    elif passcode != passcode2:
+        raise Exception('New passcode is not match ...')
+    else:
+        configure['passcode_hash'] = generate_hashed_password(passcode)
+        hmac_key = u'{}{}'.format(current_app.secret_key, get_remote_addr())
+        session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
+        configure.save()
+    flash('Saved.')
+    return_url = url_for('.configuration')
+    return redirect(return_url)

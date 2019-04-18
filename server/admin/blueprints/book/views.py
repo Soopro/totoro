@@ -63,7 +63,6 @@ def update(book_id):
     slug = request.form['slug']
     title = request.form.get('title')
     description = request.form.get('description')
-    featured_img = request.form.get('featured_img')
     tags = request.form.get('tags')
     category = request.form.get('category')
     volumes = request.form.get('volumes')
@@ -76,11 +75,10 @@ def update(book_id):
     book['category'] = [cat.strip() for cat in category]
     book['volumes'] = [vol.strip() for vol in volumes]
     book['rating'] = rating
-    book['meta'] = {
+    book['meta'].update({
         'title': title,
         'description': description,
-        'featured_img': featured_img,
-    }
+    })
     book['status'] = parse_int(status)
     book.save()
     flash('Saved.')
@@ -108,6 +106,34 @@ def create():
     book['code'] = _gen_book_code(code)
     book.save()
     flash('Created.')
+    return_url = url_for('.detail', book_id=book['_id'])
+    return redirect(return_url)
+
+
+@blueprint.route('/<book_id>/cover', methods=['POST'])
+@login_required
+def attach_cover(book_id):
+    cover_src = request.form['cover_src']
+    book = _find_book(book_id)
+    book['meta'].update({
+        'cover_src': cover_src,
+    })
+    book.save()
+    flash('Cover attached.')
+    return_url = url_for('.detail', book_id=book['_id'])
+    return redirect(return_url)
+
+
+@blueprint.route('/<book_id>/preview', methods=['POST'])
+@login_required
+def attach_previews(book_id):
+    previews = request.form['previews']
+    book = _find_book(book_id)
+    book['meta'].update({
+        'previews': previews,
+    })
+    book.save()
+    flash('Previews attached.')
     return_url = url_for('.detail', book_id=book['_id'])
     return redirect(return_url)
 
