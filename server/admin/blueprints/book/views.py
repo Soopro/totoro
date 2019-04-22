@@ -8,10 +8,17 @@ from flask import (Blueprint,
                    url_for,
                    redirect,
                    render_template)
+import os
 
 from utils.model import make_paginator
 from utils.short_url import encode_short_url
-from utils.misc import parse_int, process_slug, slug_uuid_suffix
+from utils.misc import (parse_int,
+                        process_slug,
+                        slug_uuid_suffix,
+                        parse_dateformat,
+                        safe_filename,
+                        uuid4_hex,
+                        now)
 
 from admin.decorators import login_required
 
@@ -82,14 +89,15 @@ def update(book_id):
     book = _find_book(book_id)
     if slug:
         book['slug'] = _uniqueify_book_slug(slug, book)
-    book['tags'] = [tag.strip() for tag in tags.split('|')]
-    book['category'] = [cat.strip() for cat in category.split('\n')]
+    book['tags'] = [tag.strip() for tag in tags.split('|') if tag]
+    book['category'] = [cat.strip() for cat in category.split('\n') if cat]
     # book['rating'] = parse_int(rating)
     book['meta'].update({
         'title': title,
         'description': description,
         'cover_src': cover_src,
-        'previews': [preview.strip() for preview in previews.split('\n')],
+        'previews': [preview.strip() for preview in previews.split('\n')
+                     if preview.strip()],
     })
     book['status'] = parse_int(status)
     book.save()
@@ -155,6 +163,47 @@ def remove_volume(book_id, vol_id):
     return redirect(return_url)
 
 
+@blueprint.route('/<book_id>/attach_cover', methods=['POST'])
+@login_required
+def attach_cover(book_id):
+    file = request.files['cover']
+
+    book = _find_book(book_id)
+    media = _upload_img(file)
+
+    uploads_url = current_app.config.get('UPLOADS_URL')
+    book['meta']['cover_src'] = u'{}/{}/{}'.format(uploads_url,
+                                                   media['scope'],
+                                                   media['key'])
+    book.save()
+    return redirect(request.referrer)
+
+
+@blueprint.route('/<book_id>/attach_preview', methods=['POST'])
+@login_required
+def attach_preview(book_id):
+    files = request.files.getlist('previews')
+
+    book = _find_book(book_id)
+    media_list = []
+
+    for file in files[:12]:
+        try:
+            media_list.append(_upload_img(file))
+        except Exception as e:
+            flash(unicode(e), 'warning')
+
+    uploads_url = current_app.config.get('UPLOADS_URL')
+    for media in media_list:
+        preview_src = u'{}/{}/{}'.format(uploads_url,
+                                         media['scope'],
+                                         media['key'])
+        book['meta']['previews'].append(preview_src)
+    book.save()
+
+    return redirect(request.referrer)
+
+
 # helpers
 def _find_book(book_id):
     book = current_app.mongodb.Book.find_one_by_id(book_id)
@@ -185,3 +234,43 @@ def _gen_book_code(book, code=None):
     if _book is not None:
         code = _gen_book_code(book, unicode(encode_short_url(12)))
     return code
+
+
+def _allowed_book_file(filename):
+    file_ext = ''
+    allowed_exts = current_app.config.get('ALLOWED_MEDIA_EXTS')
+    if '.' in filename:
+        file_ext = filename.rsplit('.', 1)[1]
+    return file_ext.lower() in allowed_exts
+
+
+def _upload_img(file):
+    if not file or not _allowed_book_file(file.filename):
+        raise Exception('{} file not allowed.'.format(file.filename))
+
+    scope = parse_dateformat(now(), '%Y-%m')
+    key = filename = safe_filename(file.filename)
+    media = current_app.mongodb.Media.find_one_by_scope_key(scope, key)
+
+    if media:  # rename file if exists.
+        fname, ext = os.path.splitext(filename)
+        key = filename = u'{}-{}{}'.format(fname, uuid4_hex(), ext)
+
+    media = current_app.mongodb.Media()
+    media['scope'] = scope
+    media['filename'] = filename
+    media['key'] = key
+    media['mimetype'] = unicode(file.mimetype)
+    media['size'] = parse_int(file.content_length)
+    media.save()
+
+    uplaods_dir = current_app.config.get('UPLOADS_FOLDER')
+    uploads_folder = os.path.join(uplaods_dir, scope)
+    if not os.path.isdir(uploads_folder):
+        try:
+            os.makedirs(uploads_folder)
+        except Exception:
+            pass
+    file.save(os.path.join(uploads_folder, key))
+
+    return media
