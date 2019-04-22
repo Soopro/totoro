@@ -16,7 +16,11 @@ from utils.misc import parse_int, process_slug, slug_uuid_suffix
 from admin.decorators import login_required
 
 
-blueprint = Blueprint('book', __name__, template_folder='pages')
+blueprint = Blueprint('book',
+                      __name__,
+                      static_folder='static',
+                      static_url_path='/static',
+                      template_folder='pages')
 
 
 @blueprint.route('/')
@@ -52,32 +56,40 @@ def detail(book_id):
         {'key': Book.STATUS_ONLINE, 'text': 'Online'},
     ]
     book = _find_book(book_id)
+    records = current_app.mongodb.Record.find_by_bookid(book['_id'])
     return render_template('book_detail.html',
                            book=book,
+                           records=list(records),
                            allowed_status=allowed_status)
 
 
 @blueprint.route('/<book_id>', methods=['POST'])
 @login_required
 def update(book_id):
-    slug = request.form['slug']
+    slug = request.form.get('slug')
     title = request.form.get('title')
     description = request.form.get('description')
     tags = request.form.get('tags')
     category = request.form.get('category')
     volumes = request.form.get('volumes')
-    rating = request.form.get('rating')
+    # rating = request.form.get('rating')
+    cover_src = request.form.get('cover_src')
+    previews = request.form.get('previews')
+
     status = request.form.get('status')
 
     book = _find_book(book_id)
-    book['slug'] = _uniqueify_book_slug(slug, book)
-    book['tags'] = [tag.strip() for tag in tags]
-    book['category'] = [cat.strip() for cat in category]
-    book['volumes'] = [vol.strip() for vol in volumes]
-    book['rating'] = rating
+    if slug:
+        book['slug'] = _uniqueify_book_slug(slug, book)
+    book['tags'] = [tag.strip() for tag in tags.split('|')]
+    book['category'] = [cat.strip() for cat in category.split('\n')]
+    book['volumes'] = [vol.strip() for vol in volumes.split('\n')]
+    # book['rating'] = parse_int(rating)
     book['meta'].update({
         'title': title,
         'description': description,
+        'cover_src': cover_src,
+        'previews': [preview.strip() for preview in previews.split('\n')],
     })
     book['status'] = parse_int(status)
     book.save()
@@ -110,34 +122,6 @@ def create():
     return redirect(return_url)
 
 
-@blueprint.route('/<book_id>/cover', methods=['POST'])
-@login_required
-def attach_cover(book_id):
-    cover_src = request.form['cover_src']
-    book = _find_book(book_id)
-    book['meta'].update({
-        'cover_src': cover_src,
-    })
-    book.save()
-    flash('Cover attached.')
-    return_url = url_for('.detail', book_id=book['_id'])
-    return redirect(return_url)
-
-
-@blueprint.route('/<book_id>/preview', methods=['POST'])
-@login_required
-def attach_previews(book_id):
-    previews = request.form['previews']
-    book = _find_book(book_id)
-    book['meta'].update({
-        'previews': previews,
-    })
-    book.save()
-    flash('Previews attached.')
-    return_url = url_for('.detail', book_id=book['_id'])
-    return redirect(return_url)
-
-
 # helpers
 def _find_book(book_id):
     book = current_app.mongodb.Book.find_one_by_id(book_id)
@@ -162,8 +146,8 @@ def _uniqueify_book_slug(slug, book=None):
 
 def _gen_book_code(code=None):
     if not code:
-        code = encode_short_url(12)
+        code = unicode(encode_short_url(12))
     _book = current_app.mongodb.Book.find_one_by_code(code)
     if _book is not None:
-        code = _gen_book_code(encode_short_url(12))
+        code = _gen_book_code(unicode(encode_short_url(12)))
     return code

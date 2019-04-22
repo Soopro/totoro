@@ -33,11 +33,13 @@ def index():
 @login_required
 def update():
     title = request.form.get('title')
+    favicon = request.form.get('favicon')
     mina_app_id = request.form.get('mina_app_id')
     mina_app_secret = request.form.get('mina_app_secret')
 
     configure = g.configure
     configure['title'] = title
+    configure['favicon'] = favicon
     configure['mina_app_id'] = mina_app_id
     configure.encrypt('mina_app_secret', mina_app_secret)
     configure.save()

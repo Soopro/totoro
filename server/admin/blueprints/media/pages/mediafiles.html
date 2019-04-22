@@ -6,6 +6,22 @@
 {% block body %}
 
 <section class="container">
+  <form class="media-uploader"
+        action="{{url_for('.upload')}}"
+        accept="image/*"
+        method="POST"
+        enctype="multipart/form-data">
+    <div class="form-group">
+      <input type=file name=file>
+      <img class="media-preview" src="#"/>
+    </div>
+    <div class="form-group">
+      <button type="submit" style="display:none">Upload</button>
+    </div>
+  </form>
+</section>
+
+<section class="container">
   <nav>
     <ul class="pager">
       {% if p.prev %}
@@ -45,16 +61,13 @@
         <td>{{media.filename}}</td>
         <td>{{media.creation|dateformat}}</td>
         <td class="text-center">
-          <a class="btn btn-info {{'disabled' if not media.user_id}}"
-             href="{{url_for('user.detail', user_id=media.user_id)
-                     if media.user_id else '#'}}">
-            <span class="glyphicon glyphicon-user"></span>
+          <a class="btn btn-info"
+             href="{{media.src}}"
+             target="_blank">
+            <span class="glyphicon glyphicon-link"></span>
           </a>
-        </td>
-        <td class="text-center">
           <a class="btn btn-danger"
              href="{{url_for('.remove', media_id=media._id,
-                                        master=master,
                                         paged=p.paged)}}">
             <span class="glyphicon glyphicon-trash"></span>
           </a>
@@ -79,41 +92,9 @@
   </nav>
 </section>
 
-{% if master %}
-<section class="container">
-  <hr>
-  <form class="media-uploader"
-        action="{{url_for('.upload', master=master)}}"
-        accept="image/*"
-        method="POST"
-        enctype="multipart/form-data">
-    <div class="form-group">
-      <input type=file name=file>
-      <img class="media-preview" src="#"/>
-    </div>
-    <div class="form-group">
-      <button type="submit" style="display:none">Upload</button>
-    </div>
-  </form>
-</section>
-{% endif %}
 {% endblock %}
 
-{% block scripts %}
-<script>
-  $(".media-uploader input[name='file']").change(function(e) {
-    file = (this.files && this.files[0]) ? this.files[0] : null;
-    if (!file) {
-      $('.media-preview').attr('src', '#');
-      $(".media-uploader button[type=submit]").hide();
-      return
-    }
-    var reader = new FileReader();
-    reader.onloadend = function() {
-      $('.media-preview').attr('src', reader.result);
-    }
-    reader.readAsDataURL(file);
-    $(".media-uploader button[type=submit]").show();
-});
+{% block custom_scripts %}
+<script src="{{url_for('.static', filename='scripts/functions.js')}}">
 </script>
 {% endblock %}

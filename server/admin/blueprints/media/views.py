@@ -19,7 +19,11 @@ from utils.misc import (parse_int,
 from admin.decorators import login_required
 
 
-blueprint = Blueprint('media', __name__, template_folder='pages')
+blueprint = Blueprint('media',
+                      __name__,
+                      static_folder='static',
+                      static_url_path='/static',
+                      template_folder='pages')
 
 
 @blueprint.route('/')
@@ -30,12 +34,14 @@ def index():
 
     p = make_paginator(mediafiles, paged, 60)
 
-    res_url = current_app.config.get('RES_URL')
+    uploads_url = current_app.config.get('UPLOADS_URL')
 
     mediafiles = list(mediafiles)
 
     for media in mediafiles:
-        media['src'] = u'{}/{}'.format(res_url, media['key'])
+        media['src'] = u'{}/{}/{}'.format(uploads_url,
+                                          media['scope'],
+                                          media['key'])
 
     prev_url = url_for(request.endpoint,
                        paged=p.previous_page)
@@ -79,7 +85,13 @@ def upload():
     media.save()
 
     uplaods_dir = current_app.config.get('UPLOADS_FOLDER')
-    file.save(os.path.join(uplaods_dir, scope, key))
+    uploads_folder = os.path.join(uplaods_dir, scope)
+    if not os.path.isdir(uploads_folder):
+        try:
+            os.makedirs(uploads_folder)
+        except Exception:
+            pass
+    file.save(os.path.join(uploads_folder, key))
 
     return_url = url_for('.index')
     return redirect(return_url)
@@ -94,6 +106,8 @@ def remove(media_id):
     uplaods_dir = current_app.config.get('UPLOADS_FOLDER')
     try:
         os.remove(os.path.join(uplaods_dir, media['scope'], media['key']))
+    except Exception:
+        pass
     finally:
         media.delete()
 

@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import Flask, make_response, g
+from flask import Flask, make_response, send_from_directory, g
 from redis import ConnectionPool, Redis
 from mongokit import Connection as MongodbConn
 
@@ -77,6 +77,11 @@ def create_app(config_name='default'):
     @app.before_request
     def app_before_request():
         g.configure = app.mongodb.Configuration.get_conf() or {}
+
+    # uploads
+    @app.route('{}/<path:filepath>'.format(app.config['UPLOADS_URL']))
+    def send_file(filepath):
+        return send_from_directory(app.config['UPLOADS_FOLDER'], filepath)
 
     # errors
     @app.errorhandler(Exception)

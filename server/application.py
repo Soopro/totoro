@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import Flask, request, current_app
+from flask import Flask, request, current_app, send_from_directory
 from redis import ConnectionPool, Redis
 from mongokit import Connection as MongodbConn
 
@@ -132,6 +132,11 @@ def create_app(config_name='default'):
             cors_headers = make_cors_headers()
             resp.headers.extend(cors_headers)
             return resp
+
+    # uploads
+    @app.route('{}/<path:filepath>'.format(app.config['UPLOADS_URL']))
+    def send_file(filepath):
+        return send_from_directory(app.config['UPLOADS_FOLDER'], filepath)
 
     # register blueprints
     register_blueprints(app)

@@ -6,6 +6,16 @@
 {% block body %}
 
 <section class="container">
+  <div>
+    <button class="btn btn-primary"
+            data-toggle="modal"
+            data-target="#CREATE-BOOK-MODAL">
+      Create new book
+    </button>
+  </div>
+</section>
+
+<section class="container">
   <nav>
     <ul class="pager">
       {% if p.prev %}
@@ -24,7 +34,7 @@
     <thead>
       <tr>
         <th width="10%">#</th>
-        <th width="15%">Image</th>
+        <th width="15%">Cover</th>
         <th width="20%">Title</th>
         <th width="10%">Slug</th>
         <th width="10%">Code</th>
@@ -61,7 +71,7 @@
         <td class="text-center">
           <a class="btn btn-primary"
              href="{{url_for('.detail', book_id=book._id)}}">
-            <span class="glyphicon glyphicon-user"></span>
+            <span class="glyphicon glyphicon-pencil"></span>
           </a>
         </td>
       </tr>
@@ -83,4 +93,37 @@
     </ul>
   </nav>
 </section>
+{% endblock %}
+
+
+{% block custom_scripts %}
+<script src="{{url_for('.static', filename='scripts/functions.js')}}">
+</script>
+
+<div class="modal fade" id="CREATE-BOOK-MODAL" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Create Book</h4>
+      </div>
+      <div class="modal-body">
+        <!-- modal-form -->
+        <form action="{{url_for('.create')}}" method="POST">
+          <div class="form-group">
+            <label class="control-label">Slug</label>
+            <input name="slug" type="text" class="form-control">
+          </div>
+        </form>
+        <!-- .modal-form -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">
+          Close
+        </button>
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endblock %}

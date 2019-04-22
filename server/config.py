@@ -25,6 +25,8 @@ class Config(object):
     ALLOW_CREDENTIALS = False
     DENIED_ORIGINS = []
 
+    UPLOADS_URL = '/uploads'
+
     # analytics
     ONLINE_LAST_MINUTES = 30
 

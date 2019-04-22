@@ -1,196 +1,142 @@
 {% extends "layout.html" %}
-{% set page_title = 'User' %}
-{% set active_nav = 'user' %}
+{% set active_nav = 'book' %}
+
+{% block title %}Book Detail{% endblock %}
 
 {% block body %}
 <section class="container">
   <a class="btn btn-default"
-     href="{{url_for('.deleted') if user.deleted else url_for('.index')}}">
+     href="{{url_for('.index')}}">
     <span class="glyphicon glyphicon-menu-left"></span>
     Back
   </a>
   <hr>
   <div class="row">
     <!-- profile -->
-    <form class="col-md-6"
-          action="{{url_for('.update', user_id=user._id)
-                    if user._id else url_for('.create')}}"
-          method="POST">
-      <h3>Profile</h3>
+    <div class="col-md-6">
+      <form action="{{url_for('.update', book_id=book._id)}}"
+            method="POST">
+        <h3>Profile</h3>
+        <br>
+
+        <div class="form-group">
+          <label>Name</label>
+          <input class="form-control"
+                 type="text"
+                 name="title"
+                 value="{{book.meta.title}}" />
+        </div>
+
+        <div class="form-group">
+          <label>Cover</label>
+          <input class="form-control"
+                 type="text"
+                 name="cover_src"
+                 value="{{book.meta.cover_src}}" />
+          <span class="help-block">A uploaded image url.</span>
+          {% if book.meta.cover_src %}
+          <img width="120" height="120" src="{{book.meta.cover_src}}" />
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label>Description</label>
+          <textarea class="form-control"
+                    name="description">{{book.meta.description}}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Tags</label>
+          <input class="form-control"
+                 type="text"
+                 name="tags"
+                 value="{{book.tags|join('|')}}" />
+          <span class="help-block">Split with '|'.</span>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <textarea class="form-control"
+                    rows="4"
+                    name="category">{{book.category|join('\n')}}</textarea>
+          <span class="help-block">Type category slug one of line.</span>
+        </div>
+
+        <div class="form-group">
+          <label>Volumes</label>
+          <textarea class="form-control"
+                    rows="4"
+                    name="volumes">{{book.volumes|join('\n')}}</textarea>
+          <span class="help-block">Type volume id one of line.</span>
+        </div>
+
+        <div class="form-group">
+          <label>Previews</label>
+          <textarea class="form-control"
+                    rows="6"
+                    name="previews">{{book.meta.previews|join('\n')}}</textarea>
+          <span class="help-block">Type preview image src one of line.</span>
+        </div>
+
+        <div class="form-group">
+          <h5>Status</h5>
+          {% for st in allowed_status %}
+          <div class="radio-inline">
+            <label>
+              <input type="radio"
+                     name="status"
+                     value="{{st.key}}"
+                     {{'checked' if book.status == st.key}}> {{st.text}}
+            </label>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div>
+          <h5>Created at:  {{book.creation|dateformat}}</h5>
+          <h5>Last updated at:  {{book.updated|dateformat}}</h5>
+        </div>
+
+        <hr>
+        <div class="row">
+          <div class="col-md-6">
+            <button class="btn btn-primary">
+              <span class="glyphicon glyphicon-disk"></span>
+              Save
+            </button>
+          </div>
+          <div class="col-md-6 text-right">
+            <a class="btn btn-danger"
+               href="{{url_for('.remove', book_id=book._id)}}">
+              <span class="glyphicon glyphicon-trash"></span>
+              Delete
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- record -->
+    <div class="col-md-5 col-md-offset-1">
+      <h3>Records ({{records|length}})</h3>
       <br>
-
-      <!-- <div class="form-group">
-        <label>Login</label>
-        <input class="form-control"
-               type="email"
-               name="login"
-               {{'disabled' if user.login}}
-               value="{{user.login}}"
-               required />
-      </div>
-      <div class="form-group">
-        <label>Username</label>
-        <input class="form-control"
-               type="text"
-               name="slug"
-               {{'disabled' if user.slug}}
-               value="{{user.slug}}"
-               required />
-      </div>
-
-      <div class="form-group">
-        <label>Password</label>
-        <input class="form-control"
-               type="text"
-               name="passwd"
-               value="{{'123456' if not user.password_hash}}"/>
-      </div> -->
-
-      {% if user.supervisor %}
-      <span class="glyphicon glyphicon-king"></span>
-      {% endif %}
-
-      <div class="form-group">
-        <label>Name</label>
-        <input class="form-control"
-               type="text"
-               name="name"
-               value="{{user.meta.name}}" />
-      </div>
-      <div class="form-group">
-        <label>
-          <input type="checkbox" {{'checked' if user.supervisor}}
-                 name="supervisor"> as Supervisor?
-        </label>
-      </div>
-
-      {% if user._id %}
-      <div>
-        <h5>Verification:</h5>
-        <p>{{user.verified}}</p>
-      </div>
-      <div>
-        <h5>Gender:</h5>
-        <p>{{user.gender}}</p>
-      </div>
-      <div>
-        <h5>Country:</h5>
-        <p>{{user.country}}</p>
-      </div>
-      <div>
-        <h5>Contact:</h5>
-        <p>{{user.meta.wechat or user.meta.qq or user.meta.email}}</p>
-      </div>
-      {% endif %}
-
-      <div class="form-group">
-        <h5>Status</h5>
-        {% for st in allowed_status %}
-        <div class="radio-inline">
-          <label>
-            <input type="radio"
-                   name="status"
-                   value="{{st.key}}"
-                   {{'checked' if user.status == st.key}}> {{st.text}}
-          </label>
+      {% for record in records %}
+      <div class="panel {{'panel-primary' if record.status}}">
+        <div class="panel-heading">
+          <h3 class="panel-title">
+            {{'Lend' if record.status == 1 else 'Stocked'}}
+          </h3>
         </div>
-        {% endfor %}
-      </div>
-
-      {% if user.creation %}
-      <div>
-        <h5>Registered at:</h5>
-        <p>
-         {{user.creation|dateformat}}
-        </p>
-      </div>
-      {% endif %}
-
-      <hr>
-      <div class="row">
-        <div class="col-md-6">
-          <button class="btn btn-primary">
-            <span class="glyphicon glyphicon-disk"></span>
-            Save
-          </button>
-        </div>
-        {% if user._id %}
-        <div class="col-md-6">
-          <a class="btn btn-danger"
-             href="{{url_for('.remove', user_id=user._id)}}">
-            <span class="glyphicon glyphicon-trash"></span>
-            Delete
-          </a>
-        </div>
-        {% endif %}
-      </div>
-
-    </form>
-
-    <!-- verification -->
-    {% if user._id %}
-    <form class="col-md-6"
-          action="{{url_for('.verify', user_id=user._id)}}"
-          method="POST">
-      <h3>Verification</h3>
-      <br>
-      <div class="form-group">
-        <label>Real Name</label>
-        <input class="form-control"
-               type="text"
-               name="name"
-               value="{{verification.name}}"
-               required />
-      </div>
-
-      <div class="form-group">
-        <label>Country Code</label>
-        <input class="form-control"
-               type="text"
-               name="country_code"
-               value="{{verification.country_code or 'CN'}}"
-               required />
-      </div>
-
-      <div class="form-group">
-        <label>Mobile</label>
-        <input class="form-control"
-               type="text"
-               name="number"
-               value="{{verification.mobile}}" />
-      </div>
-
-      <div class="form-group">
-        <h5>Status</h5>
-        <div class="radio-inline">
-          <label>
-            <input type="radio"
-                   name="status"
-                   value="0"
-                   {{'checked' if verification.status == 0}}> Pending
-          </label>
-        </div>
-        <div class="radio-inline">
-          <label>
-            <input type="radio"
-                   name="status"
-                   value="1"
-                   {{'checked' if verification.status == 1}}> Passed
-          </label>
+        <div class="panel-body">
+          <p>{{record.borrower or '-'}}</p>
+          <p>{{record.volume or '-'}}</p>
+          <p>{{record.slug or '-'}}</p>
+          <p>{{record.date_borrowing}} - {{record.date_returning}}</p>
         </div>
       </div>
+      {% endfor %}
+    </div>
 
-      <hr>
-      <div class="row">
-        <div class="col-md-6">
-          <button class="btn btn-primary">
-            <span class="glyphicon glyphicon-disk"></span>
-            Verify
-          </button>
-        </div>
-      </div>
-    </form>
-    {% endif %}
   </div>
   <br><br>
 

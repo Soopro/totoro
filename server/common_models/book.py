@@ -67,6 +67,11 @@ class Book(BaseDocument):
             'slug': slug,
         })
 
+    def find_one_by_code(self, code):
+        return self.find_one({
+            'code': code,
+        })
+
     def find_one_activated_by_slug(self, slug):
         return self.find_one({
             'slug': slug,
@@ -95,8 +100,9 @@ class Record(BaseDocument):
 
     structure = {
         'book_id': ObjectId,
-        'user_id': [unicode],
-        'meta': dict,
+        'user_id': ObjectId,
+        'borrower': unicode,
+        'slug': unicode,
         'volume': unicode,
         'status': int,
         'date_borrowing': unicode,
@@ -104,11 +110,9 @@ class Record(BaseDocument):
         'creation': int,
         'updated': int,
     }
-    sensitive_fields = ['meta']
-    required_fields = ['book_id', 'user_id']
+    required_fields = ['book_id', 'user_id', 'slug', 'volume']
     default_values = {
-        'volume': u'',
-        'meta': {},
+        'borrower': u'',
         'date_borrowing': u'',
         'date_returning': u'',
         'creation': now,
@@ -139,14 +143,14 @@ class Record(BaseDocument):
         })
 
     def find_by_bookid(self, book_id):
-        return self.find_one({
+        return self.find({
             'book_id': ObjectId(book_id),
-        })
+        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
     def find_by_uid(self, user_id):
-        return self.find_one({
+        return self.find({
             'user_id': ObjectId(user_id),
-        })
+        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
     def find_all_lend(self):
         cursor = self.find({
@@ -158,6 +162,4 @@ class Record(BaseDocument):
         return self.find().sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
     def count_used(self):
-        return self.find({
-            'status': self.STATUS_ACTIVATED
-        }).count()
+        return self.find().count()

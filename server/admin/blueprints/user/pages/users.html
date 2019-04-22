@@ -12,15 +12,15 @@
                 href="{{url_for('.index')}}">All</a>
       </div>
       <div class="btn-group">
-        <a class="btn btn-default {{'active' if status == 1}}"
-                href="{{url_for('.index', status=1)}}">Paid Members</a>
-      </div>
-      <div class="btn-group">
-        <a class="btn btn-default {{'active' if status == 1}}"
+        <a class="btn btn-default {{'active' if status == 0}}"
                 href="{{url_for('.index', status=0)}}">Vistors</a>
       </div>
       <div class="btn-group">
-        <a class="btn btn-default {{'active' if status == 2}}"
+        <a class="btn btn-success {{'active' if status == 1}}"
+                href="{{url_for('.index', status=1)}}">Paid Members</a>
+      </div>
+      <div class="btn-group">
+        <a class="btn btn-danger {{'active' if status == 2}}"
                 href="{{url_for('.index', status=2)}}">Banned</a>
       </div>
     </div>

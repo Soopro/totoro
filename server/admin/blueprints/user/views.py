@@ -64,8 +64,10 @@ def detail(user_id=None):
         {'key': User.STATUS_ACTIVATED, 'text': 'Activated'},
         {'key': User.STATUS_BANNED, 'text': 'Banned'}
     ]
+    records = current_app.mongodb.Record.find_by_uid(user['_id'])
     return render_template('user_detail.html',
                            user=user,
+                           records=records,
                            allowed_status=allowed_status)
 
 
