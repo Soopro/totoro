@@ -12,10 +12,8 @@ class Book(BaseDocument):
 
     structure = {
         'slug': unicode,
-        'code': unicode,
         'tags': [unicode],
         'category': [unicode],
-        'volumes': [unicode],
         'rating': int,
         'meta': dict,
         'status': int,
@@ -23,11 +21,10 @@ class Book(BaseDocument):
         'updated': int,
     }
     sensitive_fields = ['meta']
-    required_fields = ['slug', 'code']
+    required_fields = ['slug']
     default_values = {
         'tags': [],
         'category': [],
-        'volumes': [],
         'rating': 0,
         'meta': {},
         'creation': now,
@@ -37,10 +34,6 @@ class Book(BaseDocument):
     indexes = [
         {
             'fields': ['slug'],
-            'unique': True,
-        },
-        {
-            'fields': ['code'],
             'unique': True,
         },
         {
@@ -67,11 +60,6 @@ class Book(BaseDocument):
             'slug': slug,
         })
 
-    def find_one_by_code(self, code):
-        return self.find_one({
-            'code': code,
-        })
-
     def find_one_activated_by_slug(self, slug):
         return self.find_one({
             'slug': slug,
@@ -88,12 +76,10 @@ class Book(BaseDocument):
         return self.find().sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
     def count_used(self):
-        return self.find({
-            'status': self.STATUS_ACTIVATED
-        }).count()
+        return self.find().count()
 
 
-class Record(BaseDocument):
+class BookVolume(BaseDocument):
     STATUS_STOCK, STATUS_LEND = (0, 1)
 
     MAX_QUERY = 60
@@ -101,18 +87,81 @@ class Record(BaseDocument):
     structure = {
         'book_id': ObjectId,
         'user_id': ObjectId,
-        'borrower': unicode,
-        'slug': unicode,
-        'volume': unicode,
+        'serial_number': unicode,
+        'code': unicode,
+        'borrower': unicode,  # user login
+        'status': int,
+        'creation': int,
+        'updated': int,
+    }
+    required_fields = ['book_id', 'serial_number', 'code']
+    default_values = {
+        'user_id': None,
+        'borrower': u'',
+        'creation': now,
+        'updated': now,
+        'status': STATUS_STOCK,
+    }
+    indexes = [
+        {
+            'fields': ['book_id', 'code'],
+            'unique': True,
+        },
+        {
+            'fields': ['updated'],
+        }
+    ]
+
+    def find_one_by_id(self, volume_id):
+        return self.find_one({
+            '_id': ObjectId(volume_id),
+        })
+
+    def find_one_by_bookid_id(self, book_id, volume_id):
+        return self.find_one({
+            '_id': ObjectId(volume_id),
+            'book_id': ObjectId(book_id),
+        })
+
+    def find_one_by_bookid_code(self, book_id, code):
+        return self.find_one({
+            'book_id': ObjectId(book_id),
+            'code': code,
+        })
+
+    def find_by_bookid(self, book_id):
+        return self.find({
+            'book_id': ObjectId(book_id),
+        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+
+    def count_used(self, book_id):
+        return self.find({
+            'book_id': ObjectId(book_id),
+        }).count()
+
+
+class BookRecord(BaseDocument):
+    STATUS_STOCK, STATUS_LEND = (0, 1)
+
+    MAX_QUERY = 60
+
+    structure = {
+        'book_id': ObjectId,
+        'user_id': ObjectId,
+        'volume': unicode,  # volume code
+        'borrower': unicode,  # user login
+        'meta': dict,
         'status': int,
         'date_borrowing': unicode,
         'date_returning': unicode,
         'creation': int,
         'updated': int,
     }
-    required_fields = ['book_id', 'user_id', 'slug', 'volume']
+    sensitive_fields = ['meta']
+    required_fields = ['book_id', 'user_id', 'volume']
     default_values = {
         'borrower': u'',
+        'meta': {},
         'date_borrowing': u'',
         'date_returning': u'',
         'creation': now,
@@ -120,6 +169,9 @@ class Record(BaseDocument):
         'status': STATUS_STOCK,
     }
     indexes = [
+        {
+            'fields': ['book_id', 'volume'],
+        },
         {
             'fields': ['book_id'],
         },
@@ -142,6 +194,12 @@ class Record(BaseDocument):
             '_id': ObjectId(_id),
         })
 
+    def find_one_by_bookid_vol(self, book_id, volume):
+        return self.find_one({
+            'book_id': ObjectId(book_id),
+            'volume': volume,
+        })
+
     def find_by_bookid(self, book_id):
         return self.find({
             'book_id': ObjectId(book_id),
@@ -151,12 +209,6 @@ class Record(BaseDocument):
         return self.find({
             'user_id': ObjectId(user_id),
         }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
-
-    def find_all_lend(self):
-        cursor = self.find({
-            'status': self.STATUS_LEND
-        }).sort('updated', INDEX_DESC)
-        return cursor.limit(self.MAX_QUERY)
 
     def find_all(self):
         return self.find().sort('updated', INDEX_DESC).limit(self.MAX_QUERY)

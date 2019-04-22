@@ -56,9 +56,11 @@ def detail(book_id):
         {'key': Book.STATUS_ONLINE, 'text': 'Online'},
     ]
     book = _find_book(book_id)
-    records = current_app.mongodb.Record.find_by_bookid(book['_id'])
+    volumes = current_app.mongodb.BookVolume.find_by_bookid(book['_id'])
+    records = current_app.mongodb.BookRecord.find_by_bookid(book['_id'])
     return render_template('book_detail.html',
                            book=book,
+                           volumes=list(volumes),
                            records=list(records),
                            allowed_status=allowed_status)
 
@@ -71,7 +73,6 @@ def update(book_id):
     description = request.form.get('description')
     tags = request.form.get('tags')
     category = request.form.get('category')
-    volumes = request.form.get('volumes')
     # rating = request.form.get('rating')
     cover_src = request.form.get('cover_src')
     previews = request.form.get('previews')
@@ -83,7 +84,6 @@ def update(book_id):
         book['slug'] = _uniqueify_book_slug(slug, book)
     book['tags'] = [tag.strip() for tag in tags.split('|')]
     book['category'] = [cat.strip() for cat in category.split('\n')]
-    book['volumes'] = [vol.strip() for vol in volumes.split('\n')]
     # book['rating'] = parse_int(rating)
     book['meta'].update({
         'title': title,
@@ -102,8 +102,14 @@ def update(book_id):
 @login_required
 def remove(book_id):
     book = _find_book(book_id)
-    book.delete()
-    return_url = url_for('.index')
+    count_volumes = current_app.mongodb.BookVolume.count_used(book_id)
+    if count_volumes <= 0:
+        book.delete()
+        flash('Removed.')
+        return_url = url_for('.index')
+    else:
+        flash('Remove all volumes before delete.', 'danger')
+        return_url = url_for('.detail', book_id=book['_id'])
     return redirect(return_url)
 
 
@@ -111,13 +117,40 @@ def remove(book_id):
 @login_required
 def create():
     slug = request.form['slug']
-    code = request.form.get('code')
-
     book = current_app.mongodb.Book()
     book['slug'] = _uniqueify_book_slug(slug)
-    book['code'] = _gen_book_code(code)
+
     book.save()
     flash('Created.')
+    return_url = url_for('.detail', book_id=book['_id'])
+    return redirect(return_url)
+
+
+@blueprint.route('/<book_id>/volume/create', methods=['POST'])
+@login_required
+def create_volume(book_id):
+    serial_number = request.form['serial_number']
+    code = request.form.get('code')
+
+    book = _find_book(book_id)
+    volume = current_app.mongodb.BookVolume()
+    volume['book_id'] = book['_id']
+    volume['serial_number'] = serial_number
+    volume['code'] = _gen_book_code(book, code)
+    volume.save()
+    flash('Volume created.')
+    return_url = url_for('.detail', book_id=book['_id'])
+    return redirect(return_url)
+
+
+@blueprint.route('/<book_id>/volume/<vol_id>/remove')
+@login_required
+def remove_volume(book_id, vol_id):
+    book = _find_book(book_id)
+    volume = current_app.mongodb.\
+        BookVolume.find_one_by_bookid_id(book_id, vol_id)
+    if volume:
+        volume.delete()
     return_url = url_for('.detail', book_id=book['_id'])
     return redirect(return_url)
 
@@ -144,10 +177,11 @@ def _uniqueify_book_slug(slug, book=None):
     return slug
 
 
-def _gen_book_code(code=None):
+def _gen_book_code(book, code=None):
     if not code:
         code = unicode(encode_short_url(12))
-    _book = current_app.mongodb.Book.find_one_by_code(code)
+    _book = current_app.mongodb.\
+        BookVolume.find_one_by_bookid_code(book['_id'], code)
     if _book is not None:
-        code = _gen_book_code(unicode(encode_short_url(12)))
+        code = _gen_book_code(book, unicode(encode_short_url(12)))
     return code

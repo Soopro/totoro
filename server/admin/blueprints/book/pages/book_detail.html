@@ -63,14 +63,6 @@
         </div>
 
         <div class="form-group">
-          <label>Volumes</label>
-          <textarea class="form-control"
-                    rows="4"
-                    name="volumes">{{book.volumes|join('\n')}}</textarea>
-          <span class="help-block">Type volume id one of line.</span>
-        </div>
-
-        <div class="form-group">
           <label>Previews</label>
           <textarea class="form-control"
                     rows="6"
@@ -106,11 +98,12 @@
             </button>
           </div>
           <div class="col-md-6 text-right">
-            <a class="btn btn-danger"
+            <a class="btn btn-danger {{'disabled' if volumes}}"
                href="{{url_for('.remove', book_id=book._id)}}">
               <span class="glyphicon glyphicon-trash"></span>
               Delete
             </a>
+            <span class="help-block">you must remove all volumes before delelet the book.</span>
           </div>
         </div>
       </form>
@@ -118,27 +111,56 @@
 
     <!-- record -->
     <div class="col-md-5 col-md-offset-1">
-      <h3>Records ({{records|length}})</h3>
-      <br>
-      {% for record in records %}
-      <div class="panel {{'panel-primary' if record.status}}">
-        <div class="panel-heading">
-          <h3 class="panel-title">
-            {{'Lend' if record.status == 1 else 'Stocked'}}
-          </h3>
+      <form action="{{url_for('.create_volume', book_id=book._id)}}"
+            method="POST">
+        <h4>Volumes</h4>
+        <br>
+        {% for vol in volumes %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            {% if vol.status == 0 %}
+            <div class="alert alert-info">in Stock</div>
+            {% elif vol.status == 1 %}
+            <div class="alert alert-success">{{borrower}}</div>
+            {% endif %}
+            <h5>Code: {{vol.code}}</h5>
+            <p>Serial Number: {{vol.serial_number}}</p>
+            <a href="{{url_for('.remove_volume', book_id=book._id, vol_id=vol._id)}}">Remove</a>
+          </div>
         </div>
-        <div class="panel-body">
-          <p>{{record.borrower or '-'}}</p>
-          <p>{{record.volume or '-'}}</p>
-          <p>{{record.slug or '-'}}</p>
-          <p>{{record.date_borrowing}} - {{record.date_returning}}</p>
+        {% endfor %}
+        <div class="form-group">
+          <label>New volume serial number</label>
+          <input class="form-control"
+                 type="text"
+                 name="serial_number"/>
         </div>
-      </div>
-      {% endfor %}
-    </div>
 
+        <button class="btn btn-primary">Add</button>
+      </form>
+    </div>
   </div>
   <br><br>
+  <hr>
+  <div>
+    <h3>Records ({{records|length}})</h3>
+    <br>
+    {% for record in records %}
+    <div class="panel {{'panel-primary' if record.status}}">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          {{'Lend' if record.status == 1 else 'Stocked'}}
+        </h3>
+      </div>
+      <div class="panel-body">
+        <p>{{record.borrower or '-'}}</p>
+        <p>{{record.volume or '-'}}</p>
+        <p>{{record.date_borrowing}} - {{record.date_returning}}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
 
 </section>
 

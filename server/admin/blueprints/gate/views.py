@@ -42,7 +42,7 @@ def exec_login():
         session['admin'] = hmac_sha(hmac_key, configure['passcode_hash'])
         return redirect('/')
     else:
-        flash('Wrong passcode!')
+        flash('Wrong passcode!', 'danger')
         return redirect(url_for('.login'))
 
 
