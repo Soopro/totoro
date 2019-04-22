@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
-{% set active_nav = 'user' %}
+{% set active_nav = 'reception' %}
 
-{% block title %}Configuration{% endblock %}
+{% block title %}Reception{% endblock %}
 
 {% block body %}
 <section class="container">
   <div class="row">
     <!-- check out -->
-    <form class="col-md-6"
+    <form class="col-md-5"
           action="{{url_for('.checkout')}}"
           method="POST">
       <h4>Check Out</h4>
@@ -44,7 +44,7 @@
     </form>
 
     <!-- checkin -->
-    <form class="col-md-5 col-md-offset-1"
+    <form class="col-md-5 col-md-offset-2"
           action="{{url_for('.checkin')}}"
           method="POST">
       <h4>Check In</h4>

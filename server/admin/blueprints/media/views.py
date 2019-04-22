@@ -93,8 +93,7 @@ def upload():
             pass
     file.save(os.path.join(uploads_folder, key))
 
-    return_url = url_for('.index')
-    return redirect(return_url)
+    return redirect(request.referrer)
 
 
 @blueprint.route('/<media_id>/remove')
