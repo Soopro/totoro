@@ -141,7 +141,7 @@ class BookVolume(BaseDocument):
 
 
 class BookRecord(BaseDocument):
-    STATUS_STOCK, STATUS_LEND = (0, 1)
+    STATUS_CHECKIN, STATUS_CHECKOUT = (0, 1)
 
     MAX_QUERY = 60
 
@@ -152,8 +152,6 @@ class BookRecord(BaseDocument):
         'borrower': unicode,  # user login
         'meta': dict,
         'status': int,
-        'date_borrowing': unicode,
-        'date_returning': unicode,
         'creation': int,
         'updated': int,
     }
@@ -162,27 +160,16 @@ class BookRecord(BaseDocument):
     default_values = {
         'borrower': u'',
         'meta': {},
-        'date_borrowing': u'',
-        'date_returning': u'',
         'creation': now,
         'updated': now,
-        'status': STATUS_STOCK,
+        'status': STATUS_CHECKIN,
     }
     indexes = [
-        {
-            'fields': ['book_id', 'volume'],
-        },
         {
             'fields': ['book_id'],
         },
         {
             'fields': ['user_id'],
-        },
-        {
-            'fields': ['date_borrowing'],
-        },
-        {
-            'fields': ['date_returning'],
         },
         {
             'fields': ['updated'],
@@ -192,12 +179,6 @@ class BookRecord(BaseDocument):
     def find_one_by_id(self, _id):
         return self.find_one({
             '_id': ObjectId(_id),
-        })
-
-    def find_one_by_bookid_vol(self, book_id, volume):
-        return self.find_one({
-            'book_id': ObjectId(book_id),
-            'volume': volume,
         })
 
     def find_by_bookid(self, book_id):

@@ -3,17 +3,11 @@ from __future__ import absolute_import
 
 from flask import (Blueprint,
                    current_app,
-                   session,
                    request,
                    flash,
                    url_for,
                    redirect,
-                   render_template,
-                   g)
-
-from utils.auth import generate_hashed_password, check_hashed_password
-from utils.request import get_remote_addr
-from utils.misc import hmac_sha
+                   render_template)
 
 from admin.decorators import login_required
 
@@ -24,17 +18,35 @@ blueprint = Blueprint('reception', __name__, template_folder='pages')
 @blueprint.route('/')
 @login_required
 def index():
-    return render_template('reception.html', configure=configure)
+    return render_template('reception.html')
 
 
 @blueprint.route('/checkout', methods=['POST'])
 @login_required
 def checkout():
-    slug = request.form.get('slug')
-    volume = request.form.get('volume')
+    user_login = request.form['user_login']
+    book_slug = request.form['book_slug']
+    volume_code = request.form['volume_code']
 
+    user = current_app.mongodb.User.find_one_by_login(user_login)
+    if not user:
+        flash('User not found.')
 
-    flash('Checkout.')
+    book, volume = _find_book_volume(book_slug, volume_code)
+    BookVolume = current_app.mongodb.BookVolume
+    if volume:
+        if volume['status'] == BookVolume.STATUS_STOCK:
+            volume['user_id'] = user['_id']
+            volume['borrower'] = user['login']
+            volume['status'] = BookVolume.STATUS_LEND
+            volume.save()
+            _recording(book, volume, user)
+            flash('Checkout.')
+        else:
+            flash('Book volume already lend by {}'.format(user['login']),
+                  'warning')
+    else:
+        flash('No book or volume.', 'danger')
     return_url = url_for('.index')
     return redirect(return_url)
 
@@ -42,14 +54,26 @@ def checkout():
 @blueprint.route('/checkin', methods=['POST'])
 @login_required
 def checkin():
-    slug = request.form.get('slug')
-    volume = request.form.get('volume')
+    user_login = request.form['user_login']
+    book_slug = request.form['book_slug']
+    volume_code = request.form['volume_code']
 
-    book = _find_book_volume(slug, volume)
-    if book:
-        record = _find_book_record(book)
+    user = current_app.mongodb.User.find_one_by_login(user_login)
+    if not user:
+        flash('User not found.')
 
-        flash('Checkin.')
+    book, volume = _find_book_volume(book_slug, volume_code)
+    BookVolume = current_app.mongodb.BookVolume
+    if volume:
+        if volume['status'] == BookVolume.STATUS_LEND:
+            volume['user_id'] = None
+            volume['borrower'] = u''
+            volume['status'] = BookVolume.STATUS_STOCK
+            volume.save()
+            _recording(book, volume, user, True)
+            flash('Checkin.')
+        else:
+            flash('Book volume is in stock', 'warning')
     else:
         flash('No book or volume.', 'danger')
     return_url = url_for('.index')
@@ -57,18 +81,31 @@ def checkin():
 
 
 # helpers
-def _find_book_volume(slug, volume):
-    if not slug or not volume:
+def _find_book_volume(book_slug, volume_code):
+    if not book_slug or not volume_code:
         return None
 
-    book = current_app.mongodb.Book.find_one_by_slug(slug)
-    if not book or volume not in book['volumes']:
+    book = current_app.mongodb.Book.find_one_by_slug(book_slug)
+    if not book:
         return None
-    return book
+    volume = current_app.mongodb.\
+        BookVolume.find_one_by_bookid_code(book['_id'], volume_code)
+    return book, volume
 
 
-def _find_book_record(book):
-    record = current_app.mongodb.BookRecord.find_one_by_bookid(book['_id'])
-    if not record:
-        return None
-    return book
+def _recording(book, volume, user, checkin=False):
+    BookRecord = current_app.mongodb.BookRecord
+    record = BookRecord()
+    record['user_id'] = user['_id']
+    record['book_id'] = book['_id']
+    record['borrower'] = user['login']
+    record['volume'] = volume['code']
+    record['meta'] = {
+        'title': book['meta'].get('title', '-')
+    }
+    if checkin:
+        record['status'] = BookRecord.STATUS_CHECKIN
+    else:
+        record['status'] = BookRecord.STATUS_CHECKOUT
+    record.save()
+    return record
