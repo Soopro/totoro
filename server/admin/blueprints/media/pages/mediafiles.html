@@ -12,9 +12,10 @@
         method="POST"
         enctype="multipart/form-data">
     <div class="form-group">
-      <input type=file name=file>
-      <img class="media-preview" src="#"/>
+      <input type="file" name="files" multiple />
+      <div class="media-previews"></div>
     </div>
+    <span class="help-block">Max 12 files at one time.</span>
     <div class="form-group">
       <button type="submit" style="display:none">Upload</button>
     </div>

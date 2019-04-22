@@ -6,6 +6,7 @@ from flask import (Blueprint,
                    request,
                    url_for,
                    redirect,
+                   flash,
                    render_template)
 import os
 
@@ -63,35 +64,36 @@ def index():
 @blueprint.route('/upload', methods=['POST'])
 @login_required
 def upload():
-    file = request.files['file']
+    files = request.files.getlist('files')
+    for file in files[:12]:
+        if not _allowed_file(file.filename):
+            flash('{}: file not allowed!'.format(file.filename), 'warning')
+            continue
 
-    if not file or not _allowed_file(file.filename):
-        raise Exception('file type not allowed!')
+        scope = parse_dateformat(now(), '%Y-%m')
+        key = filename = safe_filename(file.filename)
+        media = current_app.mongodb.Media.find_one_by_scope_key(scope, key)
 
-    scope = parse_dateformat(now(), '%Y-%m')
-    key = filename = safe_filename(file.filename)
-    media = current_app.mongodb.Media.find_one_by_scope_key(scope, key)
+        if media:  # rename file if exists.
+            fname, ext = os.path.splitext(filename)
+            key = filename = u'{}-{}{}'.format(fname, uuid4_hex(), ext)
 
-    if media:  # rename file if exists.
-        fname, ext = os.path.splitext(filename)
-        key = filename = u'{}-{}{}'.format(fname, uuid4_hex(), ext)
+        media = current_app.mongodb.Media()
+        media['scope'] = scope
+        media['filename'] = filename
+        media['key'] = key
+        media['mimetype'] = unicode(file.mimetype)
+        media['size'] = parse_int(file.content_length)
+        media.save()
 
-    media = current_app.mongodb.Media()
-    media['scope'] = scope
-    media['filename'] = filename
-    media['key'] = key
-    media['mimetype'] = unicode(file.mimetype)
-    media['size'] = parse_int(file.content_length)
-    media.save()
-
-    uplaods_dir = current_app.config.get('UPLOADS_FOLDER')
-    uploads_folder = os.path.join(uplaods_dir, scope)
-    if not os.path.isdir(uploads_folder):
-        try:
-            os.makedirs(uploads_folder)
-        except Exception:
-            pass
-    file.save(os.path.join(uploads_folder, key))
+        uplaods_dir = current_app.config.get('UPLOADS_FOLDER')
+        uploads_folder = os.path.join(uplaods_dir, scope)
+        if not os.path.isdir(uploads_folder):
+            try:
+                os.makedirs(uploads_folder)
+            except Exception:
+                pass
+        file.save(os.path.join(uploads_folder, key))
 
     return redirect(request.referrer)
 
