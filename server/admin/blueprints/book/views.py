@@ -101,6 +101,10 @@ def update(book_id):
     })
     book['status'] = parse_int(status)
     book.save()
+
+    # update all book volume to same as the book.
+    current_app.mongodb.BookVolume.refresh_meta(book, book['meta'])
+
     flash('Saved.')
     return_url = url_for('.detail', book_id=book['_id'])
     return redirect(return_url)

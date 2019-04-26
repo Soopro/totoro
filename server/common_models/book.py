@@ -72,6 +72,14 @@ class Book(BaseDocument):
         }).sort([('rating', INDEX_DESC), ('updated', INDEX_DESC)])
         return cursor.limit(self.MAX_QUERY)
 
+    def find_by_ids(self, id_list):
+        return self.find({
+            '_id': {
+                '$in': [ObjectId(_id) for _id in id_list[:self.MAX_QUERY]
+                        if ObjectId.is_valid(_id)]
+            },
+        }).limit(self.MAX_QUERY)
+
     def find_all(self):
         return self.find().sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
@@ -90,6 +98,7 @@ class BookVolume(BaseDocument):
         'serial_number': unicode,
         'code': unicode,
         'borrower': unicode,  # user login
+        'meta': dict,  # a copy of book meta
         'status': int,
         'creation': int,
         'updated': int,
@@ -98,6 +107,7 @@ class BookVolume(BaseDocument):
     default_values = {
         'user_id': None,
         'borrower': u'',
+        'meta': {},
         'creation': now,
         'updated': now,
         'status': STATUS_STOCK,
@@ -106,6 +116,12 @@ class BookVolume(BaseDocument):
         {
             'fields': ['book_id', 'code'],
             'unique': True,
+        },
+        {
+            'fields': ['user_id', 'status'],
+        },
+        {
+            'fields': ['user_id'],
         },
         {
             'fields': ['updated'],
@@ -133,6 +149,18 @@ class BookVolume(BaseDocument):
         return self.find({
             'book_id': ObjectId(book_id),
         }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+
+    def find_lend_by_uid(self, user_id):
+        return self.find({
+            'user_id': ObjectId(user_id),
+            'status': self.STATUS_LEND,
+        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+
+    def refresh_meta(self, book_id, meta):
+        # login can on exists once.
+        return self.collection.update(
+            {'book_id': ObjectId(book_id)},
+            {'$set': {'meta': meta}}, multi=True)
 
     def count_used(self, book_id):
         return self.find({

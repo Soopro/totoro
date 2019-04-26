@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import Flask, request, current_app, send_from_directory
+from flask import Flask, request, g, current_app, send_from_directory
 from redis import ConnectionPool, Redis
 from mongokit import Connection as MongodbConn
 
@@ -132,6 +132,11 @@ def create_app(config_name='default'):
             cors_headers = make_cors_headers()
             resp.headers.extend(cors_headers)
             return resp
+        else:
+            configure = current_app.mongodb.Configuration.get_conf() or {}
+            if not configure:
+                raise PermissionDenied('configure')
+            g.configure = configure
 
     # uploads
     @app.route('{}/<path:filepath>'.format(app.config['UPLOADS_URL']))

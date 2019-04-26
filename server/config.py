@@ -49,12 +49,6 @@ class Config(object):
     REGISTER_EXPIRATION = 3600 * 3
     RESET_PWD_EXPIRATION = 3600 * 3
 
-    # redis keys
-    INVALID_USER_TOKEN_PREFIX = 'invalid_user_token:'
-
-    RATE_LIMIT_PREFIX = 'rate_limit:'
-    NOTIFY_EVENT_PREFIX = 'notify_event:'
-
     # mongodb
     MONGODB_HOST = envs.MONGO_PORT_27017_TCP_ADDR or 'localhost'
     MONGODB_PORT = int(envs.MONGO_PORT_27017_TCP_PORT or 27017)

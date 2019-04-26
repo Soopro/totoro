@@ -84,14 +84,13 @@
       <div class="panel {{'panel-primary' if record.status}}">
         <div class="panel-heading">
           <h3 class="panel-title">
-            {{'Lend' if record.status == 1 else 'Stocked'}}
+            {{'Checkout' if record.status == 1 else 'Checkin'}}
           </h3>
         </div>
         <div class="panel-body">
           <p>{{record.borrower or '-'}}</p>
           <p>{{record.volume or '-'}}</p>
-          <p>{{record.slug or '-'}}</p>
-          <p>{{record.date_borrowing}} - {{record.date_returning}}</p>
+          <p>{{record.updated|dateformat}}</p>
         </div>
       </div>
       {% endfor %}

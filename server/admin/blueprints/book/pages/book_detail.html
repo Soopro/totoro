@@ -190,7 +190,7 @@
       <div class="panel-body">
         <p>{{record.borrower or '-'}}</p>
         <p>{{record.volume or '-'}}</p>
-        <p>{{record.date}}</p>
+        <p>{{record.updated|dateformat}}</p>
       </div>
     </div>
     {% endfor %}

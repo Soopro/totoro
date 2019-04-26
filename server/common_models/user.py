@@ -21,8 +21,10 @@ class User(BaseDocument):
         'status': int,
     }
     sensitive_fields = ['meta']
-    required_fields = ['login', 'openid', 'password_hash']
+    required_fields = ['openid']
     default_values = {
+        'login': u'',
+        'password_hash': u'',
         'unionid': u'',
         'meta': {},
         'creation': now,
@@ -30,6 +32,14 @@ class User(BaseDocument):
         'status': STATUS_DEACTIVATED
     }
     indexes = [
+        {
+            'fields': ['openid'],
+            'unique': True,
+        },
+        {
+            'fields': ['login'],
+            'unique': True,
+        },
         {
             'fields': ['creation'],
         },
@@ -60,6 +70,18 @@ class User(BaseDocument):
         return self.find_one({
             'login': login,
         })
+
+    def find_one_by_openid(self, openid):
+        return self.find_one({
+            'openid': openid,
+        })
+
+    def displace_login(self, login, openid):
+        # login can on exists once.
+        return self.collection.update(
+            {'openid': {'$ne': openid}, 'login': login},
+            {'$set': {'login': u'', 'status': self.STATUS_DEACTIVATED}},
+            multi=True)
 
     def count_used(self):
         return self.find().count()
