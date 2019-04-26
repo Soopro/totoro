@@ -79,7 +79,7 @@ def update(book_id):
     title = request.form.get('title')
     description = request.form.get('description')
     tags = request.form.get('tags')
-    category = request.form.get('category')
+    terms = request.form.get('terms')
     # rating = request.form.get('rating')
     cover_src = request.form.get('cover_src')
     previews = request.form.get('previews')
@@ -89,8 +89,10 @@ def update(book_id):
     book = _find_book(book_id)
     if slug:
         book['slug'] = _uniqueify_book_slug(slug, book)
-    book['tags'] = [tag.strip() for tag in tags.split('|') if tag]
-    book['category'] = [cat.strip() for cat in category.split('\n') if cat]
+    book['tags'] = [tag.strip() for tag in tags.split('|')
+                    if tag.strip()]
+    book['terms'] = [term.strip() for term in terms.split('\n')
+                     if term.strip()]
     # book['rating'] = parse_int(rating)
     book['meta'].update({
         'title': title,

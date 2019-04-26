@@ -99,6 +99,7 @@ def output_profile(user):
         'id': user['_id'],
         'login': user['login'],
         'meta': user['meta'],
+        'status': user['status'],
         'creation': user['creation'],
         'updated': user['updated'],
     }

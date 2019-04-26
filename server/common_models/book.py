@@ -13,7 +13,7 @@ class Book(BaseDocument):
     structure = {
         'slug': unicode,
         'tags': [unicode],
-        'category': [unicode],
+        'terms': [unicode],
         'rating': int,
         'meta': dict,
         'status': int,
@@ -24,7 +24,7 @@ class Book(BaseDocument):
     required_fields = ['slug']
     default_values = {
         'tags': [],
-        'category': [],
+        'terms': [],
         'rating': 0,
         'meta': {},
         'creation': now,
@@ -66,10 +66,14 @@ class Book(BaseDocument):
             'status': self.STATUS_ONLINE
         })
 
-    def find_activated(self):
-        cursor = self.find({
+    def find_activated(self, term=None):
+        query = {
             'status': self.STATUS_ONLINE
-        }).sort([('rating', INDEX_DESC), ('updated', INDEX_DESC)])
+        }
+        if term:
+            query.update({'terms': term})
+        cursor = self.find(query).sort([('rating', INDEX_DESC),
+                                        ('updated', INDEX_DESC)])
         return cursor.limit(self.MAX_QUERY)
 
     def find_by_ids(self, id_list):

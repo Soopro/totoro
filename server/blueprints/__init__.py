@@ -8,5 +8,5 @@ def register_blueprints(app):
     app.register_blueprint(user_module, url_prefix='/user')
 
     # books
-    from blueprints.book import blueprint as book_module
-    app.register_blueprint(book_module, url_prefix='/book')
+    from blueprints.library import blueprint as library_module
+    app.register_blueprint(library_module, url_prefix='/library')
