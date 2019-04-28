@@ -1,0 +1,16 @@
+<view class="bottomsheet {{active ? 'active' : ''}}"
+      catch:touchmove="noop">
+  <view class="bottomsheet-mask"
+        animation="{{anim_mask}}"
+        catch:tap="dismiss"></view>
+  <view class="bottomsheet-inner"
+        animation="{{anim_element}}">
+    <scroll-view class="scroll-view"
+                 style="height:{{sheet_height}}px;"
+                 scroll-y="{{scrollable?true:false}}">
+      <view class="bottomsheet-content">
+        <slot></slot>
+      </view>
+    </scroll-view>
+  </view>
+</view>

@@ -1,0 +1,40 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/index/item",
+    "pages/account/account",
+    "pages/error/error"
+  ],
+  "window": {
+    "navigationBarTextStyle": "white",
+    "navigationBarBackgroundColor": "#3cf",
+    "backgroundColor": "#3cf"
+  },
+  "tabBar": {
+    "position": "bottom",
+    "backgroundColor": "#fff",
+    "borderStyle": "white",
+    "color": "#3cf",
+    "selectedColor": "#09c",
+    "list": [
+      {
+        "iconPath": "/img/ic_list.png",
+        "selectedIconPath": "/img/ic_list_on.png",
+        "pagePath": "pages/index/index",
+        "text": ""
+      },
+      {
+        "iconPath": "/img/ic_shopping_cart.png",
+        "selectedIconPath": "/img/ic_shopping_cart_on.png",
+        "pagePath": "pages/cart/cart",
+        "text": ""
+      },
+      {
+        "iconPath": "/img/ic_account.png",
+        "selectedIconPath": "/img/ic_account_on.png",
+        "pagePath": "pages/account/account",
+        "text": ""
+      }
+    ]
+  }
+}

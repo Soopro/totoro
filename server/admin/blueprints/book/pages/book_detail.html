@@ -84,10 +84,17 @@
 
         <div class="form-group">
           <label>Category</label>
-          <textarea class="form-control"
-                    rows="4"
-                    name="terms">{{book.terms|join('\n')}}</textarea>
-          <span class="help-block">Type category terms key one of line.</span>
+          <select class="form-control"
+                  name="terms"
+                  multiple>
+            <option value="">&lt;Empty&gt;</option>
+            {% for term in terms %}
+            <option value="{{term.key}}"
+                    {{'selected' if term.key in book.terms}}>
+              {{term.meta.name}}
+            </option>
+            {% endfor %}
+          </select>
         </div>
 
         <div class="form-group">

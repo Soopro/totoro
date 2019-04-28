@@ -88,7 +88,7 @@ def _find_notify(notify_id):
 def _uniqueify_notify_slug(slug, notify=None):
     slug = process_slug(slug)
     if notify and slug == notify['slug']:
-        # don't process if the content_file it self.
+        # don't process if it self.
         return slug
 
     _book = current_app.mongodb.Notify.find_one_by_slug(slug)

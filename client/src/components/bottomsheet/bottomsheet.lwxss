@@ -1,0 +1,29 @@
+/* bottomsheet */
+.bottomsheet {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  &.active {
+    left: 0;
+  }
+  & .bottomsheet-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.54);
+    opacity: 0;
+    z-index: 9;
+  }
+  & .bottomsheet-inner {
+    position: absolute;
+    bottom: -100%;
+    width: 100%;
+    background-color: #fff;
+    z-index: 99;
+  }
+}

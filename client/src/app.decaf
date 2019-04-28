@@ -1,0 +1,113 @@
+Navigation = require('libs/navigation.js')
+
+utils = require('utils.js')
+core = require('core.js')
+
+restConf = require('restapi/configure.js')
+
+
+# app
+App
+  project:
+    name: 'Totoro'
+    version: '0.1.0'
+    creator: [
+      'Redyyu'
+    ]
+
+  # trigger
+  onLaunch: (opts)->
+    self = @
+    console.info 'Launched...'
+    console.info '-------------------'
+    console.info self.project.name
+    console.info self.project.version
+    console.info self.project.creator.join(', ')
+
+
+  onShow: (opts)->
+    self = @
+    restConf.configure.get()
+    .then (configure)->
+      self.configure = configure
+      # login
+      self.login()
+
+
+  # global data
+  store: null
+  pages: []
+
+
+  # instances
+  nav: new Navigation()
+
+  # methods
+  login_status: false
+  login: (callback, force)->
+    self = @
+    if not utils.isFunction(callback)
+      callback = ->
+    if core.session.get('token') and not force
+      # logged
+      callback()
+      return
+    else if self.login_status
+      # other process is try to login
+      _loop = 60
+      interval_id = setInterval ->
+        if not self.login_status and core.session.get('token')
+          clearInterval(interval_id)
+          callback()
+        else if _loop < 0
+          clearInterval(interval_id)
+        else
+          _loop -= 1
+      , 600
+    else
+      # try to login
+      _login = (callback, retry)->
+        retry = if not utils.isNumber(retry) then 0 else retry + 1
+        if retry >= core.config.retry
+          wx.redirectTo
+            url: core.config.paths.error
+          return
+        else if retry > 0
+          console.info 'retry:', retry
+        self.login_status = true
+
+        wx.login
+          success: (data) ->
+            # get session_key and serve in back-end
+            restCustomer.login
+              code: data.code
+            .then (auth)->
+              self.login_status = false
+              core.session.set('token', auth.token, auth.expires_in - 60)
+              callback()
+            .catch (error)->
+              self.login_status = false
+              _login(callback, retry)
+          fail: ->
+            self.login_status = false
+            _login(callback, retry)
+      _login(callback)
+
+  share: (opts)->
+    self = @
+    if not opts
+      try
+        opts =
+          title: self.store.site_meta.title or self.store.site_meta.slug
+          src: self.store.site_meta.share_img
+          path: null
+      catch e
+        opts = {}
+
+    share_opts =
+      title: opts.title
+      imageUrl: opts.src
+      path: opts.path
+
+    return share_opts
+

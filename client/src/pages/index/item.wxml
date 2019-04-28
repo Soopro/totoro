@@ -1,0 +1,197 @@
+<wxs src="../../translator.wxs" module="_"></wxs>
+<wxs src="../../filters.wxs" module="f"></wxs>
+{{_('$set', store.locale)}}
+
+<!-- carousel -->
+<view class="carousel square">
+  <swiper indicator-dots="true"
+          indicator-color="#fff"
+          indicator-active-color="rgba(255,255,255,.6)"
+          autoplay="true"
+          circular="true">
+    <swiper-item>
+      <image src="{{meta.featured_img.src}}"
+             background-size="cover"
+             background-position="center center"/>
+    </swiper-item>
+    <block wx:for="{{meta.carousel}}"
+           wx:for-item="slide"
+           wx:key="index">
+      <swiper-item>
+        <image src="{{slide.src}}"
+               background-size="cover"
+               background-position="center center"/>
+      </swiper-item>
+    </block>
+  </swiper>
+</view>
+
+
+<!-- product -->
+<view class="product container padding"
+      wx:if="{{shelf}}">
+  <text class="headline"
+        selectable="true">{{shelf.name}}</text>
+
+  <view class="flex-row align-center">
+    <block wx:if="{{shelf.dis_price >= 0}}">
+      <text class="accent price flex">¥ {{f.price(shelf.dis_price)}}</text>
+      <text class="flex text-strike">¥ {{f.price(shelf.price)}}</text>
+    </block>
+    <block wx:elif="{{shelf.price}}">
+      <text class="accent price flex">¥ {{f.price(shelf.price)}}</text>
+    </block>
+    <block wx:else>
+      <text class="accent price flex">{{_('Free')}}</text>
+    </block>
+  </view>
+
+  <view class="divider"></view>
+
+  <block wx:if="{{discounts.length}}">
+    <view>
+      <view class="tag accent"
+            wx:for="{{discounts}}"
+            wx:for-item="discount"
+            wx:key="index">{{discount.tagname}}</view>
+    </view>
+    <view class="divider"></view>
+  </block>
+
+  <view class="article">
+    <rich-text type="text" nodes="{{content}}"></rich-text>
+  </view>
+</view>
+
+
+
+<!-- bottombar -->
+<view class="bottombar-holder"></view>
+
+<view class="shelf bottombar flex-row"
+      wx:if="{{meta.id}}">
+  <button class="icon-btn raised"
+          type="accent"
+          open-type="contact">
+    <image class="ico" src="{{image.chat}}" />
+  </button>
+  <button class="flex"
+          bind:tap="open_sheet"
+          wx:if="{{sku_status == 1}}"
+          data-action-type="add">
+    <image class="ico" src="{{image.add_cart}}" />
+  </button>
+  <button class="flex raised"
+          type="primary"
+          bind:tap="open_sheet"
+          wx:if="{{sku_status == 1}}"
+          data-action-type="purchase">
+    {{_('Buy Now')}}
+  </button>
+  <button class="flex raised"
+          wx:if="{{sku_status == 0}}"
+          disabled>
+    {{_('Commodity is offline')}}
+  </button>
+  <button class="flex raised"
+          wx:if="{{sku_status == 2}}"
+          disabled>
+    {{_('Commodity is sold out')}}
+  </button>
+</view>
+
+
+<component-bottomsheet status="{{sheet_status}}">
+  <view class="conatiner padding">
+    <!-- price -->
+    <view>
+      <text class="label text-nowrap">{{_('Unit Price')}}</text>
+      <view class="margin">
+        <block wx:if="{{sel_sku}}">
+          <view class="flex-row"
+                wx:if="{{sel_sku.dis_price >= 0}}">
+            <text class="accent flex">¥ {{f.price(sel_sku.dis_price)}}</text>
+            <text class="text-strike flex">¥ {{f.price(sel_sku.price)}}</text>
+          </view>
+          <view wx:elif="{{sel_sku.price}}">
+            <text class="accent">¥ {{f.price(sel_sku.price)}}</text>
+          </view>
+          <view wx:else>
+            <text class="accent">{{_('Free')}}</text>
+          </view>
+        </block>
+        <block wx:else>
+          <view class="flex-row"
+                wx:if="{{shelf.dis_price >= 0}}">
+            <text class="accent flex">¥ {{f.price(shelf.dis_price)}}</text>
+            <text class="text-strike flex">¥ {{f.price(shelf.price)}}</text>
+          </view>
+          <view wx:elif="{{shelf.price}}">
+            <text class="accent">¥ {{f.price(shelf.price)}}</text>
+          </view>
+          <view wx:else>
+            <text class="accent">{{_('Free')}}</text>
+          </view>
+        </block>
+      </view>
+      <view class="divider dotted"></view>
+    </view>
+
+    <!-- spec. -->
+    <view wx:if="{{shelf.is_various}}">
+      <view class="shelf-spec"
+            wx:for="{{shelf.spec}}"
+            wx:for-item="spec"
+            wx:key="index">
+        <text class="label text-nowrap">{{spec.label}}</text>
+        <view class="margin flex-row flex-wrap align-center">
+          <button class="thin raised {{opt.src?'figure-btn':''}} {{opt.selected ? 'active':''}}"
+                  wx:for="{{spec.options}}"
+                  wx:for-item="opt"
+                  wx:for-index
+                  wx:key="index"
+                  type="pale"
+                  disabled="{{opt.disabled}}"
+                  bind:tap="select_spec"
+                  data-spec-key="{{spec.key}}"
+                  data-opt-index="{{index}}">
+            <image wx:if="{{opt.src}}"
+                   src="{{opt.src}}"
+                   background-size="cover"
+                   background-position="center center" />
+            <text wx:else>{{opt.text}}</text>
+          </button>
+        </view>
+        <view class="divider dotted"></view>
+      </view>
+    </view>
+
+    <!-- amount -->
+    <view>
+      <text class="label text-nowrap">{{_('Amount')}}</text>
+      <view class="flex-row centered">
+        <button class="icon-btn"
+                bind:tap="decrease_amount">
+          <image class="ico draft"
+                 src="{{image.remove_circle}}"></image>
+        </button>
+        <text class="subhead accent flex text-center">{{amount}}</text>
+        <button class="icon-btn"
+                bind:tap="increase_amount">
+          <image class="ico draft"
+                 src="{{image.add_circle}}"></image>
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <view class="flex-row">
+    <button class="flex raised"
+            bind:tap="buy"
+            type="accent"
+            data-action-type="{{action_type}}"
+            disabled="{{!sel_sku}}">
+      {{action_type == 'buy'?_('Buy'):_('Add to Cart')}}
+    </button>
+  </view>
+</component-bottomsheet>

@@ -1,7 +1,7 @@
 (function ($) {
   $(document).ready(function() {
 
-    $('#CREATE-BOOK-MODAL').each(function (e) {
+    $('.modal-form').each(function (e) {
       var modal = $(this);
       var form = $(modal.find('form'));
       var submit_btn = modal.find('button[type="submit"]');

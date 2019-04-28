@@ -65,8 +65,10 @@ def detail(book_id):
     book = _find_book(book_id)
     volumes = current_app.mongodb.BookVolume.find_by_bookid(book['_id'])
     records = current_app.mongodb.BookRecord.find_by_bookid(book['_id'])
+    terms = current_app.mongodb.Term.find_all()
     return render_template('book_detail.html',
                            book=book,
+                           terms=list(terms),
                            volumes=list(volumes),
                            records=list(records),
                            allowed_status=allowed_status)
@@ -79,20 +81,18 @@ def update(book_id):
     title = request.form.get('title')
     description = request.form.get('description')
     tags = request.form.get('tags')
-    terms = request.form.get('terms')
+    terms = request.form.getlist('terms') or []
     # rating = request.form.get('rating')
     cover_src = request.form.get('cover_src')
     previews = request.form.get('previews')
 
     status = request.form.get('status')
-
     book = _find_book(book_id)
     if slug:
         book['slug'] = _uniqueify_book_slug(slug, book)
     book['tags'] = [tag.strip() for tag in tags.split('|')
                     if tag.strip()]
-    book['terms'] = [term.strip() for term in terms.split('\n')
-                     if term.strip()]
+    book['terms'] = [term.strip() for term in terms if term.strip()]
     # book['rating'] = parse_int(rating)
     book['meta'].update({
         'title': title,
@@ -105,7 +105,7 @@ def update(book_id):
     book.save()
 
     # update all book volume to same as the book.
-    current_app.mongodb.BookVolume.refresh_meta(book, book['meta'])
+    current_app.mongodb.BookVolume.refresh_meta(book['_id'], book['meta'])
 
     flash('Saved.')
     return_url = url_for('.detail', book_id=book['_id'])
@@ -210,6 +210,56 @@ def attach_preview(book_id):
     return redirect(request.referrer)
 
 
+@blueprint.route('/category')
+@login_required
+def category():
+    terms = current_app.mongodb.Term.find_all()
+    return render_template('category.html', terms=list(terms))
+
+
+@blueprint.route('/category/create', methods=['POST'])
+@login_required
+def create_term():
+    key = request.form['key']
+    term = current_app.mongodb.Term()
+    term['key'] = _uniqueify_term_key(key)
+    term.save()
+    flash('Created.')
+    return redirect(request.referrer)
+
+
+@blueprint.route('/category/<term_id>')
+@login_required
+def term_detail(term_id):
+    term = _find_term(term_id)
+    return render_template('term.html', term=term)
+
+
+@blueprint.route('/category/<term_id>/update', methods=['POST'])
+@login_required
+def update_term(term_id):
+    name = request.form.get('name', u'')
+    figure = request.form.get('figure', u'')
+
+    term = _find_term(term_id)
+    term['meta'].update({
+        'name': name,
+        'figure': figure
+    })
+    term.save()
+    return_url = url_for('.category')
+    return redirect(return_url)
+
+
+@blueprint.route('/category/<term_id>/update')
+@login_required
+def remove_term(term_id):
+    term = _find_term(term_id)
+    term.delete()
+    return_url = url_for('.category')
+    return redirect(return_url)
+
+
 # helpers
 def _find_book(book_id):
     book = current_app.mongodb.Book.find_one_by_id(book_id)
@@ -218,10 +268,17 @@ def _find_book(book_id):
     return book
 
 
+def _find_term(term_id):
+    term = current_app.mongodb.Term.find_one_by_id(term_id)
+    if not term:
+        raise Exception('Term not found ...')
+    return term
+
+
 def _uniqueify_book_slug(slug, book=None):
     slug = process_slug(slug)
     if book and slug == book['slug']:
-        # don't process if the content_file it self.
+        # don't process if it self.
         return slug
 
     _book = current_app.mongodb.Book.find_one_by_slug(slug)
@@ -230,6 +287,20 @@ def _uniqueify_book_slug(slug, book=None):
         slug = _uniqueify_book_slug(slug, book)
 
     return slug
+
+
+def _uniqueify_term_key(key, term=None):
+    key = process_slug(key)
+    if term and key == term['key']:
+        # don't process if it self.
+        return key
+
+    _term = current_app.mongodb.Term.find_one_by_key(key)
+    if _term is not None:
+        key = slug_uuid_suffix(key)
+        key = _uniqueify_term_key(key, term)
+
+    return key
 
 
 def _gen_book_code(book, code=None):

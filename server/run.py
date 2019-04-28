@@ -6,21 +6,28 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Options of start server.')
 
-parser.add_argument('-t', '--test',
-                    dest='server_mode',
-                    action='store_const',
-                    const='testing',
-                    help='Manually start debug as testing config.')
+parser.add_argument('--config',
+                    dest='config',
+                    action='store',
+                    type=str,
+                    nargs='?',
+                    default='default',
+                    const='default',
+                    help='Manually start with specified config.')
 
-parser.add_argument('-p', '--production',
-                    dest='server_mode',
-                    action='store_const',
-                    const='production',
-                    help='Manually start debug as production config.')
+parser.add_argument('--host',
+                    dest='server_host',
+                    action='store',
+                    type=str,
+                    nargs='?',
+                    default='0.0.0.0',
+                    const='0.0.0.0',
+                    help='Manually start debug with host.')
 
 args, unknown = parser.parse_known_args()
 
-app = create_app(args.server_mode or 'default')
+app = create_app(args.config)
+host = args.server_host
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True, port=9000, host='0.0.0.0')
+    app.run(debug=True, threaded=True, port=9000, host=host)

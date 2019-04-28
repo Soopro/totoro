@@ -1,0 +1,103 @@
+<wxs src="../../translator.wxs" module="_"></wxs>
+<wxs src="../../filters.wxs" module="f"></wxs>
+{{_('$set', store.locale)}}
+
+
+<block wx:if="{{logged}}">
+<!-- cover -->
+<view class="avatar-container primary">
+  <button class="avatar-btn {{profile.status?'':'draft'}}"
+          open-type="getUserInfo"
+          bindgetuserinfo="sync_profile"
+          wx:if="{{profile.id}}">
+    <image class="avatar"
+           src="{{profile.meta.avatar || image.avatar}}"
+           background-size="cover"
+           background-position="center center"/>
+    <view class="avatar-name">{{profile.meta.name || profile.login}}</view>
+    <view class="caption draft"
+          wx:if="{{!profile.meta.avatar}}">
+      {{_('Click here authorize profile')}}
+    </view>
+  </button>
+  <button class="avatar-btn"
+          open-type="getPhoneNumber"
+          bindgetphonenumber="join_member"
+          wx:else>
+    <image class="avatar"
+           src="{{image.avatar}}"
+           background-size="cover"
+           background-position="center center"/>
+    <view class="avatar-name">{{_('Join Membership')}}</view>
+  </button>
+</view>
+
+<!-- orders -->
+<view class="container"
+      wx:if="{{total_count > 0}}">
+  <view class="flex-row">
+    <view class="flex">
+      <text class="label"
+            wx:if="{{profile.id}}">{{_('Points %s', f.credit(profile.credit))}}</text>
+    </view>
+    <view class="flex text-right">
+      <text class="label">{{_('%s orders', total_count)}}</text>
+    </view>
+  </view>
+  <view class="layout-margin"
+        wx:for="{{orders}}"
+        wx:for-item="order"
+        wx:key="index">
+    <view class="card row"
+          data-order="{{order}}"
+          bind:tap="check_detail">
+      <view class="card-media icon {{order.is_fault?'warn':''}}"
+            wx:if="{{order.status == 0}}">
+        <image src="{{image.time}}"></image>
+      </view>
+      <view class="card-media icon"
+            wx:if="{{order.status == 1}}">
+        <image src="{{image.receipt}}"></image>
+      </view>
+      <view class="card-media icon primary"
+            wx:if="{{order.status == 2}}">
+        <image src="{{image.shipped}}"></image>
+      </view>
+      <view class="card-media icon accent"
+            wx:if="{{order.status == 3}}">
+        <image src="{{image.done}}"></image>
+      </view>
+      <view class="card-media icon"
+            wx:if="{{order.status == 4}}">
+        <image src="{{image.refund}}"></image>
+      </view>
+      <view class="card-text">
+        <text class="title">{{_('Trade ID')}} {{order.trade_id}}</text>
+        <text class="excerpt">{{order.delivery || '-'}}</text>
+        <text class="price accent">¥ {{f.price(order.payment)}}</text>
+      </view>
+    </view>
+    <view class="divider"></view>
+  </view>
+</view>
+
+<view class="container"
+      wx:if="{{total_count == 0}}">
+  <view class="holder-md flex-row align-center justify-center">
+    <text class="draft subhead">{{_('No order')}}</text>
+  </view>
+  <view class="text-center">
+    <button class="raised"
+            type="accent"
+            bind:tap="go_buy">{{_('Go Buy Something')}}</button>
+  </view>
+</view>
+
+<!-- footer -->
+<view class="footer"
+      wx:if="{{orders.length > 0}}">
+  <component-loadmore loading="{{is_loading}}" has-more="{{has_more}}">
+    {{_('Scroll down for more')}}
+  </component-loadmore>
+</view>
+</block>

@@ -29,17 +29,11 @@ class Term(BaseDocument):
 
     indexes = [
         {
-            'fields': ['cat_id', 'key'],
+            'fields': ['key'],
             'unique': True,
         },
         {
-            'fields': ['cat_id'],
-        },
-        {
             'fields': ['priority', 'creation'],
-        },
-        {
-            'fields': ['user_id']
         }
     ]
 

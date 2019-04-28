@@ -1,76 +1,56 @@
 {% extends "layout.html" %}
 {% set active_nav = 'book' %}
 
-{% block title %}Books{% endblock %}
+{% block title %}Books Catetory{% endblock %}
 
 {% block body %}
 
 <section class="container">
   <div>
+    <a class="btn btn-default"
+       href="{{url_for('.index')}}">
+      <span class="glyphicon glyphicon-menu-left"></span>
+      Back
+    </a>
     <button class="btn btn-primary"
             data-toggle="modal"
-            data-target="#CREATE-BOOK-MODAL">
-      Create new book
+            data-target="#CREATE-TERM-MODAL">
+      Create new term
     </button>
-    <a class="btn btn-default"
-       herf="{{url_for('.category')}}">
-      Category
-    </a>
   </div>
 </section>
 
 <section class="container">
-  <nav>
-    <ul class="pager">
-      {% if p.prev %}
-      <li class="previous">
-        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
-      </li>
-      {% endif %}
-      {% if p.next %}
-      <li class="next {{'disabled' if not p.next}}">
-        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
-      </li>
-      {% endif %}
-    </ul>
-  </nav>
   <table class="table table-hover">
     <thead>
       <tr>
         <th width="10%">#</th>
-        <th width="15%">Cover</th>
-        <th width="30%">Title</th>
-        <th width="15%">Slug</th>
+        <th width="40%">Name</th>
+        <th width="20%">Key</th>
         <th width="10%">Updated</th>
         <th class="text-center"
             width="20%">Action</th>
       </tr>
     </thead>
     <tbody>
-      {% for book in books %}
+      {% for term in terms %}
       <tr>
-        <td>{{loop.index0 + p.start}}</td>
+        <td>{{loop.index}}</td>
         <td>
-          {% if book.meta.cover_src %}
-          <img width="48" height="48" src="{{book.meta.cover_src}}"/>
-          {% endif %}
-        </td>
-        <td>
-          {% if book.meta.title %}
-            <b>{{book.meta.title}}</b>
+          {% if term.meta.name %}
+            <b>{{term.meta.name}}</b>
           {% else %}
-            <i><small>&lt;No Title&gt;</small></i>
+            <i><small>&lt;No Name&gt;</small></i>
           {% endif %}
-
         </td>
         <td>
-          {{book.slug}}
+          {{term.key}}
         </td>
-        <td>{{book.updated|dateformat}}</td>
+        <td>{{term.updated|dateformat}}</td>
 
         <td class="text-center">
           <a class="btn btn-primary"
-             href="{{url_for('.detail', book_id=book._id)}}">
+             href="{{url_for('.term_detail', term_id=term._id)}}">
             <span class="glyphicon glyphicon-pencil"></span>
           </a>
         </td>
@@ -78,20 +58,6 @@
       {% endfor %}
     </tbody>
   </table>
-  <nav>
-    <ul class="pager">
-      {% if p.prev %}
-      <li class="previous">
-        <a href="{{p.prev or '#'}}"><span>&larr;</span> Prev</a>
-      </li>
-      {% endif %}
-      {% if p.next %}
-      <li class="next {{'disabled' if not p.next}}">
-        <a href="{{p.next or '#'}}">Next <span>&rarr;</span></a>
-      </li>
-      {% endif %}
-    </ul>
-  </nav>
 </section>
 {% endblock %}
 
@@ -100,19 +66,21 @@
 <script src="{{url_for('.static', filename='scripts/functions.js')}}">
 </script>
 
-<div class="modal fade" id="CREATE-BOOK-MODAL" tabindex="-1" role="dialog">
+<div id="CREATE-TERM-MODAL"
+     class="modal fade modal-form"
+     tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Create Book</h4>
+        <h4 class="modal-title">Create Term</h4>
       </div>
       <div class="modal-body">
         <!-- modal-form -->
-        <form action="{{url_for('.create')}}" method="POST">
+        <form action="{{url_for('.create_term')}}" method="POST">
           <div class="form-group">
-            <label class="control-label">Slug</label>
-            <input name="slug" type="text" class="form-control">
+            <label class="control-label">Key</label>
+            <input name="key" type="text" class="form-control">
           </div>
         </form>
         <!-- .modal-form -->

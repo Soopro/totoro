@@ -1,0 +1,43 @@
+<wxs src="../../translator.wxs" module="_"></wxs>
+<wxs src="../../filters.wxs" module="f"></wxs>
+{{_('$set', store.locale)}}
+
+<!-- cover -->
+<view class="cover"
+      wx:if="{{meta.hero}}">
+  <image src="{{meta.hero.src}}"
+         background-size="cover"
+         background-position="center center"/>
+</view>
+
+<!-- products -->
+<block wx:if="{{products.length > 0}}">
+  <view class="grid-list">
+    <view class="grid"
+          wx:for="{{products}}"
+          wx:key="index">
+      <view class="card"
+            bind:tap="enter"
+            data-item="{{item}}">
+        <image src="{{item.featured_img.src}}" mode="aspectFill" lazy-load/>
+        <view class="card-text">
+          <text class="title">{{item.title}}</text>
+          <view>
+            <text class="accent"
+                  wx:if="{{item.price}}">¥ {{f.price(item.price)}}</text>
+            <text class="accent" wx:else>{{_('Free')}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</block>
+
+
+<!-- footer -->
+<view class="footer"
+      wx:if="{{products.length > 0}}">
+  <component-loadmore loading="{{is_loading}}" has-more="{{has_more}}">
+    {{_('Scroll down for more')}}
+  </component-loadmore>
+</view>

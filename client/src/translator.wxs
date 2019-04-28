@@ -1,0 +1,82 @@
+languages = require('./languages/_init_.wxs')
+
+options =
+  case_sensitive: false
+
+locale_code = false
+localizedDict = {}
+
+trans_key = (key)->
+  key = if options.case_sensitive then key else key.toLowerCase()
+  return key
+
+
+load = (loc, locale_texts)->
+  return if not loc or not locale_texts
+  locale_dict = {}
+  for t in locale_texts
+    if typeof(t.msgid) is 'string' and typeof(t.msgstr) is 'string'
+      locale_dict[trans_key(t.msgid)] = t.msgstr
+  localizedDict[loc] = locale_dict
+
+
+for lang_map in languages
+  load(lang_map.key, lang_map.texts)
+
+
+set_locale = (loc)->
+  if typeof(loc) is 'string' and loc != ''
+    locale_code = loc.replace('-', '_')
+  else
+    locale_code = false
+  return locale_code
+
+get_locale = ->
+  if typeof(locale_code) is 'string'
+    return locale_code or ''
+  else
+    return false
+
+get_lang = ->
+  if typeof(locale_code) is 'string' and locale != ''
+    return locale_code.split('_')[0]
+  else
+    return false
+
+
+translate = (text) ->
+  if typeof(text) isnt 'string'
+    return text
+  else if text.indexOf('$') is 0
+    switch text
+      when '$set'
+        loc = arguments[1]
+        set_locale(loc) if loc
+        return ''
+      when '$get'
+        return get_locale()
+      when '$lang'
+        return get_lang()
+
+  locale = get_locale()
+  # return nothing if `locale` not inited. prevent unexcept translation.
+  return '' if locale == false
+
+  lang = locale.split('_')[0]
+
+  locale_map = localizedDict[lang] or localizedDict[locale] or []
+  key = if options.case_sensitive then text else text.toLowerCase()
+
+  trans = locale_map[key] or text
+  args = []
+  for arg in arguments
+    args.push arg
+
+  for arg in args[1..]
+    arg = '' if arg is undefined
+    trans = trans.replace("%s", arg)
+
+  return trans
+
+
+module.exports = translate

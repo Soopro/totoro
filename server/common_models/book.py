@@ -37,7 +37,7 @@ class Book(BaseDocument):
             'unique': True,
         },
         {
-            'fields': ['category'],
+            'fields': ['terms'],
         },
         {
             'fields': ['tags'],

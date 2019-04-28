@@ -1,0 +1,51 @@
+# price
+filter_price = (amount, use_currency, fractionSize)->
+  if amount in [undefined, null]
+    return -1
+  size = parseInt(fractionSize) or 2
+  price = (parseInt(amount) / 100) or 0
+  if use_currency
+    pattern = getRegExp('(\d)(?=(\d{3})+\.)', 'g')
+    price = price.toFixed(size).replace(pattern, '$1,')
+  else
+    price = price.toFixed(size)
+  return price
+
+
+# credit
+filter_credit = (amount, fractionSize)->
+  size = parseInt(fractionSize) or 0
+  credit = (parseInt(amount) / 100) or 0
+  credit = credit.toFixed(size)
+  return credit
+
+
+# ellipsis
+filter_ellipsis = (str, limit)->
+  return '' if not str
+  if not limit
+    limit = 144
+  str = str.replace('&hellip;', '...')
+  str = str.substring(0, limit)
+  return str
+
+
+# html entities
+filter_html_entity = (str)->
+  return '' if not str
+  entities = [
+    {pattern: '&hellip;', replace: '...'}
+    {pattern: '&copy;', replace: '©'}
+    {pattern: '&nbsp;', replace: ' '}
+  ]
+  for entity in entities
+    regex = getRegExp(entity.pattern, 'ig')
+    str = str.replace(regex, entity.replace)
+  return str
+
+
+module.exports =
+  price: filter_price
+  credit: filter_credit
+  ellipsis: filter_ellipsis
+  html_entity: filter_html_entity

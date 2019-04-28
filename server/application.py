@@ -20,7 +20,7 @@ from apiresps.errors import (APIError,
                              BadRequest,
                              UncaughtException)
 
-from common_models import (User, Book, BookVolume, BookRecord,
+from common_models import (User, Book, BookVolume, BookRecord, Term,
                            Media, Notify, Configuration)
 
 from blueprints import register_blueprints
@@ -79,7 +79,7 @@ def create_app(config_name='default'):
         mongodb.authenticate(mongodb_user, mongodb_pwd)
 
     # register mongokit models
-    mongodb_conn.register([User, Book, BookVolume, BookRecord,
+    mongodb_conn.register([User, Book, BookVolume, BookRecord, Term,
                            Media, Notify, Configuration])
 
     # inject database connections to app object
