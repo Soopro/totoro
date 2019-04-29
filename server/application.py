@@ -139,7 +139,7 @@ def create_app(config_name='default'):
             g.configure = configure
 
     # uploads
-    @app.route('{}/<path:filepath>'.format(app.config['UPLOADS_URL']))
+    @app.route('{}/<path:filepath>'.format(app.config['UPLOADS_URL_PATH']))
     def send_file(filepath):
         return send_from_directory(app.config['UPLOADS_FOLDER'], filepath)
 

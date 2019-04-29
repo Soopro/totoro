@@ -29,11 +29,8 @@ App
 
   onShow: (opts)->
     self = @
-    restConf.configure.get()
-    .then (configure)->
-      self.configure = configure
-      # login
-      self.login()
+    self.init()
+    self.login()
 
 
   # global data
@@ -57,7 +54,7 @@ App
           callback(self.configure)
         else if _loop < 0
           clearInterval(interval_id)
-          _raise_error()
+          self._raise_error()
           return
         else
           _loop -= 1
@@ -67,7 +64,7 @@ App
       _init = (callback, retry)->
         retry = if not utils.isNumber(retry) then 0 else retry + 1
         if retry >= core.config.retry
-          _raise_error()
+          self._raise_error()
           return
         else if retry > 0
           console.info 'retry:', retry
@@ -91,9 +88,9 @@ App
     if not utils.isFunction(callback)
       callback = ->
     session_token = core.session.get('token')
-    if ession_token and not force
+    if session_token and not force
       # logged
-      callback(ession_token)
+      callback(session_token)
       return
     else if self.login_status
       # other process is try to login
@@ -105,7 +102,7 @@ App
           callback(session_token)
         else if _loop < 0
           clearInterval(interval_id)
-          _raise_error()
+          self._raise_error()
           return
         else
           _loop -= 1
@@ -115,7 +112,7 @@ App
       _login = (callback, retry)->
         retry = if not utils.isNumber(retry) then 0 else retry + 1
         if retry >= core.config.retry
-          _raise_error()
+          self._raise_error()
           return
         else if retry > 0
           console.info 'retry:', retry
@@ -136,7 +133,9 @@ App
           fail: ->
             self.login_status = false
             _login(callback, retry)
+
       _login(callback)
+
 
   share: (opts)->
     self = @

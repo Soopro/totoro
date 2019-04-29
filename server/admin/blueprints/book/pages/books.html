@@ -50,12 +50,12 @@
       {% for book in books %}
       <tr>
         <td>{{loop.index0 + p.start}}</td>
-        <td>
+        <td class="{{'t50' if not book.status}}">
           {% if book.meta.cover_src %}
           <img width="48" height="48" src="{{book.meta.cover_src}}"/>
           {% endif %}
         </td>
-        <td>
+        <td class="{{'text-strike' if not book.status}}">
           {% if book.meta.title %}
             <b>{{book.meta.title}}</b>
           {% else %}
@@ -69,7 +69,7 @@
         <td>{{book.updated|dateformat}}</td>
 
         <td class="text-center">
-          <a class="btn btn-primary"
+          <a class="btn {{'btn-primary' if book.status else 'btn-default'}}"
              href="{{url_for('.detail', book_id=book._id)}}">
             <span class="glyphicon glyphicon-pencil"></span>
           </a>

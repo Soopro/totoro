@@ -23,7 +23,7 @@ PageEnhanced = (opts)->
       if utils.isFunction(opts.beforeLoad)
       then opts.beforeLoad()
       else null
-    if utils.isFunction(result.then)
+    if utils.isObject(result) and utils.isFunction(result.then)
       result.then ->
         onLoadFn.call self, opts
     else
@@ -35,7 +35,7 @@ PageEnhanced = (opts)->
       if utils.isFunction(opts.beforeShow)
       then opts.beforeShow()
       else null
-    if utils.isFunction(result.then)
+    if utils.isObject(result) and utils.isFunction(result.then)
       result.then ->
         onShowFn.call self
     else
@@ -51,6 +51,7 @@ requests.config.common.interceptor = (opts)->
   opts.after_reject = (res)->
     if res.statusCode in [401, 403]
       session.remove('token')
+    console.error(res)
     wx.redirectTo
       url: config.paths.error
 

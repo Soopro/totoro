@@ -42,7 +42,7 @@ class BaseDocument(Document):
     secret_key_prefix = '$b02NT~P=I$e*QZ'
     # migrate all encrypted data when change it.
 
-    encrypt_secret_field = ''
+    encrypt_secret_field = '_id'
     encrypt_mode = AES.MODE_ECB
     encrypt_block_size = AES.block_size
 
@@ -85,7 +85,7 @@ class BaseDocument(Document):
         try:
             self[key] = self._encrypt(raw)
         except Exception as e:
-            raise Exception('Document encrypt failed: {}'.foramt(str(e)))
+            raise Exception('Document encrypt failed: {}'.format(str(e)))
         return self[key]
 
     def decrypt(self, key, key_prefix=None):

@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 from bson import ObjectId
 
@@ -9,13 +9,16 @@ from bson import ObjectId
 class Encoder(json.JSONEncoder):
     """
     This is our customized JSONEncoder
+    if the obj is instance of timedelta, encode as int timestamp
     if the obj is instance of datetime, encode as isoformat
     if the obj is instance of bson.ObjectId, encode as string repr
     """
     # FMT = '%Y-%m-%d'
 
     def default(self, obj):
-        if isinstance(obj, datetime):
+        if isinstance(obj, timedelta):
+            return int(obj.total_seconds())
+        elif isinstance(obj, datetime):
             return obj.isoformat()
         elif isinstance(obj, ObjectId):
             return str(obj)

@@ -46,7 +46,7 @@ core.Page
     self.timestamp = utils.now()
 
     self.setData
-      bookss: []
+      books: []
       has_more: null
 
     self.list()
@@ -63,7 +63,7 @@ core.Page
     .then (results)->
       self.setData
         books: results
-        has_more: results[0] and results[0]._more
+        has_more: Boolean(results[0] and results[0]._more)
     .finally ->
       self.setData
         is_loading: false

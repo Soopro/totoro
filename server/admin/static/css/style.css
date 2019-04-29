@@ -51,3 +51,7 @@ td {
 .text-strike {
   text-decoration: line-through !important;
 }
+
+.t50 {
+  opacity: 0.5;
+}

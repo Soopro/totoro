@@ -18,7 +18,6 @@ from ..errors import UserMinaSessionError
 @output_json
 def login():
     code = get_param('code', Struct.Code, True)
-
     configure = g.configure
     mina = WeChatMinaAPI(app_id=configure['mina_app_id'],
                          app_secret=configure.decrypt('mina_app_secret'),

@@ -25,7 +25,8 @@ class Config(object):
     ALLOW_CREDENTIALS = False
     DENIED_ORIGINS = []
 
-    UPLOADS_URL = '/uploads'
+    UPLOADS_URL_PATH = '/uploads'
+    UPLOADS_URL = 'http://localhost:9000{}'.format(UPLOADS_URL_PATH)
 
     # analytics
     ONLINE_LAST_MINUTES = 30

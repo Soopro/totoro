@@ -36,7 +36,6 @@ def index():
     p = make_paginator(mediafiles, paged, 60)
 
     uploads_url = current_app.config.get('UPLOADS_URL')
-
     mediafiles = list(mediafiles)
 
     for media in mediafiles:
