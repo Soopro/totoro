@@ -2,17 +2,6 @@
 # Utils
 # ------------
 
-# promise enhance
-Promise::finally = (callback) ->
-  constructor = @constructor
-  @then ((value) ->
-    constructor.resolve(callback()).then ->
-      value
-  ), (reason) ->
-    constructor.resolve(callback()).then ->
-      throw reason
-      return
-
 
 # helpers
 _is_object = (obj)->

@@ -19,15 +19,27 @@ PageEnhanced = (opts)->
 
   opts.onLoad = (opts)->
     self = @
-    onLoadFn.call self, opts
+    result =
+      if utils.isFunction(opts.beforeLoad)
+      then opts.beforeLoad()
+      else null
+    if utils.isFunction(result.then)
+      result.then ->
+        onLoadFn.call self, opts
+    else
+      onLoadFn.call self, opts
 
   opts.onShow = ->
     self = @
-    app = getApp()
-    self.setData
-      store: app.store
-    onShowFn.call self
-
+    result =
+      if utils.isFunction(opts.beforeShow)
+      then opts.beforeShow()
+      else null
+    if utils.isFunction(result.then)
+      result.then ->
+        onShowFn.call self
+    else
+      onShowFn.call self
   return Page(opts)
 
 
@@ -37,16 +49,10 @@ requests.config.common.interceptor = (opts)->
     opts.url = config.baseURL.api + '/' + utils.strip(opts.url, '/')
 
   opts.after_reject = (res)->
-    switch res.statusCode
-      when 401
-        to_url = config.paths.error
-        session.remove('token')
-      when 403
-        to_url = config.paths.error
-        session.remove('token')
-      else
-        wx.redirectTo
-          url: config.paths.error
+    if res.statusCode in [401, 403]
+      session.remove('token')
+    wx.redirectTo
+      url: config.paths.error
 
   opts.header = opts.header or {}
   token = session.get('token')

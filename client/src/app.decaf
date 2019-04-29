@@ -1,3 +1,4 @@
+polyfills = require('libs/polyfills.js')
 Navigation = require('libs/navigation.js')
 
 utils = require('utils.js')
@@ -42,24 +43,70 @@ App
   nav: new Navigation()
 
   # methods
+  init_status: false
+  init: (callback) ->
+    self = @
+    if not utils.isFunction(callback)
+      callback = ->
+    if self.init_status
+      # other process is try to init
+      _loop = 60
+      interval_id = setInterval ->
+        if not self.init_status and self.configure
+          clearInterval(interval_id)
+          callback(self.configure)
+        else if _loop < 0
+          clearInterval(interval_id)
+          _raise_error()
+          return
+        else
+          _loop -= 1
+      , 600
+    else
+      # try to init
+      _init = (callback, retry)->
+        retry = if not utils.isNumber(retry) then 0 else retry + 1
+        if retry >= core.config.retry
+          _raise_error()
+          return
+        else if retry > 0
+          console.info 'retry:', retry
+        self.init_status = true
+
+        restConf.configure.get()
+        .then (configure)->
+          self.init_status = false
+          self.configure = configure
+          callback(self.configure)
+        .catch (error)->
+          self.init_status = false
+          _init(callback, retry)
+
+      _init(callback)
+
+
   login_status: false
   login: (callback, force)->
     self = @
     if not utils.isFunction(callback)
       callback = ->
-    if core.session.get('token') and not force
+    session_token = core.session.get('token')
+    if ession_token and not force
       # logged
-      callback()
+      callback(ession_token)
       return
     else if self.login_status
       # other process is try to login
       _loop = 60
       interval_id = setInterval ->
-        if not self.login_status and core.session.get('token')
+        session_token = core.session.get('token')
+        if not self.login_status and session_token
           clearInterval(interval_id)
-          callback()
+          callback(session_token)
         else if _loop < 0
           clearInterval(interval_id)
+          _raise_error()
+          return
         else
           _loop -= 1
       , 600
@@ -68,8 +115,7 @@ App
       _login = (callback, retry)->
         retry = if not utils.isNumber(retry) then 0 else retry + 1
         if retry >= core.config.retry
-          wx.redirectTo
-            url: core.config.paths.error
+          _raise_error()
           return
         else if retry > 0
           console.info 'retry:', retry
@@ -83,7 +129,7 @@ App
             .then (auth)->
               self.login_status = false
               core.session.set('token', auth.token, auth.expires_in - 60)
-              callback()
+              callback(auth.token)
             .catch (error)->
               self.login_status = false
               _login(callback, retry)
@@ -110,3 +156,7 @@ App
 
     return share_opts
 
+  # helpers
+  _raise_error: ->
+    wx.redirectTo
+      url: core.config.paths.error
