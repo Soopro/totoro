@@ -1,8 +1,7 @@
 core = require('../../core.js')
 deco = require('../../decorators.js')
 utils = require('../../utils.js')
-restStore = require('../../restapi/store.js')
-restCustomer = require('../../restapi/customer.js')
+restUser = require('../../restapi/user.js')
 
 
 app = getApp()
@@ -105,7 +104,24 @@ core.Page
 
   sync_profile: (e)->
     self = @
-    profile = core.reform_userinfo(e.detail.userInfo)
+    profile = reform_userinfo(e.detail.userInfo)
     app.set_profile profile, (profile)->
       self.setData
         profile: profile
+
+  reform_userinfo = (userinfo)->
+    if not userinfo
+      userinfo = {}
+    _gender_map =
+      1: 1  # male
+      2: 0  # female
+      0: 2  # unknow
+    info =
+      country: userinfo.country or ''
+      province: userinfo.province or ''
+      city: userinfo.city or ''
+      language: userinfo.language or 'zh_CN'
+      name: userinfo.nickName or ''
+      avatar: userinfo.avatarUrl or ''
+      gender: _gender_map[userinfo.gender] or 2
+    return info

@@ -18,5 +18,6 @@ login_required = (fn)->
 
   return wrapped_fn
 
+
 module.exports =
   login_required: login_required

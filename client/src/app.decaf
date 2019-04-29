@@ -35,9 +35,7 @@ App
 
 
   # global data
-  store: null
-  pages: []
-
+  configure: null
 
   # instances
   nav: new Navigation()

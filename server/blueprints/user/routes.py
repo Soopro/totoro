@@ -14,6 +14,6 @@ urlpatterns = [
 
     # inventory
     ('/inventory/book', list_volumes, 'GET'),
-    ('/inventory/records', list_reords, 'GET'),
+    ('/inventory/records', list_records, 'GET'),
 
 ]

@@ -12,7 +12,7 @@ from services.wechat import WeChatMinaAPI
 
 from apiresps.validations import Struct
 
-from .errors import UserMinaSessionError
+from ..errors import UserMinaSessionError
 
 
 @output_json

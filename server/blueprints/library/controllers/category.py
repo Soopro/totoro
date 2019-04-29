@@ -5,7 +5,7 @@ from flask import current_app
 
 from utils.response import output_json
 
-from .erros import CategoryNotFound
+from ..errors import CategoryNotFound
 
 
 @output_json

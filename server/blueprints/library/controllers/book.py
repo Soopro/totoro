@@ -1,19 +1,14 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import current_app, g
-
+from flask import current_app
 
 from utils.response import output_json
-from utils.request import get_param, get_args
+from utils.request import get_args
 from utils.misc import parse_int
 from utils.model import make_offset_paginator, attach_extend
 
-from services.wechat import WeChatMinaAPI
-
-from apiresps.validations import Struct
-
-from .errors import BookNotFound
+from ..errors import BookNotFound
 
 
 @output_json

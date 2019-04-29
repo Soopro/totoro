@@ -1,6 +1,6 @@
 core = require('../../core.js')
 utils = require('../../utils.js')
-restStore = require('../../restapi/store.js')
+restLibrary = require('../../restapi/library.js')
 
 app = getApp()
 

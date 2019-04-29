@@ -1,8 +1,7 @@
 core = require('../../core.js')
 deco = require('../../decorators.js')
 utils = require('../../utils.js')
-restStore = require('../../restapi/store.js')
-restCustomer = require('../../restapi/customer.js')
+restUser = require('../../restapi/user.js')
 
 
 app = getApp()

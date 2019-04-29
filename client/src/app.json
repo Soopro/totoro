@@ -21,19 +21,13 @@
         "iconPath": "/img/ic_list.png",
         "selectedIconPath": "/img/ic_list_on.png",
         "pagePath": "pages/index/index",
-        "text": ""
-      },
-      {
-        "iconPath": "/img/ic_shopping_cart.png",
-        "selectedIconPath": "/img/ic_shopping_cart_on.png",
-        "pagePath": "pages/cart/cart",
-        "text": ""
+        "text": "Library"
       },
       {
         "iconPath": "/img/ic_account.png",
         "selectedIconPath": "/img/ic_account_on.png",
         "pagePath": "pages/account/account",
-        "text": ""
+        "text": "Mine"
       }
     ]
   }

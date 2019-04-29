@@ -6,7 +6,7 @@
 {% block body %}
 <section class="container">
   <div class="jumbotron">
-    <h1>{{g.configure.title|upper or 'Totoro System'|upper}}</h1>
+    <h1>{{g.configure.meta.title|upper or 'Totoro System'|upper}}</h1>
     <hr>
     <p>Users: {{count.users}}</p>
     <p>Books: {{count.books}}</p>

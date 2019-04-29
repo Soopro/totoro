@@ -120,45 +120,6 @@ form_validator =
     return ffv
 
 
-reform_consignee = (info)->
-  payload =
-    name: info.userName
-    detail: info.detailInfo
-    tel: info.telNumber
-    province: info.provinceName
-    city: info.cityName
-    county: info.countyName
-    postal_code: info.postalCode
-    recipient: [
-      info.userName
-      info.telNumber
-      info.provinceName
-      info.cityName
-      info.countyName
-      info.detailInfo
-      '[' + info.postalCode + ']'
-    ].join(' ')
-  return payload
-
-
-reform_userinfo = (userinfo)->
-  if not userinfo
-    userinfo = {}
-  _gender_map =
-    1: 1  # male
-    2: 0  # female
-    0: 2  # unknow
-  info =
-    country: userinfo.country or ''
-    province: userinfo.province or ''
-    city: userinfo.city or ''
-    language: userinfo.language or 'zh_CN'
-    name: userinfo.nickName or ''
-    avatar: userinfo.avatarUrl or ''
-    gender: _gender_map[userinfo.gender] or 0
-  return info
-
-
 # model
 dialog =
   confirm: (opts)->
@@ -216,6 +177,4 @@ module.exports =
   image: image
   authorize_run: authorize_run
   form_validator: form_validator
-  reform_consignee: reform_consignee
-  reform_userinfo: reform_userinfo
   dialog: dialog

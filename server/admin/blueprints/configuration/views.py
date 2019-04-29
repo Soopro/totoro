@@ -38,8 +38,10 @@ def update():
     mina_app_secret = request.form.get('mina_app_secret')
 
     configure = g.configure
-    configure['title'] = title
-    configure['favicon'] = favicon
+    configure['meta'].update({
+        'title': title,
+        'favicon': favicon
+    })
     configure['mina_app_id'] = mina_app_id
     configure.encrypt('mina_app_secret', mina_app_secret)
     configure.save()

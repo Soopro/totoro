@@ -4,10 +4,12 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{g.configure.title or 'Totoro System'}}</title>
+  {% if g.configure.meta %}
+  <title>{{g.configure.meta.title or 'Totoro System'}}</title>
   <link rel="shortcut icon"
-        href="{{g.configure.favicon or
+        href="{{g.configure.meta.favicon or
                 url_for('static', filename='favicon.png')}}">
+  {% endif %}
   <link rel="stylesheet" type="text/css"
         href="{{url_for('static', filename='css/bootstrap.min.css')}}">
   <link rel="stylesheet" type="text/css"
