@@ -4,6 +4,7 @@ utils = require('utils.js')
 core = require('core.js')
 
 restConf = require('restapi/configure.js')
+restUser = require('restapi/user.js')
 
 
 # app
@@ -77,7 +78,7 @@ App
         wx.login
           success: (data) ->
             # get session_key and serve in back-end
-            restCustomer.login
+            restUser.login
               code: data.code
             .then (auth)->
               self.login_status = false
@@ -96,8 +97,8 @@ App
     if not opts
       try
         opts =
-          title: self.store.site_meta.title or self.store.site_meta.slug
-          src: self.store.site_meta.share_img
+          title: self.configure.meta.title
+          src: self.configure.meta.share_img
           path: null
       catch e
         opts = {}

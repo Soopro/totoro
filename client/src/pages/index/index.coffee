@@ -23,14 +23,7 @@ core.Page
 
   onLoad: ->
     self = @
-    restStore.page.get('index')
-    .then (page)->
-      app.set_navbar(page.meta.title)
-      self.setData
-        meta: page.meta
-        content: page.content
-    .then ->
-      self.refresh()
+    self.refresh()
 
 
   onPullDownRefresh: ->
@@ -53,7 +46,7 @@ core.Page
     self.timestamp = utils.now()
 
     self.setData
-      products: []
+      bookss: []
       has_more: null
 
     self.list()
@@ -64,12 +57,12 @@ core.Page
     self.setData
       is_loading: true
 
-    restStore.product.list
+    restLibrary.book.list
       paged: self.paged
       t: self.timestamp
     .then (results)->
       self.setData
-        products: self.data.products.concat(results)
+        books: results
         has_more: results[0] and results[0]._more
     .finally ->
       self.setData

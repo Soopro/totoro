@@ -6,6 +6,7 @@
     "pages/error/error"
   ],
   "window": {
+    "navigationBarTitleText": "✦ UnicornEnglish ✦",
     "navigationBarTextStyle": "white",
     "navigationBarBackgroundColor": "#3cf",
     "backgroundColor": "#3cf"
@@ -27,7 +28,7 @@
         "iconPath": "/img/ic_account.png",
         "selectedIconPath": "/img/ic_account_on.png",
         "pagePath": "pages/account/account",
-        "text": "Mine"
+        "text": "Account"
       }
     ]
   }

@@ -44,27 +44,9 @@ core.Page
     self.get_product()
 
   # hanlders
-  get_product: ->
+  get_book: ->
     self = @
-    restStore.product.get self.slug
-    .then (product)->
-      app.set_navbar(product.meta.title)
-      self.setData
-        meta: product.meta
-        content: product.content
-    .then ->
-      restStore.product.shelf self.slug
-    .then (data)->
-      if utils.isArrau(data.shelf.spec, true)
-        # init selectable attrs
-        for spec in data.shelf.spec
-          self.sel_attrs[spec.key] = null
-        data.shelf.spec = self._organize_spec(data.shelf.spec, data.sku_list)
-      self.setData
-        shelf: data.shelf
-        sku_list: data.sku_list
-        sku_status: self._check_sku_status(data.sku_list)
-        discounts: data.discounts
+
 
 
   open_sheet: (e)->

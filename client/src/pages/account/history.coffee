@@ -22,7 +22,7 @@ core.Page
     self = @
     self.id = opts.id
     app.set_navbar(core.static_title.order)
-    restCustomer.order.get(opts.id)
+    restUser.order.get(opts.id)
     .then (order)->
       self.setData
         order: order
@@ -48,7 +48,7 @@ core.Page
       content: content
       confirm: ->
         self.submitted = true
-        restCustomer.order.done(self.id)
+        restUser.order.done(self.id)
         .then (order)->
           self.setData
             order: order

@@ -54,7 +54,7 @@ core.Page
 
   list_orders: ->
     self = @
-    restCustomer.order.list
+    restUser.order.list
       offset: self.data.orders.length
       t: self.timestamp
     .then (results)->
@@ -94,7 +94,7 @@ core.Page
 
   _join: (encrypted_data, iv)->
     self = @
-    restCustomer.member.create
+    restUser.member.create
       encrypted_data: encrypted_data
       iv: iv
     .then (profile)->

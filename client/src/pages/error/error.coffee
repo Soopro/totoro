@@ -9,7 +9,6 @@ core.Page
   # lifecycle
   onLoad: (opts)->
     self = @
-    app.set_navbar(core.static_title.error)
 
   # hendler
   back: ->
