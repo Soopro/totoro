@@ -3,25 +3,25 @@ requests = require('../libs/requests.js')
 login = (data)->
   requests.post('/user/login', data)
 
-join = (data)->
+register = (data)->
   requests.post('/user/join', data)
 
 get_profile = ->
-  requests.get('/user/profile', args)
+  requests.get('/user/profile')
 
 update_profile = (data)->
   requests.put('/user/profile', data)
 
-list_inventory_books = (args)->
-  requests.get('/user/inventory/book', args)
+list_inventory_books = ->
+  requests.get('/user/inventory/book')
 
-list_inventory_records = (args)->
-  requests.get('/user/inventory/records', args)
+list_inventory_records = ->
+  requests.get('/user/inventory/records')
 
 
 module.exports =
   login: login
-  join: join
+  register: register
   profile:
     get: get_profile
     update: update_profile

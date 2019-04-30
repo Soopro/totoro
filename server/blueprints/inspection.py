@@ -24,7 +24,7 @@ def verify_jwt():
         raise Unauthorized('not found')
     elif user['status'] == User.STATUS_BANNED:
         raise PermissionDenied('banned')
-
+    g.curr_session_key = payload['session_key']
     g.curr_user = user
 
     return

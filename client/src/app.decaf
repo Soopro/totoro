@@ -124,6 +124,7 @@ App
             restUser.login
               code: data.code
             .then (auth)->
+              console.log auth
               self.login_status = false
               core.session.set('token', auth.token, auth.expires_in - 60)
               callback(auth.token)

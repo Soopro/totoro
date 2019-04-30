@@ -9,7 +9,7 @@
   <button class="avatar-btn {{profile.status?'':'draft'}}"
           open-type="getUserInfo"
           bindgetuserinfo="sync_profile"
-          wx:if="{{profile.id}}">
+          wx:if="{{profile.login}}">
     <image class="avatar"
            src="{{profile.meta.avatar || image.avatar}}"
            background-size="cover"
@@ -17,18 +17,18 @@
     <view class="avatar-name">{{profile.meta.name || profile.login}}</view>
     <view class="caption draft"
           wx:if="{{!profile.meta.avatar}}">
-      {{_('Click here authorize profile')}}
+      Click here authorize profile
     </view>
   </button>
   <button class="avatar-btn"
           open-type="getPhoneNumber"
-          bindgetphonenumber="join_member"
+          bindgetphonenumber="join"
           wx:else>
     <image class="avatar"
            src="{{image.avatar}}"
            background-size="cover"
            background-position="center center"/>
-    <view class="avatar-name">{{_('Join Membership')}}</view>
+    <view class="avatar-name">Join Membership</view>
   </button>
 </view>
 

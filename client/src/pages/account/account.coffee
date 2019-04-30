@@ -9,18 +9,16 @@ app = getApp()
 core.Page
   data:
     image: core.image
-    orders: []
+    profile: {}
+    records: []
     total_count: null
-    has_more: false
     logged: null
-
-  timestamp: null
 
   # lifecycle
   onLoad: deco.login_required (opts)->
     self = @
-    app.set_navbar(core.static_title.account)
-    app.get_profile (profile)->
+    restUser.profile.get()
+    .then (profile)->
       self.setData
         profile: profile
     self.refresh()
@@ -45,41 +43,13 @@ core.Page
   # hanlders
   refresh: ->
     self = @
-    self.timestamp = utils.now()
 
     self.setData
-      orders: []
+      records: []
       has_more: null
-    self.list_orders()
-
-  list_orders: ->
-    self = @
-    restUser.order.list
-      offset: self.data.orders.length
-      t: self.timestamp
-    .then (results)->
-      orders = self.data.orders.concat(results)
-      last_one = results[0] or {_more: false, _count: 0}
-      self.setData
-        orders: orders
-        has_more: last_one._more
-        total_count: last_one._count
-
-  check_detail: (e)->
-    self = @
-    order = e.currentTarget.dataset.order
-    return if not order
-    app.nav.go
-      route: core.config.paths.order
-      args:
-        id: order.id
-
-  go_buy: ->
-    app.nav.tab
-      route: core.config.paths.index
 
   # member
-  join_member: (e)->
+  join: (e)->
     self = @
     encrypted_data = e.detail.encryptedData
     iv = e.detail.iv
@@ -94,34 +64,31 @@ core.Page
 
   _join: (encrypted_data, iv)->
     self = @
-    restUser.member.create
+    restUser.register
       encrypted_data: encrypted_data
       iv: iv
     .then (profile)->
-      app.set_profile profile, (profile)->
-        self.setData
-          profile: profile
-
-  sync_profile: (e)->
-    self = @
-    profile = reform_userinfo(e.detail.userInfo)
-    app.set_profile profile, (profile)->
       self.setData
         profile: profile
 
-  reform_userinfo = (userinfo)->
-    if not userinfo
-      userinfo = {}
+  sync_profile: (e)->
+    self = @
+    userinfo = e.detail.userInfo
     _gender_map =
       1: 1  # male
       2: 0  # female
       0: 2  # unknow
-    info =
-      country: userinfo.country or ''
-      province: userinfo.province or ''
-      city: userinfo.city or ''
-      language: userinfo.language or 'zh_CN'
-      name: userinfo.nickName or ''
-      avatar: userinfo.avatarUrl or ''
-      gender: _gender_map[userinfo.gender] or 2
-    return info
+    restUser.profile.update
+      meta:
+        country: userinfo.country or ''
+        province: userinfo.province or ''
+        city: userinfo.city or ''
+        language: userinfo.language or 'zh_CN'
+        name: userinfo.nickName or ''
+        avatar: userinfo.avatarUrl or ''
+        gender: _gender_map[userinfo.gender] or 2
+    .then (profile)->
+      self.setData
+        profile: profile
+
+

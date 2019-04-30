@@ -35,6 +35,7 @@ def login():
         user.save()
 
     token = generate_token({
+        'user_id': user['_id'],
         'openid': user['openid'],
         'session_key': mina_session['session_key'],
     })
@@ -54,14 +55,13 @@ def join_member():
     iv = get_param('iv', Struct.Code, True)
 
     user = g.curr_user
+    session_key = g.curr_session_key
     configure = g.configure
     wx_mini = WeChatMinaAPI(app_id=configure['mina_app_id'],
                             app_secret=configure.decrypt('mina_app_secret'),
                             redis_read=current_app.redis)
     try:
-        phone = wx_mini.get_bound_phone(user['session_key'],
-                                        encrypted_data,
-                                        iv)
+        phone = wx_mini.get_bound_phone(session_key, encrypted_data, iv)
         login = phone['phonenum']
     except Exception as e:
         raise UserMinaSessionError(e)
@@ -70,7 +70,6 @@ def join_member():
     current_app.mongodb.User.displace_login(login, user['openid'])
     # use to displace other user might have share same login.
     user['login'] = login
-    user['status'] = current_app.mongodb.User.STATUS_ACTIVATED
     user.save()
 
     return output_profile(user)
