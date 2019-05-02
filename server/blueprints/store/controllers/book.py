@@ -37,6 +37,7 @@ def get_book(book_slug):
 def output_book(book):
     return {
         'id': book['_id'],
+        'slug': book['slug'],
         'terms': book['terms'],
         'tags': book['tags'],
         'meta': book['meta'],

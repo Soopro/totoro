@@ -17,7 +17,8 @@ get_category = (term_key, args)->
 
 
 module.exports =
-  configure: get_configure
+  configure:
+    get: get_configure
   book:
     list: list_books
     get: get_book

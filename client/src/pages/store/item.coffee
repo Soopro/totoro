@@ -8,7 +8,6 @@ app = getApp()
 core.Page
   data:
     meta: {}
-    content: ''
     image: core.image
 
   # lifecycle
@@ -30,15 +29,22 @@ core.Page
 
   onLoad: (opts)->
     self = @
-    self.slug = opts.slug
-    restStore.book.get
-
-    .then (results)->
-
+    self.get_book(opts.slug)
 
   # hanlders
-  get_book: ->
+  get_book: (slug)->
     self = @
+    restStore.book.get(slug)
+    .then (book)->
+      console.log book
+      self.setData
+        id: book.id
+        meta: book.meta
+        terms: book.terms
+        tags: book.tags
+        status: book.status
+        creation: book.creation
+        updated: book.updated
 
 
   # helpers

@@ -4,7 +4,7 @@ Navigation = require('libs/navigation.js')
 utils = require('utils.js')
 core = require('core.js')
 
-restConf = require('restapi/configure.js')
+restStore = require('restapi/store.js')
 restUser = require('restapi/user.js')
 
 
@@ -70,7 +70,7 @@ App
           console.info 'retry:', retry
         self.init_status = true
 
-        restConf.configure.get()
+        restStore.configure.get()
         .then (configure)->
           self.init_status = false
           self.configure = configure

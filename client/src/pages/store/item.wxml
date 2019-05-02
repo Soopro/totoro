@@ -2,63 +2,28 @@
 <wxs src="../../filters.wxs" module="f"></wxs>
 {{_('$set', store.locale)}}
 
+<block wx:if="{{id}}">
 <!-- carousel -->
-<view class="carousel square">
-  <swiper indicator-dots="true"
-          indicator-color="#fff"
-          indicator-active-color="rgba(255,255,255,.6)"
-          autoplay="true"
-          circular="true">
-    <swiper-item>
-      <image src="{{meta.featured_img.src}}"
-             background-size="cover"
-             background-position="center center"/>
-    </swiper-item>
-    <block wx:for="{{meta.carousel}}"
-           wx:for-item="slide"
-           wx:key="index">
-      <swiper-item>
-        <image src="{{slide.src}}"
-               background-size="cover"
-               background-position="center center"/>
-      </swiper-item>
-    </block>
-  </swiper>
+<view class="square">
+  <image src="{{meta.cover_src}}"
+         background-size="cover"
+         background-position="center center"/>
 </view>
 
-
-<!-- product -->
-<view class="product container padding"
-      wx:if="{{shelf}}">
+<!-- info -->
+<view class="product container padding">
   <text class="headline"
-        selectable="true">{{shelf.name}}</text>
-
-  <view class="flex-row align-center">
-    <block wx:if="{{shelf.dis_price >= 0}}">
-      <text class="accent price flex">¥ {{f.price(shelf.dis_price)}}</text>
-      <text class="flex text-strike">¥ {{f.price(shelf.price)}}</text>
-    </block>
-    <block wx:elif="{{shelf.price}}">
-      <text class="accent price flex">¥ {{f.price(shelf.price)}}</text>
-    </block>
-    <block wx:else>
-      <text class="accent price flex">{{_('Free')}}</text>
-    </block>
-  </view>
+        selectable="true">{{meta.title}}</text>
 
   <view class="divider"></view>
-
-  <block wx:if="{{discounts.length}}">
-    <view>
-      <view class="tag accent"
-            wx:for="{{discounts}}"
-            wx:for-item="discount"
-            wx:key="index">{{discount.tagname}}</view>
-    </view>
-    <view class="divider"></view>
+  <block wx:for="{{meta.previews}}"
+         wx:for-item="pic"
+         wx:key="index">
+    <image src="{{pic}}"
+           background-size="cover"
+           background-position="center center"
+           mode="widthFix"/>
   </block>
-
-  <view class="article">
-    <rich-text type="text" nodes="{{content}}"></rich-text>
-  </view>
 </view>
+
+</block>

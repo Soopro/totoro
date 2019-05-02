@@ -9,7 +9,7 @@ core.Page
     image: core.image
     is_loading: null
     has_more: null
-    products: []
+    books: []
     meta: {}
     content: ''
 
@@ -72,6 +72,7 @@ core.Page
   enter: (e)->
     self = @
     item = e.currentTarget.dataset.item
+    console.log item
     return if not item
     app.nav.go
       route: core.config.paths.item
