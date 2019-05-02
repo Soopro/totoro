@@ -1,9 +1,9 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/index/history",
-    "pages/collection/index",
-    "pages/collection/item",
+    "pages/index/profile",
+    "pages/store/index",
+    "pages/store/item",
     "pages/error/error"
   ],
   "window": {
@@ -28,7 +28,7 @@
       {
         "iconPath": "/img/ic_list.png",
         "selectedIconPath": "/img/ic_list_on.png",
-        "pagePath": "pages/collection/index",
+        "pagePath": "pages/store/index",
         "text": "Library"
       }
     ]

@@ -6,8 +6,8 @@ config =
   paths:
     index: '/pages/index/index'
     profile: '/pages/index/profile'
-    collection: '/pages/collection/index'
-    item: '/pages/collection/item'
+    store: '/pages/store/index'
+    item: '/pages/store/item'
     error: '/pages/error/error'
 
   retry: 3

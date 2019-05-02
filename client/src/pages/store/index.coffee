@@ -1,6 +1,6 @@
 core = require('../../core.js')
 utils = require('../../utils.js')
-restColl = require('../../restapi/collection.js')
+restStore = require('../../restapi/store.js')
 
 app = getApp()
 
@@ -57,7 +57,7 @@ core.Page
     self.setData
       is_loading: true
 
-    restColl.book.list
+    restStore.book.list
       paged: self.paged
       t: self.timestamp
     .then (results)->

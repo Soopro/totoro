@@ -26,8 +26,8 @@ def list_books():
 
 
 @output_json
-def get_book(book_id):
-    book = current_app.mongodb.Book.find_one_by_id(book_id)
+def get_book(book_slug):
+    book = current_app.mongodb.Book.find_one_by_slug(book_slug)
     if not book:
         raise BookNotFound
     return output_book(book)
