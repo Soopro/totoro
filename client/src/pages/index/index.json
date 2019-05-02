@@ -1,5 +1,4 @@
 {
-  "navigationBarTitleText": "Library",
   "enablePullDownRefresh": true,
   "usingComponents": {
     "component-loadmore": "../../components/loadmore/loadmore"

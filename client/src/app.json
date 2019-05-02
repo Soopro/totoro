@@ -1,8 +1,9 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/index/item",
-    "pages/account/account",
+    "pages/index/history",
+    "pages/collection/index",
+    "pages/collection/item",
     "pages/error/error"
   ],
   "window": {
@@ -19,16 +20,16 @@
     "selectedColor": "#09c",
     "list": [
       {
-        "iconPath": "/img/ic_list.png",
-        "selectedIconPath": "/img/ic_list_on.png",
-        "pagePath": "pages/index/index",
-        "text": "Library"
-      },
-      {
         "iconPath": "/img/ic_account.png",
         "selectedIconPath": "/img/ic_account_on.png",
-        "pagePath": "pages/account/account",
+        "pagePath": "pages/index/index",
         "text": "Account"
+      },
+      {
+        "iconPath": "/img/ic_list.png",
+        "selectedIconPath": "/img/ic_list_on.png",
+        "pagePath": "pages/collection/index",
+        "text": "Library"
       }
     ]
   }

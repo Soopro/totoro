@@ -1,79 +1,94 @@
 core = require('../../core.js')
+deco = require('../../decorators.js')
 utils = require('../../utils.js')
-restLibrary = require('../../restapi/library.js')
+restUser = require('../../restapi/user.js')
+
 
 app = getApp()
 
 core.Page
   data:
     image: core.image
-    is_loading: null
-    has_more: null
-    products: []
-    meta: {}
-    content: ''
-
-  paged: 1
-  timestamp: null
-
+    profile: {}
+    records: []
+    total_count: null
+    logged: null
 
   # lifecycle
-  onShareAppMessage: ->
-    app.share()
-
-  onLoad: ->
+  onLoad: deco.login_required (opts)->
     self = @
+    restUser.profile.get()
+    .then (profile)->
+      self.setData
+        profile: profile
     self.refresh()
-
+    self.setData
+      logged: true
 
   onPullDownRefresh: ->
     self = @
+    if not self.data.logged
+      wx.stopPullDownRefresh()
+      return
     self.refresh()
     .finally ->
       wx.stopPullDownRefresh()
 
   onReachBottom: ->
     self = @
+    return if not self.data.logged
     if self.data.has_more is true
-      self.paged += 1
-      self.list()
-
+      self.list_orders()
 
   # hanlders
   refresh: ->
     self = @
-    self.paged = 1
-    self.timestamp = utils.now()
 
     self.setData
-      books: []
+      records: []
       has_more: null
 
-    self.list()
-
-
-  list: ->
+  # member
+  join: (e)->
     self = @
-    self.setData
-      is_loading: true
+    encrypted_data = e.detail.encryptedData
+    iv = e.detail.iv
+    return if not encrypted_data or not iv
+    wx.checkSession
+      success: ->
+        self._join(encrypted_data, iv)
+      fail: ->
+        app.login ->
+          self._join(encrypted_data, iv)
+        , true
 
-    restLibrary.book.list
-      paged: self.paged
-      t: self.timestamp
-    .then (results)->
-      self.setData
-        books: results
-        has_more: Boolean(results[0] and results[0]._more)
-    .finally ->
-      self.setData
-        is_loading: false
-
-
-  enter: (e)->
+  _join: (encrypted_data, iv)->
     self = @
-    item = e.currentTarget.dataset.item
-    return if not item
-    app.nav.go
-      route: core.config.paths.item
-      args:
-        slug: item.slug
+    restUser.register
+      encrypted_data: encrypted_data
+      iv: iv
+    .then (profile)->
+      self.setData
+        profile: profile
+
+  sync_profile: (e)->
+    self = @
+    userinfo = e.detail.userInfo
+    _gender_map =
+      1: 1  # male
+      2: 0  # female
+      0: 2  # unknow
+    restUser.profile.update
+      meta:
+        country: userinfo.country or ''
+        province: userinfo.province or ''
+        city: userinfo.city or ''
+        language: userinfo.language or 'zh_CN'
+        name: userinfo.nickName or ''
+        avatar: userinfo.avatarUrl or ''
+        gender: _gender_map[userinfo.gender] or 2
+    .then (profile)->
+      self.setData
+        profile: profile
+
+
