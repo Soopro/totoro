@@ -166,18 +166,11 @@
             <div class="alert alert-success">{{borrower}}</div>
             {% endif %}
             <h5>Code: {{vol.code}}</h5>
-            <p>Serial Number: {{vol.serial_number}}</p>
             <a href="{{url_for('.remove_volume', book_id=book._id, vol_id=vol._id)}}">Remove</a>
           </div>
         </div>
         {% endfor %}
-        <div class="form-group">
-          <label>New volume serial number</label>
-          <input class="form-control"
-                 type="text"
-                 name="serial_number"/>
-        </div>
-
+        <input class="form-control" type="text" name="code"/>
         <button class="btn btn-primary">Add</button>
       </form>
     </div>

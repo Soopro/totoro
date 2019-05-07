@@ -92,14 +92,13 @@ class Book(BaseDocument):
 
 
 class BookVolume(BaseDocument):
-    STATUS_STOCK, STATUS_LEND = (0, 1)
+    STATUS_PENDING, STATUS_STOCK, STATUS_LEND = 0, 1, 2
 
     MAX_QUERY = 60
 
     structure = {
         'book_id': ObjectId,
         'user_id': ObjectId,
-        'serial_number': unicode,
         'code': unicode,
         'borrower': unicode,  # user login
         'meta': dict,  # a copy of book meta
@@ -107,7 +106,7 @@ class BookVolume(BaseDocument):
         'creation': int,
         'updated': int,
     }
-    required_fields = ['book_id', 'serial_number', 'code']
+    required_fields = ['book_id', 'code']
     default_values = {
         'user_id': None,
         'borrower': u'',

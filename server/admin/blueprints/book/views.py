@@ -143,13 +143,11 @@ def create():
 @blueprint.route('/<book_id>/volume/create', methods=['POST'])
 @login_required
 def create_volume(book_id):
-    serial_number = request.form['serial_number']
     code = request.form.get('code')
 
     book = _find_book(book_id)
     volume = current_app.mongodb.BookVolume()
     volume['book_id'] = book['_id']
-    volume['serial_number'] = serial_number
     volume['code'] = _gen_book_code(book, code)
     volume.save()
     flash('Volume created.')
