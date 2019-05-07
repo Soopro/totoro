@@ -6,16 +6,12 @@ from utils.misc import now, parse_int, numid
 
 
 class Order(BaseDocument):
-    encrypt_secret_field = 'user_id'
 
     (STATUS_PENDING,
      STATUS_PAID,
      STATUS_SHIPPED,
      STATUS_DONE,
      STATUS_REFUNDED) = (0, 1, 2, 3, 4)
-
-    METHOD_WXPAY = u'WXPAY'
-    METHOD_ALIPAY = u'ALIPAY'
 
     MAX_QUERY = 60
     MAX_ITEMS = 60
@@ -24,9 +20,7 @@ class Order(BaseDocument):
 
     structure = {
         'user_id': ObjectId,
-        'member_id': ObjectId,
         'customer_id': unicode,
-        'merchant_id': unicode,
         'method': unicode,
         'trade_id': unicode,
         'transaction_id': unicode,
@@ -39,19 +33,11 @@ class Order(BaseDocument):
             'detail': unicode,
             'price': int,
             'amount': int,
-            'discounts': [unicode],
         }],
         'name': unicode,
         'recipient': unicode,
         'payment': int,
-        'discount': int,
         'courier_fee': int,
-        'credit_reward': int,
-        'credit_payment': int,
-        'voucher_payment': int,
-        'bargain_payment': int,
-        'redeem_payment': int,
-        'redeem_code': unicode,
         'note': unicode,
         'bill_create_ip': unicode,
         'memo': unicode,
@@ -59,7 +45,7 @@ class Order(BaseDocument):
         'creation': int,
         'updated': int,
     }
-    required_fields = ['user_id', 'customer_id', 'merchant_id', 'method']
+    required_fields = ['user_id', 'customer_id']
     default_values = {
         'member_id': None,
         'trade_id': numid,
@@ -70,13 +56,6 @@ class Order(BaseDocument):
         'name': u'',
         'recipient': u'',
         'payment': 0,
-        'discount': 0,
-        'credit_reward': 0,
-        'credit_payment': 0,
-        'voucher_payment': 0,
-        'bargain_payment': 0,
-        'redeem_payment': 0,
-        'redeem_code': u'',
         'courier_fee': 0,
         'note': u'',
         'bill_create_ip': u'',
