@@ -113,6 +113,24 @@
         </div>
 
         <div class="form-group">
+          <label>Credit</label>
+          <input class="form-control"
+                 type="text"
+                 name="credit"
+                 value="{{book.credit}}" />
+          <span class="help-block">How many credit to spend.</span>
+        </div>
+
+        <div class="form-group">
+          <label>Value</label>
+          <input class="form-control"
+                 type="text"
+                 name="value"
+                 value="{{book.value}}" />
+          <span class="help-block">the original price.</span>
+        </div>
+
+        <div class="form-group">
           <h5>Status</h5>
           {% for st in allowed_status %}
           <div class="radio-inline">
@@ -129,6 +147,18 @@
         <div>
           <h5>Created at:  {{book.creation|dateformat}}</h5>
           <h5>Last updated at:  {{book.updated|dateformat}}</h5>
+        </div>
+
+        <hr>
+        <div class="form-group">
+          <label>Slug</label>
+          <input class="form-control"
+                 type="text"
+                 name="slug"
+                 value="{{book.slug}}" />
+          <span class="help-block">
+            Don't modify unless you know what you are doing
+          </span>
         </div>
 
         <hr>
@@ -165,12 +195,23 @@
           {% elif vol.status == 2 %}
           <div class="alert {{'alert-danger' if vol.overtime else 'alert-success'}}">{{vol.borrower}}</div>
           {% endif %}
-          <h5>Code: {{vol.code}}</h5>
-          {% if vol.user_id %}
-          <a href="{{url_for('.release_volume', book_id=book._id, vol_id=vol._id)}}">Release</a>
-          {% else %}
-          <a href="{{url_for('.remove_volume', book_id=book._id, vol_id=vol._id)}}">Remove</a>
-          {% endif %}
+          <div class="row">
+            <div class="col-md-4">
+              <div class="qr-code"
+               qr-text="{{vol.scope}}/{{vol.code}}"></div>
+            </div>
+            <div class="col-md-8">
+              <h5>{{vol.scope|upper}}</h5>
+              <h5>{{vol.code}}</h5>
+            </div>
+          </div>
+          <div class="text-right">
+            {% if vol.user_id %}
+            <a href="{{url_for('.release_volume', book_id=book._id, vol_id=vol._id)}}">Release</a>
+            {% else %}
+            <a href="{{url_for('.remove_volume', book_id=book._id, vol_id=vol._id)}}">Remove</a>
+            {% endif %}
+          </div>
         </div>
       </div>
       {% endfor %}

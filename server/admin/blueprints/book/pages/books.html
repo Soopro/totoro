@@ -12,14 +12,19 @@
             data-target="#CREATE-BOOK-MODAL">
       Create new book
     </button>
+    <a class="btn btn-default"
+       href="{{url_for('.print_volumes')}}">
+      Print Volumes
+    </a>
     <a class="btn btn-default pull-right"
        href="{{url_for('.category')}}">
-      Manage Category
+      Category
     </a>
   </div>
 </section>
 
 <section class="container">
+  <hr>
   <form action="{{url_for('.index')}}"
         method="GET">
     <div class="input-group">
@@ -118,7 +123,8 @@
 <script src="{{url_for('.static', filename='scripts/functions.js')}}">
 </script>
 
-<div class="modal fade" id="CREATE-BOOK-MODAL" tabindex="-1" role="dialog">
+<div class="modal fade modal-form"
+     id="CREATE-BOOK-MODAL" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">

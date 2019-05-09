@@ -41,7 +41,7 @@ def index():
     else:
         books = current_app.mongodb.Book.find_all()
 
-    p = make_paginator(books, paged, 12)
+    p = make_paginator(books, paged, 60)
 
     prev_url = url_for(request.endpoint,
                        paged=p.previous_page)
@@ -101,7 +101,8 @@ def update(book_id):
     description = request.form.get('description')
     tags = request.form.get('tags')
     terms = request.form.getlist('terms') or []
-    # rating = request.form.get('rating')
+    credit = request.form.get('credit')
+    value = request.form.get('value')
     cover_src = request.form.get('cover_src')
     previews = request.form.get('previews')
 
@@ -120,12 +121,15 @@ def update(book_id):
         'previews': [preview.strip() for preview in previews.split('\n')
                      if preview.strip()],
     })
+    book['credit'] = parse_int(credit)
+    book['value'] = parse_int(value)
     book['status'] = parse_int(status)
     book.save()
 
     # update all book volume to same as the book.
-    current_app.mongodb.BookVolume.refresh_meta(book['_id'], book['meta'])
-
+    current_app.mongodb.BookVolume.refresh_meta(book['_id'],
+                                                book['slug'],
+                                                book['meta'])
     flash('Saved.')
     return_url = url_for('.detail', book_id=book['_id'])
     return redirect(return_url)
@@ -167,6 +171,7 @@ def create_volume(book_id):
     book = _find_book(book_id)
     volume = current_app.mongodb.BookVolume()
     volume['book_id'] = book['_id']
+    volume['scope'] = book['slug']
     volume['code'] = _gen_book_code(book, code)
     volume['meta'] = book['meta']
     volume.save()
@@ -290,6 +295,30 @@ def remove_term(term_id):
     term.delete()
     return_url = url_for('.category')
     return redirect(return_url)
+
+
+@blueprint.route('/print')
+@login_required
+def print_volumes():
+    paged = parse_int(request.args.get('paged'), 1, True)
+
+    volumes = current_app.mongodb.BookVolume.find_all()
+    p = make_paginator(volumes, paged, 20)
+    prev_url = url_for(request.endpoint,
+                       paged=p.previous_page)
+    next_url = url_for(request.endpoint,
+                       paged=p.next_page)
+    paginator = {
+        'next': next_url if p.has_next else None,
+        'prev': prev_url if p.has_previous and p.previous_page else None,
+        'paged': p.current_page,
+        'start': p.start_index,
+        'end': p.end_index,
+    }
+
+    return render_template('print_volumes.html',
+                           volumes=list(volumes),
+                           p=paginator)
 
 
 # helpers

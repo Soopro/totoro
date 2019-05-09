@@ -14,9 +14,12 @@ class Book(BaseDocument):
         'slug': unicode,
         'tags': [unicode],
         'terms': [unicode],
+        'credit': int,
+        'value': int,
         'rating': int,
         '_keywords': [unicode],
         'meta': dict,
+        'memo': unicode,
         'status': int,
         'creation': int,
         'updated': int,
@@ -26,9 +29,12 @@ class Book(BaseDocument):
     default_values = {
         'tags': [],
         'terms': [],
+        'credit': 0,
+        'value': 0,
         'rating': 0,
         '_keywords': [],
         'meta': {},
+        'memo': u'',
         'creation': now,
         'updated': now,
         'status': STATUS_OFFLINE,
@@ -115,6 +121,7 @@ class BookVolume(BaseDocument):
     structure = {
         'book_id': ObjectId,
         'user_id': ObjectId,
+        'scope': unicode,
         'code': unicode,
         'borrower': unicode,  # user login
         'borrowing_time': int,  # timestamp for the time borrowing
@@ -123,7 +130,7 @@ class BookVolume(BaseDocument):
         'creation': int,
         'updated': int,
     }
-    required_fields = ['book_id', 'code']
+    required_fields = ['book_id', 'scope', 'code']
     default_values = {
         'user_id': None,
         'borrower': u'',
@@ -146,6 +153,9 @@ class BookVolume(BaseDocument):
         },
         {
             'fields': ['user_id'],
+        },
+        {
+            'fields': ['book_id'],
         },
         {
             'fields': ['updated'],
@@ -194,11 +204,14 @@ class BookVolume(BaseDocument):
         cursor = self.find(query).sort('updated', INDEX_DESC)
         return cursor.limit(self.MAX_QUERY)
 
-    def refresh_meta(self, book_id, meta):
+    def find_all(self):
+        return self.find().sort('book_id', INDEX_DESC).limit(self.MAX_QUERY)
+
+    def refresh_meta(self, book_id, scope, meta):
         # login can on exists once.
         return self.collection.update(
             {'book_id': ObjectId(book_id)},
-            {'$set': {'meta': meta}}, multi=True)
+            {'$set': {'scope': scope, 'meta': meta}}, multi=True)
 
     def count_used(self, book_id):
         return self.find({

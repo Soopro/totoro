@@ -42,7 +42,7 @@ def update():
     configure['borrowing_time_limit'] = parse_int(borrowing_time_limit, 0, 0)
     configure['meta'].update({
         'title': title,
-        'favicon': favicon
+        'favicon': favicon if '://' in favicon else u''
     })
     configure['mina_app_id'] = mina_app_id
     configure.encrypt('mina_app_secret', mina_app_secret)

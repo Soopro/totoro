@@ -35,13 +35,18 @@ def checkout():
 
     book, volume = _find_book_volume(book_slug, volume_code)
     BookVolume = current_app.mongodb.BookVolume
-    if volume:
-        if volume['status'] == BookVolume.STATUS_STOCK:
+
+    if book and volume:
+        if user['credit'] < book['credit']:
+            flash('Not enough credit.', 'warning')
+        elif volume['status'] == BookVolume.STATUS_STOCK:
             volume['user_id'] = user['_id']
             volume['borrower'] = user['login']
             volume['borrowing_time'] = now()
             volume['status'] = BookVolume.STATUS_LEND
             volume.save()
+            user['credit'] -= book['credit']
+            user.save()
             _recording(book, volume, user)
             flash('Checkout.')
         else:
