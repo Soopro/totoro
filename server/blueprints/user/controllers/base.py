@@ -96,6 +96,7 @@ def output_profile(user):
     return {
         'id': user['_id'],
         'login': user['login'],
+        'credit': user['credit'],
         'meta': user['meta'],
         'status': user['status'],
         'creation': user['creation'],

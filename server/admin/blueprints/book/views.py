@@ -34,8 +34,11 @@ blueprint = Blueprint('book',
 @login_required
 def index():
     paged = parse_int(request.args.get('paged'), 1, True)
-
-    books = current_app.mongodb.Book.find_all()
+    search_key = request.args.get('search_key', u'')
+    if search_key:
+        books = current_app.mongodb.Book.search(search_key.split())
+    else:
+        books = current_app.mongodb.Book.find_all()
 
     p = make_paginator(books, paged, 12)
 
@@ -51,7 +54,10 @@ def index():
         'start': p.start_index,
         'end': p.end_index,
     }
-    return render_template('books.html', books=books, p=paginator)
+    return render_template('books.html',
+                           books=books,
+                           p=paginator,
+                           search_key=search_key)
 
 
 @blueprint.route('/<book_id>')
@@ -63,13 +69,19 @@ def detail(book_id):
         {'key': Book.STATUS_ONLINE, 'text': 'Online'},
     ]
     book = _find_book(book_id)
-    volumes = current_app.mongodb.BookVolume.find_by_bookid(book['_id'])
     records = current_app.mongodb.BookRecord.find_by_bookid(book['_id'])
     terms = current_app.mongodb.Term.find_all()
+    vol_list = current_app.mongodb.BookVolume.find_by_bookid(book['_id'])
+    volumes = []
+    for vol in vol_list:
+        vol['overtime'] = vol['borrowing_time'] != 0 and \
+            vol['borrowing_time'] <= (now() - 3600 * 24 * 30)
+        volumes.append(vol)
+
     return render_template('book_detail.html',
                            book=book,
                            terms=list(terms),
-                           volumes=list(volumes),
+                           volumes=volumes,
                            records=list(records),
                            allowed_status=allowed_status)
 
@@ -155,13 +167,27 @@ def create_volume(book_id):
     return redirect(return_url)
 
 
+@blueprint.route('/<book_id>/volume/<vol_id>/release')
+@login_required
+def release_volume(book_id, vol_id):
+    book = _find_book(book_id)
+    volume = current_app.mongodb.\
+        BookVolume.find_one_by_bookid_id(book_id, vol_id)
+    if volume and volume['borrower']:
+        volume['user_id'] = None
+        volume['borrower'] = u''
+        volume.save()
+    return_url = url_for('.detail', book_id=book['_id'])
+    return redirect(return_url)
+
+
 @blueprint.route('/<book_id>/volume/<vol_id>/remove')
 @login_required
 def remove_volume(book_id, vol_id):
     book = _find_book(book_id)
     volume = current_app.mongodb.\
         BookVolume.find_one_by_bookid_id(book_id, vol_id)
-    if volume:
+    if volume and not volume['borrower']:
         volume.delete()
     return_url = url_for('.detail', book_id=book['_id'])
     return redirect(return_url)

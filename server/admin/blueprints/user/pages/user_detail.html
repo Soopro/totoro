@@ -32,6 +32,13 @@
       </div>
 
       <div class="form-group">
+        <label>Credit ({{user.credit or 0}})</label>
+        <input class="form-control"
+               type="text"
+               name="credit"
+               value="{{user.credit}}" />
+      </div>
+      <div class="form-group">
         <h5>Status</h5>
         {% for st in allowed_status %}
         <div class="radio-inline">

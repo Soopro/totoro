@@ -75,8 +75,11 @@ def detail(user_id=None):
 @login_required
 def update(user_id):
     status = request.form.get('status')
+    credit = request.form.get('credit')
 
     user = _find_user(user_id)
+    if credit:
+        user['credit'] = parse_int(credit)
     user['status'] = parse_int(status)
     user.save()
     flash('Saved.')

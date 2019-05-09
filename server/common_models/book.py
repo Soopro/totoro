@@ -15,6 +15,7 @@ class Book(BaseDocument):
         'tags': [unicode],
         'terms': [unicode],
         'rating': int,
+        '_keywords': [unicode],
         'meta': dict,
         'status': int,
         'creation': int,
@@ -26,6 +27,7 @@ class Book(BaseDocument):
         'tags': [],
         'terms': [],
         'rating': 0,
+        '_keywords': [],
         'meta': {},
         'creation': now,
         'updated': now,
@@ -41,6 +43,9 @@ class Book(BaseDocument):
         },
         {
             'fields': ['tags'],
+        },
+        {
+            'fields': ['_keywords'],
         },
         {
             'fields': ['rating', 'updated'],
@@ -87,8 +92,19 @@ class Book(BaseDocument):
     def find_all(self):
         return self.find().sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
+    def search(self, keys):
+        return self.find({
+            '_keywords': {'$all': [k.lower() for k in keys if k]}
+        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+
     def count_used(self):
         return self.find().count()
+
+    # override
+    def save(self, *args, **kwargs):
+        tags = [tag.strip().lower() for tag in self['tags']]
+        self['_keywords'] = list(set([self['slug']] + tags))
+        return super(Book, self).save(*args, **kwargs)
 
 
 class BookVolume(BaseDocument):
@@ -101,6 +117,7 @@ class BookVolume(BaseDocument):
         'user_id': ObjectId,
         'code': unicode,
         'borrower': unicode,  # user login
+        'borrowing_time': int,  # timestamp for the time borrowing
         'meta': dict,  # a copy of book meta
         'status': int,
         'creation': int,
@@ -110,6 +127,7 @@ class BookVolume(BaseDocument):
     default_values = {
         'user_id': None,
         'borrower': u'',
+        'borrowing_time': 0,
         'meta': {},
         'creation': now,
         'updated': now,
@@ -122,6 +140,9 @@ class BookVolume(BaseDocument):
         },
         {
             'fields': ['user_id', 'status'],
+        },
+        {
+            'fields': ['borrowing_time'],
         },
         {
             'fields': ['user_id'],
@@ -156,6 +177,15 @@ class BookVolume(BaseDocument):
     def find_lend_by_uid(self, user_id):
         return self.find({
             'user_id': ObjectId(user_id),
+            'status': self.STATUS_LEND,
+        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+
+    def find_overtime(self):
+        return self.find({
+            'borrowing_time': {
+                '$ne': 0,
+                '$lt': now() - 3600 * 24 * 30,
+            },
             'status': self.STATUS_LEND,
         }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
