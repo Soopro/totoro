@@ -13,7 +13,7 @@ from flask import (Blueprint,
 
 from utils.auth import generate_hashed_password, check_hashed_password
 from utils.request import get_remote_addr
-from utils.misc import hmac_sha
+from utils.misc import hmac_sha, parse_int
 
 from admin.decorators import login_required
 
@@ -34,10 +34,12 @@ def index():
 def update():
     title = request.form.get('title')
     favicon = request.form.get('favicon')
+    borrowing_time_limit = request.form.get('borrowing_time_limit')
     mina_app_id = request.form.get('mina_app_id')
     mina_app_secret = request.form.get('mina_app_secret')
 
     configure = g.configure
+    configure['borrowing_time_limit'] = parse_int(borrowing_time_limit, 0, 0)
     configure['meta'].update({
         'title': title,
         'favicon': favicon

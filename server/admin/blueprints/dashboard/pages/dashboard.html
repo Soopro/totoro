@@ -10,10 +10,18 @@
     <hr>
     <p>Users: {{count.users}}</p>
     <p>Books: {{count.books}}</p>
-    <div>
-      <a class="btn btn-primary btn-lg"
-         href="{{url_for('reception.index')}}">Go Reception</a>
+  </div>
+</section>
+<section class="container">
+  <h4>Overtime Volumes</h4>
+  {% for vol in overtime_vols %}
+  <div class="panel panel-danger">
+    <div class="panel-body">
+      <a href="{{url_for('book.detail', book_id=vol.book_id)}}">
+        {{vol.meta.title}} - {{vol.borrower}}
+      </a>
     </div>
   </div>
+  {% endfor %}
 </section>
 {% endblock %}

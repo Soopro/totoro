@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 
 from document import BaseDocument
+from utils.misc import now
 
 
 class Configuration(BaseDocument):
@@ -11,6 +12,7 @@ class Configuration(BaseDocument):
         'mina_app_secret': unicode,
         'passcode_hash': unicode,
         'meta': dict,
+        'borrowing_time_limit': int,
         'creation': int,
         'updated': int
     }
@@ -19,8 +21,9 @@ class Configuration(BaseDocument):
         'mina_app_secret': u'',
         'passcode_hash': u'',
         'meta': {},
-        'creation': int,
-        'updated': int
+        'borrowing_time_limit': 0,
+        'creation': now,
+        'updated': now
     }
     sensitive_fields = ['meta']
     required_fields = ['passcode_hash']

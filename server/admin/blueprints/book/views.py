@@ -7,7 +7,8 @@ from flask import (Blueprint,
                    flash,
                    url_for,
                    redirect,
-                   render_template)
+                   render_template,
+                   g)
 import os
 
 from utils.model import make_paginator
@@ -63,6 +64,8 @@ def index():
 @blueprint.route('/<book_id>')
 @login_required
 def detail(book_id):
+    configure = g.configure
+
     Book = current_app.mongodb.Book
     allowed_status = [
         {'key': Book.STATUS_OFFLINE, 'text': 'Offline'},
@@ -73,9 +76,13 @@ def detail(book_id):
     terms = current_app.mongodb.Term.find_all()
     vol_list = current_app.mongodb.BookVolume.find_by_bookid(book['_id'])
     volumes = []
+    overtime_limit = configure['borrowing_time_limit']
     for vol in vol_list:
-        vol['overtime'] = vol['borrowing_time'] != 0 and \
-            vol['borrowing_time'] <= (now() - 3600 * 24 * 30)
+        if overtime_limit:
+            vol['overtime'] = vol['borrowing_time'] != 0 and \
+                vol['borrowing_time'] <= overtime_limit
+        else:
+            vol['overtime'] = False
         volumes.append(vol)
 
     return render_template('book_detail.html',
@@ -161,6 +168,7 @@ def create_volume(book_id):
     volume = current_app.mongodb.BookVolume()
     volume['book_id'] = book['_id']
     volume['code'] = _gen_book_code(book, code)
+    volume['meta'] = book['meta']
     volume.save()
     flash('Volume created.')
     return_url = url_for('.detail', book_id=book['_id'])

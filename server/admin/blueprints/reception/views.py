@@ -10,6 +10,7 @@ from flask import (Blueprint,
                    render_template)
 
 from admin.decorators import login_required
+from utils.misc import now
 
 
 blueprint = Blueprint('reception', __name__, template_folder='pages')
@@ -38,6 +39,7 @@ def checkout():
         if volume['status'] == BookVolume.STATUS_STOCK:
             volume['user_id'] = user['_id']
             volume['borrower'] = user['login']
+            volume['borrowing_time'] = now()
             volume['status'] = BookVolume.STATUS_LEND
             volume.save()
             _recording(book, volume, user)
@@ -68,6 +70,7 @@ def checkin():
         if volume['status'] == BookVolume.STATUS_LEND:
             volume['user_id'] = None
             volume['borrower'] = u''
+            volume['borrowing_time'] = 0
             volume['status'] = BookVolume.STATUS_STOCK
             volume.save()
             _recording(book, volume, user, True)

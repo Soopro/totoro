@@ -180,14 +180,19 @@ class BookVolume(BaseDocument):
             'status': self.STATUS_LEND,
         }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
-    def find_overtime(self):
-        return self.find({
-            'borrowing_time': {
-                '$ne': 0,
-                '$lt': now() - 3600 * 24 * 30,
-            },
+    def find_overtime(self, duration=2592000):
+        query = {
             'status': self.STATUS_LEND,
-        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+        }
+        if duration:
+            query.update({
+                'borrowing_time': {
+                    '$ne': 0,
+                    '$lt': now() - duration,
+                }
+            })
+        cursor = self.find(query).sort('updated', INDEX_DESC)
+        return cursor.limit(self.MAX_QUERY)
 
     def refresh_meta(self, book_id, meta):
         # login can on exists once.
