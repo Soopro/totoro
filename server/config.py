@@ -10,7 +10,7 @@ class Config(object):
 
     # env
     DEBUG = True
-    SECRET_KEY = 'secret_totoro_.<OgTfdw[6@uk">)CRL#Vy*DiD)cfK#B8Bv}M>'
+    SECRET_KEY = envs.SECRET_KEY or 'secret_totoro_.<OgTfdw[6@uk">)'
 
     # path
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
