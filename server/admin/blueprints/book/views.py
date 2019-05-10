@@ -162,7 +162,7 @@ def create():
     title = request.form['title']
     book = current_app.mongodb.Book()
     book['slug'] = _uniqueify_book_slug(title)
-    book['meta'].update({'title': title})
+    book['meta'] = {'title': title}
     book.save()
     flash('Created.')
     return_url = url_for('.detail', book_id=book['_id'])
@@ -263,9 +263,10 @@ def category():
 @blueprint.route('/category/create', methods=['POST'])
 @login_required
 def create_term():
-    key = request.form['key']
+    name = request.form['name']
     term = current_app.mongodb.Term()
-    term['key'] = _uniqueify_term_key(key)
+    term['key'] = _uniqueify_term_key(name)
+    term['meta'] = {'name': name}
     term.save()
     flash('Created.')
     return redirect(request.referrer)
@@ -372,7 +373,7 @@ def _uniqueify_term_key(key, term=None):
 
 def _gen_book_code(book, code=None):
     if not code:
-        code = unicode(encode_short_url(12))
+        code = unicode(encode_short_url(6))
     _book = current_app.mongodb.\
         BookVolume.find_one_by_bookid_code(book['_id'], code)
     if _book is not None:
