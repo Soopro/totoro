@@ -46,11 +46,32 @@
         <br>
 
         <div class="form-group">
-          <label>Name</label>
+          <label>Title</label>
           <input class="form-control"
                  type="text"
                  name="title"
                  value="{{book.meta.title}}" />
+        </div>
+        <div class="form-group">
+          <label>Author</label>
+          <input class="form-control"
+                 type="text"
+                 name="author"
+                 value="{{book.meta.author}}" />
+        </div>
+        <div class="form-group">
+          <label>Publisher</label>
+          <input class="form-control"
+                 type="text"
+                 name="publisher"
+                 value="{{book.meta.publisher}}" />
+        </div>
+        <div class="form-group">
+          <label>Publisher</label>
+          <input class="form-control"
+                 type="text"
+                 name="publisher"
+                 value="{{book.meta.publisher}}" />
         </div>
 
         <div class="form-group">
@@ -147,6 +168,12 @@
         <div>
           <h5>Created at:  {{book.creation|dateformat}}</h5>
           <h5>Last updated at:  {{book.updated|dateformat}}</h5>
+        </div>
+
+        <div class="form-group">
+          <label>Memo</label>
+          <textarea class="form-control"
+                    name="memo">{{book.memo}}</textarea>
         </div>
 
         <hr>

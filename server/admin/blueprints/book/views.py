@@ -98,6 +98,8 @@ def detail(book_id):
 def update(book_id):
     slug = request.form.get('slug')
     title = request.form.get('title')
+    author = request.form.get('author')
+    publisher = request.form.get('publisher')
     description = request.form.get('description')
     tags = request.form.get('tags')
     terms = request.form.getlist('terms') or []
@@ -105,8 +107,9 @@ def update(book_id):
     value = request.form.get('value')
     cover_src = request.form.get('cover_src')
     previews = request.form.get('previews')
-
+    memo = request.form.get('memo', u'')
     status = request.form.get('status')
+
     book = _find_book(book_id)
     if slug:
         book['slug'] = _uniqueify_book_slug(slug, book)
@@ -116,6 +119,8 @@ def update(book_id):
     # book['rating'] = parse_int(rating)
     book['meta'].update({
         'title': title,
+        'author': author,
+        'publisher': publisher,
         'description': description,
         'cover_src': cover_src,
         'previews': [preview.strip() for preview in previews.split('\n')
@@ -124,6 +129,7 @@ def update(book_id):
     book['credit'] = parse_int(credit)
     book['value'] = parse_int(value)
     book['status'] = parse_int(status)
+    book['memo'] = memo
     book.save()
 
     # update all book volume to same as the book.
