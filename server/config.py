@@ -96,6 +96,8 @@ class ProductionConfig(Config):
     TEMPORARY_FOLDER = os.path.join(DEPLOY_DIR, 'tmp')
     UPLOADS_FOLDER = os.path.join(DEPLOY_DIR, 'uploads')
 
+    UPLOADS_URL = 'http://uploads.totoro.namabi.com'
+
     # mongodb
     MONGODB_DATABASE = 'totoro'
     MONGODB_USER = None
