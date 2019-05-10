@@ -68,20 +68,6 @@
         </div>
 
         <div class="form-group">
-          <label>Cover</label>
-          <input class="form-control"
-                 type="text"
-                 name="cover_src"
-                 value="{{book.meta.cover_src}}" />
-          <span class="help-block">A uploaded image url.</span>
-          {% if book.meta.cover_src %}
-          <img width="120" height="120" src="{{book.meta.cover_src}}" />
-          {% else %}
-
-          {% endif %}
-        </div>
-
-        <div class="form-group">
           <label>Description</label>
           <textarea class="form-control"
                     name="description">{{book.meta.description}}</textarea>
@@ -112,18 +98,17 @@
         </div>
 
         <div class="form-group">
-          <label>Previews</label>
-          <ul style="margin: 0; padding:0;">
-            {% for preview_src in book.meta.previews %}
-            <li style="margin: 0; list-style:none; float:left; padding: 6px;">
-              <img width="96" height="96" src="{{preview_src}}"/>
-            </li>
-            {% endfor %}
-          </ul>
-          <textarea class="form-control"
-                    rows="6"
-                    name="previews">{{book.meta.previews|join('\n')}}</textarea>
-          <span class="help-block">Type preview image src one of line.</span>
+          <label>Cover</label>
+          <input class="form-control"
+                 type="text"
+                 name="cover_src"
+                 value="{{book.meta.cover_src}}" />
+          <span class="help-block">A uploaded image url.</span>
+          {% if book.meta.cover_src %}
+          <img width="120" height="120" src="{{book.meta.cover_src}}" />
+          {% else %}
+
+          {% endif %}
         </div>
 
         <div class="form-group">
@@ -145,6 +130,13 @@
         </div>
 
         <div class="form-group">
+          <label>Memo</label>
+          <textarea class="form-control"
+                    name="memo">{{book.memo}}</textarea>
+          <span class="help-block">for administrators only.</span>
+        </div>
+
+        <div class="form-group">
           <h5>Status</h5>
           {% for st in allowed_status %}
           <div class="radio-inline">
@@ -161,12 +153,6 @@
         <div>
           <h5>Created at:  {{book.creation|dateformat}}</h5>
           <h5>Last updated at:  {{book.updated|dateformat}}</h5>
-        </div>
-
-        <div class="form-group">
-          <label>Memo</label>
-          <textarea class="form-control"
-                    name="memo">{{book.memo}}</textarea>
         </div>
 
         <hr>

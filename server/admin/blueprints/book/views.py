@@ -97,16 +97,16 @@ def detail(book_id):
 @login_required
 def update(book_id):
     slug = request.form.get('slug')
-    title = request.form.get('title')
-    author = request.form.get('author')
-    publisher = request.form.get('publisher')
-    description = request.form.get('description')
-    tags = request.form.get('tags')
+    title = request.form.get('title', u'')
+    author = request.form.get('author', u'')
+    publisher = request.form.get('publisher', u'')
+    description = request.form.get('description', u'')
+    tags = request.form.get('tags', u'')
     terms = request.form.getlist('terms') or []
-    credit = request.form.get('credit')
-    value = request.form.get('value')
-    cover_src = request.form.get('cover_src')
-    previews = request.form.get('previews')
+    credit = request.form.get('credit', 0)
+    value = request.form.get('value', 0)
+    cover_src = request.form.get('cover_src', u'')
+    previews = request.form.get('previews', u'')
     memo = request.form.get('memo', u'')
     status = request.form.get('status')
 
