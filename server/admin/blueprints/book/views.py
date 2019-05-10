@@ -159,10 +159,10 @@ def remove(book_id):
 @blueprint.route('/create', methods=['POST'])
 @login_required
 def create():
-    slug = request.form['slug']
+    title = request.form['title']
     book = current_app.mongodb.Book()
-    book['slug'] = _uniqueify_book_slug(slug)
-
+    book['slug'] = _uniqueify_book_slug(title)
+    book['meta'].update({'title': title})
     book.save()
     flash('Created.')
     return_url = url_for('.detail', book_id=book['_id'])
