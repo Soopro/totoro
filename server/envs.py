@@ -14,8 +14,6 @@ mimetypes.add_type('image/svg+xml', '.svg')
 
 # config env
 SECRET_KEY = os.getenv('TOTORO_SECRET_KEY', None)
-DB_SECRET_PREFIX = os.getenv('TOTORO_DB_SECRET_PREFIX', None)
-
 CONFIG_NAME = os.getenv('TOTORO_CONFIG_NAME', None)
 
 MONGO_PORT_27017_TCP_ADDR = os.getenv('MONGO_PORT_27017_TCP_ADDR', None)

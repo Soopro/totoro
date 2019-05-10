@@ -41,7 +41,7 @@ class BaseDocument(Document):
     __metaclass__ = MetaDoc
     use_schemaless = False
 
-    secret_key_prefix = envs.DB_SECRET_PREFIX or '$b02NT~P=I$e*QZ'
+    secret_key_prefix = envs.SECRET_KEY or '$b02NT~P=I$e*QZ'
     # migrate all encrypted data when change it.
 
     encrypt_secret_field = '_id'
