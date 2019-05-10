@@ -373,7 +373,7 @@ def _uniqueify_term_key(key, term=None):
 
 def _gen_book_code(book, code=None):
     if not code:
-        code = unicode(encode_short_url(6))
+        code = unicode(encode_short_url())
     _book = current_app.mongodb.\
         BookVolume.find_one_by_bookid_code(book['_id'], code)
     if _book is not None:
