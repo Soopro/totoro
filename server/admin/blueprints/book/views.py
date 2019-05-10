@@ -282,10 +282,13 @@ def term_detail(term_id):
 @blueprint.route('/category/<term_id>/update', methods=['POST'])
 @login_required
 def update_term(term_id):
+    key = request.form.get('key')
     name = request.form.get('name', u'')
     figure = request.form.get('figure', u'')
 
     term = _find_term(term_id)
+    if key:
+        term['key'] = _uniqueify_term_key(key, term)
     term['meta'].update({
         'name': name,
         'figure': figure
