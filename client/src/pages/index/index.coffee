@@ -46,6 +46,12 @@ core.Page
     app.nav.tab
       route: core.config.paths.store
 
+  switch_scene: (e)->
+    self = @
+    scene = parseInt(e.currentTarget.dataset.scene)
+    self.setData
+      scene: scene
+
   # member
   join: (e)->
     self = @

@@ -35,9 +35,11 @@
 <view class="container">
   <view class="nav">
     <button class="nav-item"
-            bind:tap="tab_borrowed">我借的书</button>
+            bind:tap="switch_scene"
+            data-scene="0">我借的书</button>
     <button class="nav-item"
-            bind:tap="tab_record">历史记录</button>
+            bind:tap="switch_scene"
+            data-scene="1">历史记录</button>
   </view>
 </view>
 
