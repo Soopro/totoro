@@ -260,6 +260,49 @@ image.rounded {
   .flex-cell(100%);
 }
 
+
+/* navs */
+.nav {
+  display: flex;
+  align-items: stretch;
+
+  &.centered {
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+  }
+  &.align-start {
+    align-items: flex-start;
+  }
+  &.align-center {
+    align-items: center;
+  }
+  &.align-end {
+    align-items: flex-end;
+  }
+  &.justify-start {
+    justify-content: flex-start;
+  }
+  &.justify-center {
+    justify-content: center;
+  }
+  &.justify-end {
+    justify-content: flex-end;
+  }
+
+  &.reverse {
+    flex-direction: row-reverse;
+  }
+
+  & .nav-item {
+    flex: 1;
+    padding: @space-xs;
+    margin: @space-xs;
+    text-align: center;
+  }
+}
+
+
 /* grids */
 .grid-list {
   position: relative;
@@ -931,6 +974,7 @@ button {
   border-radius: 50%;
   will-change: transform;
   overflow: hidden;
+  background: @color-light;
 }
 .avatar-container {
   display: flex;

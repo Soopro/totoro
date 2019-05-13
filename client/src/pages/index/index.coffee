@@ -11,8 +11,9 @@ core.Page
     image: core.image
     profile: {}
     records: []
-    total_count: null
+    volumes: []
     logged: null
+    scene: 0
 
   # lifecycle
   onLoad: deco.login_required (opts)->
@@ -21,32 +22,29 @@ core.Page
     .then (profile)->
       self.setData
         profile: profile
-    self.refresh()
+    self.inv_volumes()
+    self.inv_records()
     self.setData
       logged: true
 
-  onPullDownRefresh: ->
-    self = @
-    if not self.data.logged
-      wx.stopPullDownRefresh()
-      return
-    self.refresh()
-    .finally ->
-      wx.stopPullDownRefresh()
-
-  onReachBottom: ->
-    self = @
-    return if not self.data.logged
-    if self.data.has_more is true
-      self.list_orders()
-
   # hanlders
-  refresh: ->
+  inv_volumes: ->
     self = @
+    restUser.book.list()
+    .then (volumes)->
+      self.setData
+        volumes: volumes
 
-    self.setData
-      records: []
-      has_more: null
+  inv_records: ->
+    self = @
+    restUser.record.list()
+    .then (records)->
+      self.setData
+        records: records
+
+  find_book: ->
+    app.nav.tab
+      route: core.config.paths.store
 
   # member
   join: (e)->

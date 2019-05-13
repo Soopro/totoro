@@ -6,6 +6,7 @@ from flask import current_app, g
 from utils.response import output_json
 
 
+# volumes
 @output_json
 def list_volumes():
     user = g.curr_user
@@ -13,6 +14,7 @@ def list_volumes():
     return [output_volume(vol) for vol in volumes]
 
 
+# records
 @output_json
 def list_records():
     user = g.curr_user

@@ -25,6 +25,7 @@ module.exports =
   profile:
     get: get_profile
     update: update_profile
-  inventory:
-    books: list_inventory_books
-    records: list_inventory_records
+  book:
+    list: list_inventory_books
+  record:
+    list: list_inventory_records

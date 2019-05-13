@@ -9,6 +9,11 @@ class BookNotFound(NotFound):
     status_message = 'BOOK_NOT_FOUND'
 
 
+class BookNotEnoughVolume(NotFound):
+    response_code = 500002
+    status_message = 'BOOK_NOT_ENOUGH_VOLUME'
+
+
 class CategoryNotFound(NotFound):
     response_code = 500101
     status_message = 'CATEGORY_NOT_FOUND'

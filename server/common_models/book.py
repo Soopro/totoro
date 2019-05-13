@@ -54,10 +54,10 @@ class Book(BaseDocument):
             'fields': ['_keywords'],
         },
         {
-            'fields': ['rating', 'updated'],
+            'fields': ['rating', 'creation'],
         },
         {
-            'fields': ['updated'],
+            'fields': ['creation'],
         }
     ]
 
@@ -84,7 +84,7 @@ class Book(BaseDocument):
         if term:
             query.update({'terms': term})
         cursor = self.find(query).sort([('rating', INDEX_DESC),
-                                        ('updated', INDEX_DESC)])
+                                        ('creation', INDEX_DESC)])
         return cursor.limit(self.MAX_QUERY)
 
     def find_by_ids(self, id_list):
@@ -96,12 +96,12 @@ class Book(BaseDocument):
         }).limit(self.MAX_QUERY)
 
     def find_all(self):
-        return self.find().sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+        return self.find().sort('creation', INDEX_DESC).limit(self.MAX_QUERY)
 
     def search(self, keys):
         return self.find({
             '_keywords': {'$all': [k.lower() for k in keys if k]}
-        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+        }).sort('creation', INDEX_DESC).limit(self.MAX_QUERY)
 
     def count_used(self):
         return self.find().count()
@@ -179,15 +179,33 @@ class BookVolume(BaseDocument):
             'code': code,
         })
 
+    def find_one_stocked_by_bookid(self, book_id):
+        return self.find_one({
+            'book_id': ObjectId(book_id),
+            'status': self.STATUS_STOCK,
+        })
+
     def find_by_bookid(self, book_id):
         return self.find({
             'book_id': ObjectId(book_id),
+        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+
+    def find_stocked_by_bookid(self, book_id):
+        return self.find({
+            'book_id': ObjectId(book_id),
+            'status': self.STATUS_STOCK,
         }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
     def find_lend_by_uid(self, user_id):
         return self.find({
             'user_id': ObjectId(user_id),
             'status': self.STATUS_LEND,
+        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+
+    def find_pending_by_uid(self, user_id):
+        return self.find({
+            'user_id': ObjectId(user_id),
+            'status': self.STATUS_PENDING,
         }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
     def find_overtime(self, duration=2592000):
@@ -216,6 +234,12 @@ class BookVolume(BaseDocument):
     def count_used(self, book_id):
         return self.find({
             'book_id': ObjectId(book_id),
+        }).count()
+
+    def count_stocked(self, book_id):
+        return self.find({
+            'book_id': ObjectId(book_id),
+            'status': self.STATUS_STOCK
         }).count()
 
 

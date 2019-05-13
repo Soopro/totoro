@@ -84,14 +84,16 @@
                 style="color:#ddd;"></span>
           {% elif user.status == 1 %}
           <span class="glyphicon glyphicon-certificate"
-                style="color:green"></span>
+                style="color:green;"></span>
           {% elif user.status == 2 %}
-          XXXXX
+          <span class="glyphicon glyphicon-ban-circle"
+                style="color:red;"></span>
           {% else %}
           {% endif %}
         </td>
         <td class="text-center">
-          <a class="btn btn-primary"
+          <a class="btn
+             {{'btn-primary' if user.status == 1 else 'btn-default'}}"
              href="{{url_for('.detail', user_id=user._id)}}">
             <span class="glyphicon glyphicon-user"></span>
           </a>

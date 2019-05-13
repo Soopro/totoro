@@ -7,6 +7,7 @@ urlpatterns = [
 
     ('/book', list_books, 'GET'),
     ('/book/<book_slug>', get_book, 'GET'),
+    ('/book/<book_slug>', checkin_book, 'POST'),
 
     ('/category', list_terms, 'GET'),
     ('/category/<term_key>', get_term, 'GET'),
