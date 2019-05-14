@@ -101,11 +101,11 @@
           <label>Cover</label>
           <input class="form-control"
                  type="text"
-                 name="cover_src"
-                 value="{{book.meta.cover_src}}" />
+                 name="figure"
+                 value="{{book.meta.figure}}" />
           <span class="help-block">A uploaded image url.</span>
-          {% if book.meta.cover_src %}
-          <img width="120" height="120" src="{{book.meta.cover_src}}" />
+          {% if book.meta.figure %}
+          <img width="120" height="120" src="{{book.meta.figure}}" />
           {% else %}
 
           {% endif %}

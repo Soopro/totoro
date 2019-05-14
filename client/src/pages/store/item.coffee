@@ -16,7 +16,7 @@ core.Page
     meta = self.data.meta
     if meta
       try
-        img_src = meta.cover_src
+        img_src = meta.figure
       catch e
         img_src = ''
       share_obj =

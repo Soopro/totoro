@@ -5,7 +5,7 @@
 
 <block wx:if="{{logged}}">
 <!-- cover -->
-<view class="avatar-container primary">
+<view class="panel avatar-panel primary">
   <button class="avatar-btn"
           open-type="getUserInfo"
           bindgetuserinfo="sync_profile"
@@ -47,7 +47,7 @@
 <view class="container"
       wx:if="{{scene == 0}}">
   <block wx:if="{{volumes.length == 0}}">
-    <view class="holder-md flex-row align-center justify-center">
+    <view class="holder flex-column centered">
       <view class="text-center">
         <view class="draft subhead">没有借阅</view>
         <button class="raised"
@@ -57,17 +57,23 @@
     </view>
   </block>
   <block wx:else>
-    <view class="card row"
+    <view class="card"
           wx:for="{{volumes}}"
-          wx:key="index">
-      <view class="card-media">
-        <image src="{{item.meta.cover_src || image.default_img}}"
-               background-size="cover"
-               background-position="center center"/>
+          wx:for-item="book"
+          wx:key="index"
+          bind:tap="open"
+          data-slug="{{book.slug}}">
+      <view class="card-title">
+        <view class="card-title-media">
+          <image src="{{book.meta.figure || image.default_img}}"
+                 background-size="cover"
+                 background-position="center center"/>
+        </view>
+        <view class="card-title-text">
+          <view class="title space-margin">{{book.meta.title}}</view>
+        </view>
       </view>
-      <view class="card-text">
-        <view class="title">{{item.meta.title}}</view>
-      </view>
+
     </view>
   </block>
 </view>
@@ -85,7 +91,7 @@
           wx:for="{{records}}">
       <view class="card-media">
         <image class="icon"
-               src="{{item.meta.cover_src || image.default_img}}"
+               src="{{item.meta.figure || image.default_img}}"
                background-size="cover"
                background-position="center center"/>
       </view>

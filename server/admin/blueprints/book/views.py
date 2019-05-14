@@ -105,7 +105,7 @@ def update(book_id):
     terms = request.form.getlist('terms') or []
     credit = request.form.get('credit', 0)
     value = request.form.get('value', 0)
-    cover_src = request.form.get('cover_src', u'')
+    figure = request.form.get('figure', u'')
     previews = request.form.get('previews', u'')
     memo = request.form.get('memo', u'')
     status = request.form.get('status')
@@ -122,7 +122,7 @@ def update(book_id):
         'author': author,
         'publisher': publisher,
         'description': description,
-        'cover_src': cover_src,
+        'figure': figure,
         'previews': [preview.strip() for preview in previews.split('\n')
                      if preview.strip()],
     })
@@ -221,7 +221,7 @@ def attach_cover(book_id):
     media = _upload_img(file)
 
     uploads_url = current_app.config.get('UPLOADS_URL')
-    book['meta']['cover_src'] = u'{}/{}/{}'.format(uploads_url,
+    book['meta']['figure'] = u'{}/{}/{}'.format(uploads_url,
                                                    media['scope'],
                                                    media['key'])
     book.save()

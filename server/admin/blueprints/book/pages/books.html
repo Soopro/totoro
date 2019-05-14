@@ -74,8 +74,8 @@
       <tr>
         <td>{{loop.index0 + p.start}}</td>
         <td class="{{'t50' if not book.status}}">
-          {% if book.meta.cover_src %}
-          <img width="48" height="48" src="{{book.meta.cover_src}}"/>
+          {% if book.meta.figure %}
+          <img width="48" height="48" src="{{book.meta.figure}}"/>
           {% endif %}
         </td>
         <td class="{{'text-strike' if not book.status}}">

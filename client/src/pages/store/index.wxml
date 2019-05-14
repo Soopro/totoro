@@ -19,8 +19,8 @@
       <view class="card"
             bind:tap="enter"
             data-item="{{item}}">
-        <image src="{{item.meta.cover_src}}" mode="aspectFill" lazy-load/>
-        <view class="card-text">
+        <image src="{{item.meta.figure}}" mode="aspectFill" lazy-load/>
+        <view class="card-title">
           <text class="title">{{item.title}}</text>
           <view>
             <text class="accent"

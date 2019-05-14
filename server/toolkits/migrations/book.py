@@ -5,7 +5,16 @@ from mongokit import DocumentMigration
 
 
 class BookMigration(DocumentMigration):
-    pass
+
+    def allmigration01_rename_figure(self):
+        self.target = {'meta.cover_src': {'$exists': True}}
+        if not self.status:
+            self.update = {
+                '$rename': {
+                    'meta.cover_src': 'meta.figure'
+                },
+            }
+
     # def allmigration01_refine_keywords(self):
     #     if not self.status:
     #         for doc in self.collection.find():

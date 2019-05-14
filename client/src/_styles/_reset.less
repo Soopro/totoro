@@ -1,0 +1,149 @@
+/* reset
+----------------------------------------------- */
+
+html {
+  & img,
+  & embed,
+  & iframe,
+  & video {
+    max-width: 100%;
+  }
+  & img {
+    display: block;
+  }
+
+  & textarea {
+    resize: none;
+  }
+
+  & mini-top-navbar {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    width: 100%;
+    height: 45px;
+    padding: 5px 10px;
+    font-size: 12px;
+    text-align: left;
+    color: #333;
+    & > .title {
+      flex: 1 1 100%;
+      max-width: 75%;
+      box-sizing: border-box;
+      min-width: 0;
+      padding: 2px 0;
+      overflow: hidden !important;
+      white-space: nowrap !important;
+      text-overflow: ellipsis !important;
+    }
+    & > .menu {
+      display: flex;
+      align-items: center;
+      align-content: space-between;
+      flex: 1 1 100%;
+      max-width: 25%;
+      height: 32px;
+      background: red;
+      background-color: rgba(100,100,100,0.1);
+      border-radius: 24px;
+      & .menu-divider {
+        display: block;
+        width: 1px;
+        height: 60%;
+        background-color: inherit;
+        background-color: rgba(200,200,200,0.3);
+      }
+    }
+    & icon {
+      width: 20px;
+      height: 20px;
+      margin: 0 auto;
+    }
+  }
+
+  & mini-bottom-tabs {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 45px;
+    padding: 5px;
+    & .tab-item {
+      flex: 1;
+      padding: 0 10px;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.6em;
+    }
+    & icon {
+      width: 18px;
+      height: 18px;
+      margin: 2px auto;
+    }
+  }
+
+  & mini-screen {
+    position: relative;
+    display: block;
+    padding-top: 45px;
+    height: 100%;
+    line-height: 1.4;
+    &[with-tabs] {
+      padding-bottom: 45px;
+    }
+    & mini-screen-content {
+      position: relative;
+      display: block;
+      height: 100%;
+      overflow: auto;
+    }
+  }
+
+  & icon {
+    display: block;
+    font-size: 0;
+    width: 24px;
+    height: 24px;
+    vertical-align: middle;
+    & > svg {
+      width: 100%;
+      height: 100%;
+      fill: inherit;
+    }
+  }
+}
+
+img,
+image,
+.img {
+  display: block;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+view,
+input,
+textarea,
+form {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+button {
+  &:after {
+    display: none;
+    border: 0;
+  }
+}
+
+form {
+  width: 100%;
+}
