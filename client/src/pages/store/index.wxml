@@ -33,8 +33,10 @@
       <view class="card"
             bind:tap="enter"
             data-slug="{{book.slug}}">
-        <image class="prd-item-img"
-               src="{{book.meta.figure}}" mode="aspectFill" lazy-load/>
+        <image class="item-figure"
+               src="{{book.meta.figure}}"
+               mode="aspectFill"
+               lazy-load/>
         <view class="card-title">
           <view class="card-title-text">
             <view class="title text-truncate">{{book.meta.title}}</view>

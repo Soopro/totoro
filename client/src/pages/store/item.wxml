@@ -1,20 +1,45 @@
 <wxs src="../../filters.wxs" module="f"></wxs>
 
-<block wx:if="{{id}}">
-<!-- carousel -->
-<view class="square">
-  <image src="{{meta.figure}}"
+<block wx:if="{{book.id}}">
+
+<view class="container panel">
+  <image class="cover"
+         src="{{book.meta.figure}}"
          background-size="cover"
-         background-position="center center"/>
+         background-position="center center"
+         mode="widthFix"/>
 </view>
 
 <!-- info -->
-<view class="product container padding">
-  <text class="headline"
-        selectable="true">{{meta.title}}</text>
+<view class="container padding">
+  <text class="headline">{{book.meta.title}}</text>
+  <text class="body-text">{{book.meta.description}}</text>
+  <view class="divider"></view>
+  <view>
+    <view class="tag"
+          wx:for="{{book.tags}}"
+          wx:for-item="tag"
+          wx:key="index">
+      {{tag}}
+    </view>
+  </view>
+  <view class="divider"></view>
+  <view class="space-margin">
+    <view class="label">作者</view>
+    <text class="subhead indent-padding">{{book.meta.author}}</text>
+  </view>
+  <view class="space-margin">
+    <view class="label">出版社</view>
+    <text class="body-text indent-padding">{{book.meta.publisher}}</text>
+  </view>
+  <view class="space-margin">
+    <view class="label">价值</view>
+    <text class="body-text indent-padding">{{book.value}}</text>
+  </view>
 
   <view class="divider"></view>
-  <block wx:for="{{meta.previews}}"
+
+  <block wx:for="{{book.meta.previews}}"
          wx:for-item="pic"
          wx:key="index">
     <image src="{{pic}}"
@@ -24,4 +49,163 @@
   </block>
 </view>
 
+<!-- bottombar -->
+<view class="bottombar">
+  <view class="bottombar-inner accent">
+    <view class="row">
+      <button class="icon-btn raised"
+              type="accent"
+              size="lg"
+              open-type="contact">
+        <view class="ico ico-chat" />
+      </button>
+      <button class="icon-btn"
+              type="accent"
+              size="lg"
+              bind:tap="goto_cart">
+        <block wx:if="{{count_cart_items > 0}}">
+          <view class="ico ico-cart-full" />
+          <view class="badge primary">{{count_cart_items}}</view>
+        </block>
+        <block wx:else>
+          <view class="ico ico-cart-empty"/>
+        </block>
+      </button>
+      <button class="flex sider-left"
+              type="accent"
+              bind:tap="open_sheet"
+              data-action-type="add_to_cart">
+        借阅
+      </button>
+    </view>
+  </view>
+</view>
+
 </block>
+
+<component-bottomsheet status="{{sheet_status}}">
+  <view class="shelf-bottomsheet">
+    <view class="container">
+      <!-- price -->
+      <view>
+        <label>{{_('Unit Price')}}</label>
+        <view class="margin">
+          <block wx:if="{{sel_sku}}">
+            <view class="flex-row"
+                  wx:if="{{sel_sku.dis_price != null}}">
+              <view class="title primary flex">
+                ¥ {{f.price(sel_sku.dis_price)}}
+              </view>
+              <view class="body-text text-strike flex draft">
+                ¥ {{f.price(sel_sku.price)}}
+              </view>
+            </view>
+            <view wx:elif="{{sel_sku.price}}">
+              <view class="title primary">
+                ¥ {{f.price(sel_sku.price)}}
+              </view>
+            </view>
+            <view wx:else>
+              <view class="title primary">
+                {{_('Free')}}
+              </view>
+            </view>
+          </block>
+          <block wx:else>
+            <view class="flex-row"
+                  wx:if="{{shelf.dis_price != null}}">
+              <view class="title primary flex">
+                ¥ {{f.price(shelf.dis_price)}}
+              </view>
+              <view class="body-text text-strike flex draft">
+                ¥ {{f.price(shelf.price)}}
+              </view>
+            </view>
+            <view wx:elif="{{shelf.price}}">
+              <view class="title primary">
+                ¥ {{f.price(shelf.price)}}
+              </view>
+            </view>
+            <view wx:else>
+              <view class="title primary">
+                {{_('Free')}}
+              </view>
+            </view>
+          </block>
+        </view>
+        <view class="divider dotted"></view>
+      </view>
+
+      <!-- spec. -->
+      <block wx:if="{{shelf.is_various}}">
+        <view class="shelf-spec"
+              wx:for="{{shelf.spec}}"
+              wx:for-item="spec"
+              wx:key="index">
+          <label>{{spec.label}}</label>
+          <view class="margin flex-row flex-wrap align-items-center">
+            <button wx:for="{{spec.options}}"
+                    wx:for-item="opt"
+                    wx:for-index
+                    wx:key="index"
+                    type="cloak"
+                    disabled="{{opt.disabled}}"
+                    bind:tap="select_spec"
+                    data-spec-key="{{spec.key}}"
+                    data-opt-index="{{index}}"
+                    data-selected="{{opt.selected}}">
+              <view class="spec-thumb {{opt.selected ? 'active':''}}"
+                    wx:if="{{opt.src}}">
+                <image class="spec-thumb-media"
+                       src="{{opt.src}}"
+                       background-size="cover"
+                       background-position="center center" />
+              </view>
+              <view class="spec-text {{opt.selected ? 'active':''}}"
+                    wx:else>
+                {{opt.text}}
+              </view>
+            </button>
+          </view>
+          <view class="divider dotted"></view>
+        </view>
+      </block>
+
+      <!-- amount -->
+      <view>
+        <label>{{_('Amount')}}</label>
+        <view class="flex-row centered">
+          <button class="icon-btn"
+                  type="primary"
+                  size="lg"
+                  bind:tap="decrease_amount"
+                  disabled="{{!sel_sku || amount <= 1}}">
+            <view class="ico ico-minus"/>
+          </button>
+          <view class="subhead accent flex text-center">
+            {{amount}}
+          </view>
+          <button class="icon-btn"
+                  type="primary"
+                  size="lg"
+                  bind:tap="increase_amount"
+                  disabled="{{!sel_sku || amount >= sel_sku.qty}}">
+            <view class="ico ico-add"/>
+          </button>
+        </view>
+      </view>
+
+    </view>
+
+    <view>
+      <button class="shelf-btn raised block"
+              type="accent"
+              bind:tap="buy"
+              data-action-type="{{action_type}}"
+              disabled="{{!sel_sku}}">
+        {{action_type == 'purchase' ? _('Buy') : _('Add to Cart')}}
+      </button>
+    </view>
+
+  </view>
+</component-bottomsheet>

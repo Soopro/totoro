@@ -3,8 +3,8 @@
     <view class="icon spin"></view>
   </view>
   <view wx:else>
-    <text class="text" wx:if="{{hasMore == true}}">
+    <view class="more-text" wx:if="{{hasMore == true}}">
       <slot></slot>
-    </text>
+    </view>
   </view>
 </view>

@@ -7,26 +7,10 @@ app = getApp()
 
 core.Page
   data:
-    meta: {}
+    book: {}
     image: core.image
 
   # lifecycle
-  onShareAppMessage: ->
-    self = @
-    meta = self.data.meta
-    if meta
-      try
-        img_src = meta.figure
-      catch e
-        img_src = ''
-      share_obj =
-        title: meta.title
-        imageUrl: img_src
-        path: core.config.paths.item + '?slug=' + meta.slug
-    else
-      share_obj = {}
-    app.share(share_obj)
-
   onLoad: (opts)->
     self = @
     self.get_book(opts.slug)
@@ -38,13 +22,4 @@ core.Page
     .then (book)->
       console.log book
       self.setData
-        id: book.id
-        meta: book.meta
-        terms: book.terms
-        tags: book.tags
-        status: book.status
-        creation: book.creation
-        updated: book.updated
-
-
-  # helpers
+        book: book

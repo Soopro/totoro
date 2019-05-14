@@ -1,0 +1,11 @@
+<view class="modal {{active ? 'active' : ''}}">
+  <view class="modal-mask"
+        animation="{{anim_mask}}"
+        catch:tap="dismiss"></view>
+  <view class="modal-inner">
+    <view class="modal-content"
+          animation="{{anim_element}}">
+      <slot></slot>
+    </view>
+  </view>
+</view>

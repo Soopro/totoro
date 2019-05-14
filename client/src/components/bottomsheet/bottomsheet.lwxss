@@ -23,7 +23,6 @@
     position: absolute;
     bottom: -100%;
     width: 100%;
-    background-color: #fff;
     z-index: 99;
   }
 }
