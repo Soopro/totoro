@@ -12,21 +12,23 @@
 
 <!-- info -->
 <view class="container padding">
-  <text class="headline">{{book.meta.title}}</text>
+  <text class="subhead">{{book.meta.title}}</text>
   <text class="body-text">{{book.meta.description}}</text>
-  <view class="divider"></view>
-  <view>
-    <view class="tag"
-          wx:for="{{book.tags}}"
-          wx:for-item="tag"
-          wx:key="index">
-      {{tag}}
+  <block wx:if="{{book.tags.length > 0}}">
+    <view class="divider"></view>
+    <view>
+      <view class="tag"
+            wx:for="{{book.tags}}"
+            wx:for-item="tag"
+            wx:key="index">
+        {{tag}}
+      </view>
     </view>
-  </view>
+  </block>
   <view class="divider"></view>
   <view class="space-margin">
     <view class="label">作者</view>
-    <text class="subhead indent-padding">{{book.meta.author}}</text>
+    <text class="body-text-2 indent-padding">{{book.meta.author}}</text>
   </view>
   <view class="space-margin">
     <view class="label">出版社</view>
@@ -37,15 +39,16 @@
     <text class="body-text indent-padding">{{book.value}}</text>
   </view>
 
-  <view class="divider"></view>
-
-  <block wx:for="{{book.meta.previews}}"
-         wx:for-item="pic"
-         wx:key="index">
-    <image src="{{pic}}"
-           background-size="cover"
-           background-position="center center"
-           mode="widthFix"/>
+  <block wx:if="{{book.meta.previews.length > 0}}">
+    <view class="divider"></view>
+    <block wx:for="{{book.meta.previews}}"
+           wx:for-item="pic"
+           wx:key="index">
+      <image src="{{pic}}"
+             background-size="cover"
+             background-position="center center"
+             mode="widthFix"/>
+    </block>
   </block>
 </view>
 
