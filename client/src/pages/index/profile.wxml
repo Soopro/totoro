@@ -1,109 +1,49 @@
-<wxs src="../../translator.wxs" module="_"></wxs>
 <wxs src="../../filters.wxs" module="f"></wxs>
-{{_('$set', store.locale)}}
 
 
 <block wx:if="{{logged}}">
-<!-- order -->
-<view class="container"
-      wx:if="{{order.id}}">
-  <view class="padding">
-    <text class="headline {{order.is_fault?'warn':''}}"
-          wx:if="{{order.status == 0}}">{{_('Pending')}}</text>
-    <text class="headline"
-          wx:if="{{order.status == 1}}">{{_('Paid')}}</text>
-    <text class="headline"
-          wx:if="{{order.status == 2}}">{{_('Delivered')}}</text>
-    <text class="headline"
-          wx:if="{{order.status == 3}}">{{_('Finished')}}</text>
-    <text class="headline"
-          wx:if="{{order.status == 4}}">{{_('Refunded')}}</text>
-  </view>
-  <view class="padding"
-        wx:if="{{order.status == 0 && order.is_fault}}">
-    <text class="warn">{{_('Sorry! This order may have problem. Please DO NOT make purchase repeatedly. Contact customer service as soon as you can.')}}</text>
-  </view>
-  <view class="padding">
-    <view>
-      <text class="label">{{_('Trade ID')}}</text>
-      <view class="indent caption paragraph">{{order.trade_id}}</view>
+
+<!-- profile -->
+<view class="container">
+  <form bindsubmit="submit">
+    <view class="margin">
+      <view class="label">账号:</view>
+      <text class="accent padding">{{profile.login}}</text>
     </view>
-    <view>
-      <text class="label">{{_('Transaction ID')}}</text>
-      <view class="indent caption paragraph">
-        <text wx:if="{{order.transaction_id}}">{{order.transaction_id}}</text>
-        <text class="warn"
-              wx:else>{{_('Transaction not confirmed')}}</text>
-      </view>
+    <view class="margin">
+      <view class="label">U币:</view>
+      <text class="accent padding">{{profile.credit}}</text>
     </view>
-    <view wx:if="{{order.status == 4}}">
-      <text class="label">{{_('Refund ID')}}</text>
-      <view class="indent caption paragraph">{{order.refund_id || '-'}}</view>
+    <view class="margin">
+      <view class="label">称呼:</view>
+      <input value="{{profile.meta.name}}"
+             name="name"/>
     </view>
-    <view wx:if="{{order.status == 2}}">
-      <text class="label">{{_('Delivery Number')}}</text>
-      <view class="indent caption paragraph">
-        <text selectable="true">{{order.delivery || '-'}}</text>
-      </view>
-      <view>
-        <button class="thin raised"
-                bind:tap="copy_delivery"
-                data-delivery="{{order.delivery}}">
-          <image class="ico" src="{{image.copy_b}}" />
-          <text>{{_('Copy to clipboard')}}</text>
-        </button>
-      </view>
+    <view class="margin">
+      <view class="label">联系方式:</view>
+      <input value="{{profile.meta.contact}}"
+             placeholder="{{profile.login}}"
+             name="contact" />
     </view>
-    <view class="divider"></view>
-  </view>
-  <view class="padding">
-    <text class="subhead primary">{{_('Order Items')}}</text>
-    <view wx:for="{{order.items}}"
-          wx:for-item="item"
-          wx:key="index">
-      <view class="indent caption">{{item.name}} {{item.detail}} ¥{{f.price(item.price)}} x{{item.amount}}</view>
-      <view class="divider dotted"></view>
+    <view class="margin">
+      <picker bindchange="gender_change"
+              value="{{profile.gender}}"
+              range="{{gender_list}}">
+        <view class="label">性别:</view>
+        <view class="title accent text-center">
+          {{gender_list[gender] || '-'}}
+        </view>
+      </picker>
     </view>
-    <view class="flex-row">
-      <view class="flex">
-        <text class="label">{{_('Courier Fee')}}</text>
-        <view class="indent">{{order.courier_fee}}</view>
-      </view>
-      <view class="flex">
-        <text class="label">{{_('Payment')}}</text>
-        <view class="indent accent">¥ {{f.price(order.payment)}}</view>
-      </view>
+    <view class="margin flex-column">
+      <button class="primary raised space-margin"
+              form-type="submit">保存</button>
+      <view class="divider"></view>
+      <button class="accent"
+              open-type="getUserInfo"
+              bindgetuserinfo="sync_profile">从微信同步信息</button>
     </view>
-    <view class="divider"></view>
-  </view>
-  <view class="padding"
-        wx:if="{{order.note}}">
-    <text class="subhead primary">{{_('Note')}}</text>
-    <view>
-      <view class="indent caption">{{order.note}}</view>
-    </view>
-  </view>
+  </form>
 </view>
 
-<!-- bottombar -->
-<view class="bottombar-holder"></view>
-
-<view class="bottombar flex-row"
-      wx:if="{{order.id}}">
-  <button class="raised flex"
-          type="{{order.status == 0 && order.is_fault ? 'warn' : 'accent'}}"
-          open-type="contact">
-    <image class="ico" src="{{image.chat}}" />
-    <text>{{_('Customer Service')}}</text>
-  </button>
-  <button class="flex raised"
-          type="primary"
-          bind:tap="complete_order"
-          wx:if="{{order.status == 2}}"
-          data-title="{{_('End the Order')}}"
-          data-content="{{_('Please do this after receiving the goods.')}}">
-    <image class="ico" src="{{image.done}}" />
-    <text>{{_('End the Order')}}</text>
-  </button>
-</view>
 </block>

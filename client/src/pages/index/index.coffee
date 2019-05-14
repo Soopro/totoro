@@ -22,10 +22,9 @@ core.Page
     .then (profile)->
       self.setData
         profile: profile
-    self.inv_volumes()
-    self.inv_records()
-    self.setData
-      logged: true
+        logged: true
+      self.inv_volumes()
+      self.inv_records()
 
   # hanlders
   inv_volumes: ->
@@ -52,6 +51,17 @@ core.Page
     self.setData
       scene: scene
 
+  edit_profile: ->
+    app.nav.go
+      route: core.config.paths.profile
+
+  sync_profile: (e)->
+    self = @
+    app.sync_profile(e.detail.userInfo)
+    .then (profile)->
+      self.setData
+        profile: profile
+
   # member
   join: (e)->
     self = @
@@ -74,25 +84,3 @@ core.Page
     .then (profile)->
       self.setData
         profile: profile
-
-  sync_profile: (e)->
-    self = @
-    userinfo = e.detail.userInfo
-    _gender_map =
-      1: 1  # male
-      2: 0  # female
-      0: 2  # unknow
-    restUser.profile.update
-      meta:
-        country: userinfo.country or ''
-        province: userinfo.province or ''
-        city: userinfo.city or ''
-        language: userinfo.language or 'zh_CN'
-        name: userinfo.nickName or ''
-        avatar: userinfo.avatarUrl or ''
-        gender: _gender_map[userinfo.gender] or 2
-    .then (profile)->
-      self.setData
-        profile: profile
-
-

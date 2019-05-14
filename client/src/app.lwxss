@@ -10,7 +10,6 @@
   }
 }
 
-
 .splash .brand {
   position: absolute;
   bottom: 30rpx;

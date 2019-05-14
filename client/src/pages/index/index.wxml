@@ -1,107 +1,127 @@
-<wxs src="../../translator.wxs" module="_"></wxs>
 <wxs src="../../filters.wxs" module="f"></wxs>
-{{_('$set', store.locale)}}
 
 
-<block wx:if="{{logged}}">
-<!-- cover -->
-<view class="panel avatar-panel primary">
-  <button class="avatar-btn"
-          open-type="getUserInfo"
-          bindgetuserinfo="sync_profile"
-          wx:if="{{profile.login}}">
-    <image class="avatar"
-           src="{{profile.meta.avatar || image.avatar}}"
-           background-size="cover"
-           background-position="center center"/>
-    <view class="avatar-name">{{profile.meta.name || profile.login}}</view>
-    <view class="caption {{profile.status != 1 ? 'draft' : ''}}">
-      {{profile.status == 1 ? profile.credit : '未激活'}}
-    </view>
-  </button>
-  <button class="avatar-btn"
-          open-type="getPhoneNumber"
-          bindgetphonenumber="join"
-          wx:else>
-    <image class="avatar"
-           src="/img/avatar.png"
-           background-size="cover"
-           background-position="center center"/>
-    <view class="avatar-name">Join Membership</view>
-  </button>
-</view>
-
-<!-- inventory -->
-<view class="container">
-  <view class="nav">
-    <button class="nav-item"
-            bind:tap="switch_scene"
-            data-scene="0">我借的书</button>
-    <button class="nav-item"
-            bind:tap="switch_scene"
-            data-scene="1">历史记录</button>
-  </view>
-</view>
-
-
-<view class="container"
-      wx:if="{{scene == 0}}">
-  <block wx:if="{{volumes.length == 0}}">
-    <view class="holder flex-column centered">
-      <view class="text-center">
-        <view class="draft subhead">没有借阅</view>
-        <button class="raised"
-                type="accent"
-                bind:tap="find_book">去找本书吧？</button>
+<block wx:if="{{logged && profile.login}}">
+  <!-- avatar -->
+  <view class="panel avatar-panel">
+    <button class="avatar-btn"
+            open-type="getUserInfo"
+            bindgetuserinfo="sync_profile"
+            wx:if="{{profile.login}}">
+      <image class="avatar"
+             src="{{profile.meta.avatar || '/img/avatar.png'}}"
+             background-size="cover"
+             background-position="center center"/>
+      <view class="avatar-name">{{profile.meta.name || profile.login}}</view>
+      <view class="caption {{profile.status != 1 ? 'draft' : ''}}">
+        {{profile.status == 1 ? profile.credit : '未激活'}}
       </view>
-    </view>
-  </block>
-  <block wx:else>
-    <view class="card"
-          wx:for="{{volumes}}"
-          wx:for-item="book"
-          wx:key="index"
-          bind:tap="open"
-          data-slug="{{book.slug}}">
+    </button>
+    <button class="avatar-btn"
+            open-type="getPhoneNumber"
+            bindgetphonenumber="join"
+            wx:else>
+      <image class="avatar"
+             src="/img/avatar.png"
+             background-size="cover"
+             background-position="center center"/>
+      <view class="avatar-name">注册会员</view>
+    </button>
+  </view>
 
-      <view class="card-title">
-        <view class="card-title-media">
-          <image src="{{book.meta.figure || image.default_img}}"
+  <!-- inventory -->
+  <view class="container">
+    <view class="nav">
+      <button class="nav-item"
+              bind:tap="switch_scene"
+              data-scene="0">我借的书</button>
+      <button class="nav-item"
+              bind:tap="switch_scene"
+              data-scene="1">历史记录</button>
+      <button class="nav-item"
+              bind:tap="edit_profile">我的信息</button>
+    </view>
+  </view>
+
+
+  <view class="container"
+        wx:if="{{scene == 0}}">
+    <block wx:if="{{volumes.length == 0}}">
+      <view class="holder flex-column centered">
+        <view class="text-center">
+          <view class="draft subhead">没有借阅</view>
+          <button class="raised"
+                  type="accent"
+                  bind:tap="find_book">去找本书吧？</button>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="card"
+            wx:for="{{volumes}}"
+            wx:for-item="vol"
+            wx:key="index"
+            bind:tap="open"
+            data-slug="{{vol.slug}}">
+
+        <view class="card-title">
+          <view class="card-title-media">
+            <image src="{{vol.meta.figure || image.default_img}}"
+                   background-size="cover"
+                   background-position="center center"/>
+          </view>
+          <view class="card-title-text">
+            <view class="title space-margin">{{vol.meta.title}}</view>
+            <view class="caption">
+              {{'处理中...' ? vol.status == 0 : '借阅'}}
+            </view>
+            <view class="body-text">
+              {{f.date_formatted(borrowing_time)}}
+            </view>
+          </view>
+        </view>
+
+      </view>
+    </block>
+  </view>
+
+  <view wx:elif="{{scene == 1}}">
+    <block wx:if="{{records.length == 0}}">
+      <view class="holder flex-column centered">
+        <view class="text-center">
+          <view class="draft subhead">没有记录</view>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="card"
+            wx:for="{{records}}"
+            wx:for-item="record"
+            wx:key="index">
+        <view class="card-title">
+          <view class="card-title-text">
+            <view class="title space-margin">{{record.meta.title}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+</block>
+
+<block wx:elif="{{logged && profile.id && !profile.login}}">
+  <view class="container">
+    <view class="holder flex-column centered">
+      <button class="avatar-btn"
+              open-type="getPhoneNumber"
+              bindgetphonenumber="join">
+        <view class="padding">
+          <image class="avatar"
+                 src="/img/avatar.png"
                  background-size="cover"
                  background-position="center center"/>
         </view>
-        <view class="card-title-text">
-          <view class="title space-margin">{{book.meta.title}}</view>
-        </view>
-      </view>
-
+        <view class="title accent padding">请注册成为会员</view>
+      </button>
     </view>
-  </block>
-</view>
-
-<view wx:elif="{{scene == 1}}">
-  <block wx:if="{{records.length == 0}}">
-    <view class="holder flex-row align-center justify-center">
-      <view class="text-center">
-        <view class="draft subhead">没有记录</view>
-      </view>
-    </view>
-  </block>
-  <block wx:if="{{records.length == 1}}">
-    <view class="card"
-          wx:for="{{records}}">
-      <view class="card-media">
-        <image class="icon"
-               src="{{item.meta.figure || image.default_img}}"
-               background-size="cover"
-               background-position="center center"/>
-      </view>
-      <view class="card-text">
-        <view class="title">{{item.meta.title}}</view>
-        <view class="caption">{{item.updated}}</view>
-      </view>
-    </view>
-  </block>
-</view>
-
+  </view>
 </block>

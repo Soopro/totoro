@@ -156,6 +156,21 @@ App
 
     return share_opts
 
+  sync_profile: (userinfo)->
+    _gender_map =
+      1: 1  # male
+      2: 0  # female
+      0: 2  # unknow
+    restUser.profile.update
+      meta:
+        country: userinfo.country or ''
+        province: userinfo.province or ''
+        city: userinfo.city or ''
+        language: userinfo.language or 'zh_CN'
+        name: userinfo.nickName or ''
+        avatar: userinfo.avatarUrl or ''
+        gender: _gender_map[userinfo.gender] or 2
+
   # helpers
   _raise_error: ->
     wx.redirectTo
