@@ -3,44 +3,11 @@ from __future__ import absolute_import
 
 from document import MongodbConn
 
-from common_models import (User, Invite, OAuth, UserBehavior,
-                           UserExternalStorage,
-                           App, Media, Menu, Slot,
-                           Member, MemberRole,
-                           Activity, Appointment,
-                           Assistant,
-                           Theme, ThemePayload, Template,
-                           Extension, ExtensionInstaller,
-                           ContentType, ContentFile,
-                           Category, Term,
-                           Commodity, CommoditySku, Discount, Order)
-
-from blueprints.wechat_mina.models import MinaConfig
-
-from blueprints.wechat.models import (WxConfig,
-                                      WxResponse,
-                                      WxSubscriber,
-                                      WxBroadcast,
-                                      WxMaterial)
+from common_models import (User, Book, BookRecord, BookVolume, Term, Media)
 
 
 models = [
-    User, Invite, OAuth, UserBehavior,
-    UserExternalStorage,
-    App, Media, Menu, Slot,
-    Member, MemberRole,
-    Activity, Appointment,
-    Assistant,
-    Theme, ThemePayload, Template,
-    Extension, ExtensionInstaller,
-    ContentType, ContentFile,
-    Category, Term,
-    Commodity, CommoditySku, Discount, Order,
-
-    MinaConfig,
-
-    WxConfig, WxBroadcast, WxMaterial,
-    WxResponse, WxSubscriber,
+    User, Book, BookRecord, BookVolume, Term, Media
 ]
 
 

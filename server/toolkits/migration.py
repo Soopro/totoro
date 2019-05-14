@@ -18,6 +18,11 @@ def migration(cfg_type='default'):
     mongodb_conn, mongodb = connect_mongodb(cfg)
 
     # users
-    UserMigration(User).migrate_all(collection=mongodb.User.collection)
+    UserMigration(mongodb.User).\
+        migrate_all(collection=mongodb.User.collection)
+
+    # book
+    BookMigration(mongodb.Book).\
+        migrate_all(collection=mongodb.Book.collection)
 
     return True

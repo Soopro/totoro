@@ -109,7 +109,8 @@ class Book(BaseDocument):
     # override
     def save(self, *args, **kwargs):
         tags = [tag.strip().lower() for tag in self['tags']]
-        self['_keywords'] = list(set([self['slug']] + tags))
+        slug_keys = [self['slug']] + self['slug'].split('-')
+        self['_keywords'] = list(set(slug_keys + tags))
         return super(Book, self).save(*args, **kwargs)
 
 

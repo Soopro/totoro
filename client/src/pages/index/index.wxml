@@ -74,6 +74,16 @@
 </view>
 
 <view wx:elif="{{scene == 1}}">
+  <block wx:if="{{records.length == 0}}">
+    <view class="holder-md flex-row align-center justify-center">
+      <view class="text-center">
+        <view class="draft subhead">没有记录</view>
+      </view>
+    </view>
+  </block>
+  <block wx:if="{{records.length == 1}}">
+
+  </block>
 </view>
 
 </block>
