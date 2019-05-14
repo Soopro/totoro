@@ -1,15 +1,12 @@
-<wxs src="../../translator.wxs" module="_"></wxs>
-{{_('$set', store.locale)}}
-
 <view class="flex-column centered fullscreen">
   <view class="text-center">
     <view>
       <icon type="clear" size="96"/>
     </view>
-    <text class="headline">{{_('Error')}}</text>
+    <text class="headline">出错了</text>
     <view class="holder-sm"></view>
     <button class="raised"
             type="primary"
-            bind:tap="back">{{_('Click here to Relaunch')}}</button>
+            bind:tap="back">点这里重新加载</button>
   </view>
 </view>

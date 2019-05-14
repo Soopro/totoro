@@ -1,6 +1,4 @@
-<wxs src="../../translator.wxs" module="_"></wxs>
 <wxs src="../../filters.wxs" module="f"></wxs>
-{{_('$set', store.locale)}}
 
 <!-- cover -->
 <view class="cover"
@@ -15,17 +13,16 @@
   <view class="grid-list">
     <view class="grid"
           wx:for="{{books}}"
+          wx:for-item="book"
           wx:key="index">
       <view class="card"
             bind:tap="enter"
-            data-item="{{item}}">
-        <image src="{{item.meta.figure}}" mode="aspectFill" lazy-load/>
+            data-slug="{{book.slug}}">
+        <image src="{{book.meta.figure}}" mode="aspectFill" lazy-load/>
         <view class="card-title">
-          <text class="title">{{item.title}}</text>
-          <view>
-            <text class="accent"
-                  wx:if="{{item.price}}">¥ {{f.price(item.price)}}</text>
-            <text class="accent" wx:else>{{_('Free')}}</text>
+          <view class="card-title-text">
+            <text class="title">{{book.meta.title}}</text>
+            <text class="accent">U币: {{book.credit}}</text>
           </view>
         </view>
       </view>
@@ -38,6 +35,6 @@
 <view class="footer"
       wx:if="{{books.length > 0}}">
   <component-loadmore loading="{{is_loading}}" has-more="{{has_more}}">
-    {{_('Scroll down for more')}}
+    下拉获取更多
   </component-loadmore>
 </view>

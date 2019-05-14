@@ -1,6 +1,4 @@
-<wxs src="../../translator.wxs" module="_"></wxs>
 <wxs src="../../filters.wxs" module="f"></wxs>
-{{_('$set', store.locale)}}
 
 <block wx:if="{{id}}">
 <!-- carousel -->
