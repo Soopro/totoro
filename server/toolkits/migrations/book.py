@@ -5,15 +5,15 @@ from mongokit import DocumentMigration
 
 
 class BookMigration(DocumentMigration):
-
-    def allmigration01_rename_figure(self):
-        self.target = {'meta.cover_src': {'$exists': True}}
-        if not self.status:
-            self.update = {
-                '$rename': {
-                    'meta.cover_src': 'meta.figure'
-                },
-            }
+    pass
+    # def allmigration01_rename_figure(self):
+    #     self.target = {'meta.cover_src': {'$exists': True}}
+    #     if not self.status:
+    #         self.update = {
+    #             '$rename': {
+    #                 'meta.cover_src': 'meta.figure'
+    #             },
+    #         }
 
     # def allmigration01_refine_keywords(self):
     #     if not self.status:
@@ -31,3 +31,14 @@ class BookMigration(DocumentMigration):
     #                                    multi=True,
     #                                    safe=True)
     #             print 'refine keywords:', doc['slug'], slug_keys
+
+
+class BookVolumeMigration(DocumentMigration):
+    def allmigration01_rename_figure(self):
+        self.target = {'meta.cover_src': {'$exists': True}}
+        if not self.status:
+            self.update = {
+                '$rename': {
+                    'meta.cover_src': 'meta.figure'
+                },
+            }

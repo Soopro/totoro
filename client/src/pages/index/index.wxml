@@ -63,6 +63,7 @@
           wx:key="index"
           bind:tap="open"
           data-slug="{{book.slug}}">
+
       <view class="card-title">
         <view class="card-title-media">
           <image src="{{book.meta.figure || image.default_img}}"
@@ -80,14 +81,14 @@
 
 <view wx:elif="{{scene == 1}}">
   <block wx:if="{{records.length == 0}}">
-    <view class="holder-md flex-row align-center justify-center">
+    <view class="holder flex-row align-center justify-center">
       <view class="text-center">
         <view class="draft subhead">没有记录</view>
       </view>
     </view>
   </block>
   <block wx:if="{{records.length == 1}}">
-    <view class="card row"
+    <view class="card"
           wx:for="{{records}}">
       <view class="card-media">
         <image class="icon"
