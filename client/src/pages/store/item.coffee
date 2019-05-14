@@ -20,6 +20,9 @@ core.Page
     self = @
     restStore.book.get(slug)
     .then (book)->
-      console.log book
       self.setData
         book: book
+
+  borrow: (slug)->
+    self = @
+    console.log slug
