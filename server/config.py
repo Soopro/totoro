@@ -111,6 +111,7 @@ config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
+    'prd': ProductionConfig,
     'testcase': TestCaseConfig,
     'default': DevelopmentConfig
 }
