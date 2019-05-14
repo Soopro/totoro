@@ -1,12 +1,17 @@
-<view class="flex-column centered fullscreen">
-  <view class="text-center">
-    <view>
-      <icon type="clear" size="96"/>
+<view class="container draft">
+  <view class="holder flex-column centered">
+    <view class="ico ico-warn warn xxl"/>
+    <view class="subhead warn">
+      出错了
     </view>
-    <text class="headline">出错了</text>
-    <view class="holder-sm"></view>
-    <button class="raised"
-            type="primary"
-            bind:tap="back">点这里重新加载</button>
+    <view class="layout-margin">
+      <view>
+        <button class="raised"
+                type="accent"
+                bind:tap="back">
+          点这里重新加载
+        </button>
+      </view>
+    </view>
   </view>
 </view>

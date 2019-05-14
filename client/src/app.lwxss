@@ -10,17 +10,6 @@
   }
 }
 
-.splash .brand {
-  position: absolute;
-  bottom: 30rpx;
-  left: 50%;
-  .transform(translateX(-50%));
-  width: 180rpx;
-  height: 100rpx;
-  z-index: 999;
-  background-size: contain;
-  background-position: center;
-}
 
 .major-carousel {
   &:before,

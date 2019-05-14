@@ -62,11 +62,6 @@
         <td>{{media.filename}}</td>
         <td>{{media.creation|dateformat}}</td>
         <td class="text-center">
-          <a class="btn btn-info"
-             href="{{media.src}}"
-             target="_blank">
-            <span class="glyphicon glyphicon-link"></span>
-          </a>
           <a class="btn btn-danger"
              href="{{url_for('.remove', media_id=media._id,
                                         paged=p.paged)}}">

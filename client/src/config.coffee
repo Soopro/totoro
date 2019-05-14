@@ -1,7 +1,7 @@
 # Config
 config =
   baseURL:
-    api: 'http://localhost:9000'
+    api: 'http://192.168.1.147:9000'
 
   paths:
     index: '/pages/index/index'

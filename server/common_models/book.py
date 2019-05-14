@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 from document import BaseDocument, ObjectId, INDEX_DESC
-from utils.misc import now
+from utils.misc import now, parse_int
 
 
 class Book(BaseDocument):
@@ -77,14 +77,15 @@ class Book(BaseDocument):
             'status': self.STATUS_ONLINE
         })
 
-    def find_activated(self, term=None):
-        query = {
+    def find_activated(self, term=None, timestamp=None):
+        _query = {
             'status': self.STATUS_ONLINE
         }
         if term:
-            query.update({'terms': term})
-        cursor = self.find(query).sort([('rating', INDEX_DESC),
-                                        ('creation', INDEX_DESC)])
+            _query.update({'terms': term})
+        _query = self._attach_timestamp(_query, timestamp)
+        cursor = self.find(_query).sort([('rating', INDEX_DESC),
+                                         ('creation', INDEX_DESC)])
         return cursor.limit(self.MAX_QUERY)
 
     def find_by_ids(self, id_list):
@@ -98,10 +99,13 @@ class Book(BaseDocument):
     def find_all(self):
         return self.find().sort('creation', INDEX_DESC).limit(self.MAX_QUERY)
 
-    def search(self, keys):
-        return self.find({
+    def search(self, keys, timestamp=None):
+        _query = {
             '_keywords': {'$all': [k.lower() for k in keys if k]}
-        }).sort('creation', INDEX_DESC).limit(self.MAX_QUERY)
+        }
+        _query = self._attach_timestamp(_query, timestamp)
+        cursor = self.find(_query).sort('creation', INDEX_DESC)
+        return cursor.limit(self.MAX_QUERY)
 
     def count_used(self):
         return self.find().count()
@@ -112,6 +116,16 @@ class Book(BaseDocument):
         slug_keys = [self['slug']] + self['slug'].split('-')
         self['_keywords'] = list(set(slug_keys + tags))
         return super(Book, self).save(*args, **kwargs)
+
+    # helpers
+    def _attach_timestamp(self, find_query, timestamp):
+        # use to prevent duplicate entries when pagination
+        if not timestamp:
+            return find_query
+        find_query.update({
+            'updated': {'$lt': parse_int(timestamp)}
+        })
+        return find_query
 
 
 class BookVolume(BaseDocument):

@@ -20,6 +20,7 @@ route_inject(blueprint, urlpatterns)
 open_api_endpoints = [
     '{}.get_configure'.format(bp_name),
     '{}.list_books'.format(bp_name),
+    '{}.search_books'.format(bp_name),
     '{}.get_book'.format(bp_name),
     '{}.list_terms'.format(bp_name),
     '{}.get_term'.format(bp_name),

@@ -13,7 +13,6 @@ core.Page
     meta: {}
     content: ''
 
-  paged: 1
   timestamp: null
 
 
@@ -35,14 +34,12 @@ core.Page
   onReachBottom: ->
     self = @
     if self.data.has_more is true
-      self.paged += 1
       self.list()
 
 
   # hanlders
   refresh: ->
     self = @
-    self.paged = 1
     self.timestamp = utils.now()
 
     self.setData
@@ -58,7 +55,7 @@ core.Page
       is_loading: true
 
     restStore.book.list
-      paged: self.paged
+      offset: self.data.books.length
       t: self.timestamp
     .then (results)->
       self.setData
@@ -68,13 +65,46 @@ core.Page
       self.setData
         is_loading: false
 
+  search: (e)->
+    self = @
+    self.setData
+      is_loading: true
+    try
+      keys = e.detail.value.keywords.split()
+    catch
+      self.setData
+        books: []
+        has_more: false
+      return
+
+    restStore.book.search
+      search_keys: keys
+    .then (results)->
+      self.setData
+        books: results
+        has_more: false
+    .finally ->
+      self.setData
+        is_loading: false
+
+  scan: ->
+    self = @
+    wx.scanCode
+      success: (data) ->
+        try
+          slug = data.result.split('/')[0]
+        catch
+          return
+        app.nav.go
+          route: core.config.paths.item
+          args:
+            slug: slug
 
   enter: (e)->
     self = @
-    item = e.currentTarget.dataset.item
-    console.log item
-    return if not item
+    slug = e.currentTarget.dataset.slug
+    return if not slug
     app.nav.go
       route: core.config.paths.item
       args:
-        slug: item.slug
+        slug: slug

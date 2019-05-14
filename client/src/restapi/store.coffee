@@ -6,6 +6,9 @@ get_configure = ->
 list_books = (args)->
   requests.get('/store/book', args)
 
+search_books = (data)->
+  requests.post('/store/search', data)
+
 get_book = (book_slug)->
   requests.get('/store/book/'+book_slug)
 
@@ -22,6 +25,7 @@ module.exports =
   book:
     list: list_books
     get: get_book
+    search: search_books
   category:
     list: list_category
     get: get_category

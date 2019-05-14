@@ -12,5 +12,5 @@ urlpatterns = [
     ('/category', list_terms, 'GET'),
     ('/category/<term_key>', get_term, 'GET'),
 
-    ('/search', search, 'POST'),
+    ('/search', search_books, 'POST'),
 ]

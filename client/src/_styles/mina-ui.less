@@ -385,6 +385,7 @@ page {
     align-items: start;
     &:extend(.flex-row);
     & .card-title-text {
+      overflow: hidden !important;
       flex: 1;
       margin: 0;
       padding: @space-size-xs;
@@ -509,7 +510,7 @@ label,
   color: @color-gray;
   font-size: @font-xs;
   margin-bottom: @space-size-xs;
-  &:extend(.text-nowrap);
+  &:extend(.text-truncate);
   &.bold {
     font-weight: bold;
   }
@@ -528,7 +529,7 @@ label,
   margin: @space-size-xs;
   color: @color-light;
   background-color: lighten(@color-gray, 10%);
-  &:extend(.text-nowrap);
+  &:extend(.text-truncate);
   &.primary {
     background-color: @color-primary;
   }

@@ -1,11 +1,26 @@
 <wxs src="../../filters.wxs" module="f"></wxs>
 
-<!-- cover -->
-<view class="cover"
-      wx:if="{{meta.hero}}">
-  <image src="{{meta.hero.src}}"
-         background-size="cover"
-         background-position="center center"/>
+<!-- search -->
+<view class="container">
+  <form bindsubmit="search">
+    <view class="flex-row align-items-center">
+      <input class="flex"
+             name="keywords"
+             placeholder="输入图书名称" />
+      <button class="raised"
+              type="accent"
+              form-type="submit"
+              size="sm">
+        <text>搜索</text>
+      </button>
+      <button class="raised"
+              type="accent"
+              bind:tap="scan"
+              size="sm">
+        <text>扫描</text>
+      </button>
+    </view>
+  </form>
 </view>
 
 <!-- books -->
@@ -18,11 +33,12 @@
       <view class="card"
             bind:tap="enter"
             data-slug="{{book.slug}}">
-        <image src="{{book.meta.figure}}" mode="aspectFill" lazy-load/>
+        <image class="prd-item-img"
+               src="{{book.meta.figure}}" mode="aspectFill" lazy-load/>
         <view class="card-title">
           <view class="card-title-text">
-            <text class="title">{{book.meta.title}}</text>
-            <text class="accent">U币: {{book.credit}}</text>
+            <view class="title text-truncate">{{book.meta.title}}</view>
+            <text class="accent caption">需花费 {{book.credit}} U币</text>
           </view>
         </view>
       </view>
