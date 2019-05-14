@@ -61,8 +61,7 @@
           wx:for="{{volumes}}"
           wx:key="index">
       <view class="card-media">
-        <image class="avatar"
-               src="{{item.meta.cover_src || image.default_img}}"
+        <image src="{{item.meta.cover_src || image.default_img}}"
                background-size="cover"
                background-position="center center"/>
       </view>
@@ -82,8 +81,18 @@
     </view>
   </block>
   <block wx:if="{{records.length == 1}}">
-    <view wx:for="{{records}}">
-
+    <view class="card row"
+          wx:for="{{records}}">
+      <view class="card-media">
+        <image class="icon"
+               src="{{item.meta.cover_src || image.default_img}}"
+               background-size="cover"
+               background-position="center center"/>
+      </view>
+      <view class="card-text">
+        <view class="title">{{item.meta.title}}</view>
+        <view class="caption">{{item.updated}}</view>
+      </view>
     </view>
   </block>
 </view>
