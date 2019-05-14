@@ -82,7 +82,9 @@
     </view>
   </block>
   <block wx:if="{{records.length == 1}}">
+    <view wx:for="{{records}}">
 
+    </view>
   </block>
 </view>
 

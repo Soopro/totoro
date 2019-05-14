@@ -243,6 +243,12 @@ class BookVolume(BaseDocument):
             'status': self.STATUS_STOCK
         }).count()
 
+    def count_lend(self, user_id):
+        return self.find({
+            'user_id': ObjectId(user_id),
+            'status': self.STATUS_LEND
+        }).count()
+
 
 class BookRecord(BaseDocument):
     STATUS_CHECKIN, STATUS_CHECKOUT = (0, 1)

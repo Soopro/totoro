@@ -10,7 +10,10 @@ from utils.model import make_offset_paginator, attach_extend
 
 from apiresps.validations import Struct
 
-from ..errors import BookNotFound, BookNotEnoughVolume
+from ..errors import (BookNotFound,
+                      BookNotEnoughVolume,
+                      BookNotEnoughCredit,
+                      BookReachBorrowLimit)
 
 
 @output_json
@@ -40,10 +43,16 @@ def checkin_book():
     slug = get_param('slug', Struct.Attr, True)
 
     user = g.curr_user
+
+    BookVolume = current_app.mongodb.BookVolume
     book = current_app.mongodb.Book.find_one_by_slug(slug)
     if not book:
         raise BookNotFound
-    BookVolume = current_app.mongodb.BookVolume
+    elif user['credit'] < book['credit']:
+        raise BookNotEnoughCredit
+    elif BookVolume.count_lend(user['_id']) > BookVolume.MAX_LEND:
+        raise BookReachBorrowLimit
+
     volume = BookVolume.find_one_stocked_by_bookid(book['_id'])
     if volume:
         volume['user_id'] = user['_id']
@@ -51,6 +60,21 @@ def checkin_book():
         volume['borrowing_time'] = now()
         volume['status'] = BookVolume.STATUS_PENDING
         volume.save()
+
+        user['credit'] -= book['credit']
+        user.save()
+
+        BookRecord = current_app.mongodb.BookRecord
+        record = BookRecord()
+        record['user_id'] = user['_id']
+        record['book_id'] = book['_id']
+        record['borrower'] = user['login']
+        record['volume'] = volume['code']
+        record['meta'] = {
+            'title': book['meta'].get('title', '-')
+        }
+        record['status'] = BookRecord.STATUS_CHECKOUT
+        record.save()
     else:
         raise BookNotEnoughVolume
 

@@ -14,6 +14,16 @@ class BookNotEnoughVolume(NotFound):
     status_message = 'BOOK_NOT_ENOUGH_VOLUME'
 
 
+class BookNotEnoughCredit(NotFound):
+    response_code = 500003
+    status_message = 'BOOK_NOT_ENOUGH_CREDIT'
+
+
+class BookReachBorrowLimit(NotFound):
+    response_code = 500004
+    status_message = 'BOOK_REACH_BORROW_LIMIT'
+
+
 class CategoryNotFound(NotFound):
     response_code = 500101
     status_message = 'CATEGORY_NOT_FOUND'
