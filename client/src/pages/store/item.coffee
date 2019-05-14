@@ -15,7 +15,7 @@ core.Page
     self = @
     self.get_book(opts.slug)
 
-  # hanlders
+  # methods
   get_book: (slug)->
     self = @
     restStore.book.get(slug)
@@ -23,6 +23,7 @@ core.Page
       self.setData
         book: book
 
-  borrow: (slug)->
+  # hanlders
+  borrow: (e)->
     self = @
     console.log slug

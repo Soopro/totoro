@@ -64,7 +64,8 @@
       </button>
       <button class="flex sider-left"
               type="accent"
-              bind:tap="borrow">
+              bind:tap="borrow"
+              data-book="{{book}}">
         立刻借阅
       </button>
     </view>

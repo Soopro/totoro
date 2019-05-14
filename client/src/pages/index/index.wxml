@@ -52,7 +52,7 @@
           <view class="draft subhead">没有借阅</view>
           <button class="raised"
                   type="accent"
-                  bind:tap="find_book">去找本书吧？</button>
+                  bind:tap="go_library">去找本书吧？</button>
         </view>
       </view>
     </block>

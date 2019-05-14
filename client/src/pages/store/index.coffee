@@ -24,7 +24,6 @@ core.Page
     self = @
     self.refresh()
 
-
   onPullDownRefresh: ->
     self = @
     self.refresh()
@@ -37,7 +36,7 @@ core.Page
       self.list()
 
 
-  # hanlders
+  # methods
   refresh: ->
     self = @
     self.timestamp = utils.now()
@@ -65,6 +64,7 @@ core.Page
       self.setData
         is_loading: false
 
+  # hanlders
   search: (e)->
     self = @
     self.setData

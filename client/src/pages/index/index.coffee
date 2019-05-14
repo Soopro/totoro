@@ -26,6 +26,7 @@ core.Page
       self.inv_volumes()
       self.inv_records()
 
+
   # hanlders
   inv_volumes: ->
     self = @
@@ -41,7 +42,7 @@ core.Page
       self.setData
         records: records
 
-  find_book: ->
+  go_library: ->
     app.nav.tab
       route: core.config.paths.store
 
@@ -62,7 +63,7 @@ core.Page
       self.setData
         profile: profile
 
-  # member
+
   join: (e)->
     self = @
     encrypted_data = e.detail.encryptedData
