@@ -46,7 +46,7 @@ filter_html_entity = (str)->
 
 # dateformat
 filter_date_formatted = (timestamp)->
-  date = Date(timestamp)
+  date = getDate(timestamp)
   year = date.getFullYear()
   month = date.getMonth() + 1
   day = date.getDate()
