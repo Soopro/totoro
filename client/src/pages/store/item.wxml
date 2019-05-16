@@ -65,6 +65,7 @@
       <button class="flex sider-left"
               type="accent"
               bind:tap="borrow"
+              disabled="{{book.activated != 1 || book.vol_count <= 0}}"
               data-book="{{book}}">
         立刻借阅
       </button>

@@ -37,7 +37,7 @@ def get_book(book_slug):
     book = current_app.mongodb.Book.find_one_by_slug(book_slug)
     if not book:
         raise BookNotFound
-    return output_book(book, True)
+    return output_single_book(book)
 
 
 @output_json
@@ -69,7 +69,7 @@ def checkin_book():
     else:
         raise BookNotEnoughVolume
 
-    return output_book(book)
+    return output_single_book(book)
 
 
 @output_json
@@ -85,12 +85,7 @@ def search_books():
 
 
 # outputs
-def output_book(book, has_count=False):
-    if has_count:
-        vol_count = current_app.mongodb.\
-            BookVolume.count_stocked(book['_id'])
-    else:
-        vol_count = None
+def output_book(book):
     return {
         'id': book['_id'],
         'slug': book['slug'],
@@ -99,8 +94,20 @@ def output_book(book, has_count=False):
         'meta': book['meta'],
         'credit': book['credit'],
         'value': book['value'],
-        'vol_count': vol_count,
         'status': book['status'],
         'creation': book['creation'],
         'updated': book['updated'],
     }
+
+
+def output_single_book(book):
+    book = output_book(book)
+    user = g.curr_user
+    User = current_app.mongodb.User
+    vol_count = current_app.mongodb.\
+        BookVolume.count_stocked(book['_id'])
+    book.update({
+        'activated': user['status'] == User.STATUS_ACTIVATED,
+        'vol_count': vol_count,
+    })
+    return book
