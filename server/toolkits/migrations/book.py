@@ -34,12 +34,20 @@ class BookMigration(DocumentMigration):
 
 
 class BookVolumeMigration(DocumentMigration):
-    pass
-    # def allmigration01_rename_figure(self):
-    #     self.target = {'meta.cover_src': {'$exists': True}}
-    #     if not self.status:
-    #         self.update = {
-    #             '$rename': {
-    #                 'meta.cover_src': 'meta.figure'
-    #             },
-    #         }
+    def allmigration01_rename_rental_time(self):
+        self.target = {'borrowing_time': {'$exists': True}}
+        if not self.status:
+            self.update = {
+                '$rename': {
+                    'borrowing_time': 'rental_time'
+                },
+            }
+
+    def allmigration01_rename_renter(self):
+        self.target = {'borrower': {'$exists': True}}
+        if not self.status:
+            self.update = {
+                '$rename': {
+                    'borrower': 'renter'
+                },
+            }

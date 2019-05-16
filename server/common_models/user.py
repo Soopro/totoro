@@ -69,6 +69,8 @@ class User(BaseDocument):
         })
 
     def find_one_by_login(self, login):
+        if not login:
+            return None
         return self.find_one({
             'login': login,
         })

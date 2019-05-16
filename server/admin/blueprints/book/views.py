@@ -268,12 +268,14 @@ def checkout_volume(book_id, vol_id):
     user = current_app.mongodb.User.find_one_by_login(login)
     if not user:
         raise Exception('user not found')
+    elif user['status'] != current_app.mongodb.User.STATUS_ACTIVATED:
+        raise Exception('user not activated')
     elif user['credit'] < book['credit']:
         raise Exception('Not enough credit.')
 
     BookVolume = current_app.mongodb.BookVolume
     volume = BookVolume.find_one_by_bookid_id(book_id, vol_id)
-    if volume and volume['statis'] == BookVolume.STATUS_STOCK:
+    if volume and volume['status'] == BookVolume.STATUS_STOCK:
         volume['user_id'] = user['_id']
         volume['renter'] = user['login']
         volume['rental_time'] = now()

@@ -5,7 +5,7 @@ from mongokit import DocumentMigration
 
 
 class ConfigMigration(DocumentMigration):
-    def allmigration01_rename_figure(self):
+    def allmigration01_rename_time_limit(self):
         self.target = {'borrowing_time_limit': {'$exists': True}}
         if not self.status:
             self.update = {

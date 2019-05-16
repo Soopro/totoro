@@ -14,7 +14,7 @@ def list_volumes():
         BookVolume.find_lend_by_uid(user['_id'])
     pending_vols = current_app.mongodb.\
         BookVolume.find_pending_by_uid(user['_id'])
-    volumes = pending_vols + volumes
+    volumes = list(pending_vols) + list(volumes)
     return [output_volume(vol) for vol in volumes]
 
 

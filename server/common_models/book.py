@@ -273,13 +273,14 @@ class BookRecord(BaseDocument):
         'book_id': ObjectId,
         'user_id': ObjectId,
         'volume': unicode,  # volume code
+        'customer': unicode,  # user login
         'meta': dict,
         'status': int,
         'creation': int,
         'updated': int,
     }
     sensitive_fields = ['meta']
-    required_fields = ['book_id', 'user_id', 'volume']
+    required_fields = ['book_id', 'user_id', 'volume', 'customer']
     default_values = {
         'meta': {},
         'creation': now,

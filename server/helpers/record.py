@@ -17,9 +17,10 @@ def _recording(book, volume, user, is_checkin):
     record['user_id'] = user['_id']
     record['book_id'] = book['_id']
     record['volume'] = volume['code']
+    record['customer'] = user['login']
     record['meta'] = {
         'title': book['meta'].get('title') or u'-',
-        'name': user['meta'].get('name') or user['login']
+        'customer': user['meta'].get('name') or user['login']
     }
     if is_checkin:
         record['status'] = BookRecord.STATUS_CHECKIN

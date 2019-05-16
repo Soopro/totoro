@@ -68,7 +68,8 @@
         </td>
         <td>
           {% if user.meta.name %}
-            <b>{{user.meta.name}}</b>
+            <b>{{user.meta.name}}</b><br>
+            {{user.login or '-'}}
           {% else %}
             <i><small>&lt;No Name&gt;</small></i>
           {% endif %}
