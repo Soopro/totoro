@@ -101,13 +101,13 @@ def output_book(book):
 
 
 def output_single_book(book):
-    book = output_book(book)
+    output = output_book(book)
     user = g.curr_user
     User = current_app.mongodb.User
     vol_count = current_app.mongodb.\
         BookVolume.count_stocked(book['_id'])
-    book.update({
+    output.update({
         'activated': user['status'] == User.STATUS_ACTIVATED,
         'vol_count': vol_count,
     })
-    return book
+    return output
