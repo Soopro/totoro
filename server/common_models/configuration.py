@@ -12,7 +12,7 @@ class Configuration(BaseDocument):
         'mina_app_secret': unicode,
         'passcode_hash': unicode,
         'meta': dict,
-        'borrowing_time_limit': int,
+        'rental_time_limit': int,
         'creation': int,
         'updated': int
     }
@@ -21,7 +21,7 @@ class Configuration(BaseDocument):
         'mina_app_secret': u'',
         'passcode_hash': u'',
         'meta': {},
-        'borrowing_time_limit': 0,
+        'rental_time_limit': 0,
         'creation': now,
         'updated': now
     }

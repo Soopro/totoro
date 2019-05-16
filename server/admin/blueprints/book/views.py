@@ -21,6 +21,7 @@ from utils.misc import (parse_int,
                         uuid4_hex,
                         now)
 
+from helpers.record import recording
 from admin.decorators import login_required
 
 
@@ -76,11 +77,11 @@ def detail(book_id):
     terms = current_app.mongodb.Term.find_all()
     vol_list = current_app.mongodb.BookVolume.find_by_bookid(book['_id'])
     volumes = []
-    overtime_limit = configure['borrowing_time_limit']
+    overtime_limit = configure['rental_time_limit']
     for vol in vol_list:
         if overtime_limit:
-            vol['overtime'] = vol['borrowing_time'] != 0 and \
-                vol['borrowing_time'] <= overtime_limit
+            vol['overtime'] = vol['rental_time'] != 0 and \
+                vol['rental_time'] <= overtime_limit
         else:
             vol['overtime'] = False
         volumes.append(vol)
@@ -186,27 +187,13 @@ def create_volume(book_id):
     return redirect(return_url)
 
 
-@blueprint.route('/<book_id>/volume/<vol_id>/release')
-@login_required
-def release_volume(book_id, vol_id):
-    book = _find_book(book_id)
-    volume = current_app.mongodb.\
-        BookVolume.find_one_by_bookid_id(book_id, vol_id)
-    if volume and volume['borrower']:
-        volume['user_id'] = None
-        volume['borrower'] = u''
-        volume.save()
-    return_url = url_for('.detail', book_id=book['_id'])
-    return redirect(return_url)
-
-
 @blueprint.route('/<book_id>/volume/<vol_id>/remove')
 @login_required
 def remove_volume(book_id, vol_id):
     book = _find_book(book_id)
     volume = current_app.mongodb.\
         BookVolume.find_one_by_bookid_id(book_id, vol_id)
-    if volume and not volume['borrower']:
+    if volume and not volume['renter']:
         volume.delete()
     return_url = url_for('.detail', book_id=book['_id'])
     return redirect(return_url)
@@ -222,8 +209,8 @@ def attach_cover(book_id):
 
     uploads_url = current_app.config.get('UPLOADS_URL')
     book['meta']['figure'] = u'{}/{}/{}'.format(uploads_url,
-                                                   media['scope'],
-                                                   media['key'])
+                                                media['scope'],
+                                                media['key'])
     book.save()
     return redirect(request.referrer)
 
@@ -251,6 +238,52 @@ def attach_preview(book_id):
     book.save()
 
     return redirect(request.referrer)
+
+
+@blueprint.route('/<book_id>/volume/<vol_id>/checkin')
+@login_required
+def checkin_volume(book_id, vol_id):
+    book = _find_book(book_id)
+    BookVolume = current_app.mongodb.BookVolume
+    volume = BookVolume.find_one_by_bookid_id(book_id, vol_id)
+    user = current_app.mongodb.User.find_one_by_id(volume['user_id'])
+    if volume and volume['status'] == BookVolume.STATUS_LEND:
+        volume['user_id'] = None
+        volume['renter'] = u''
+        volume['rental_time'] = 0
+        volume['status'] = BookVolume.STATUS_STOCK
+        volume.save()
+        recording(book, volume, user, True)
+    return_url = url_for('.detail', book_id=book['_id'])
+    return redirect(return_url)
+
+
+@blueprint.route('/<book_id>/volume/<vol_id>/checkout', methods=['POST'])
+@login_required
+def checkout_volume(book_id, vol_id):
+    login = request.form.get('login')
+
+    book = _find_book(book_id)
+
+    user = current_app.mongodb.User.find_one_by_login(login)
+    if not user:
+        raise Exception('user not found')
+    elif user['credit'] < book['credit']:
+        raise Exception('Not enough credit.')
+
+    BookVolume = current_app.mongodb.BookVolume
+    volume = BookVolume.find_one_by_bookid_id(book_id, vol_id)
+    if volume and volume['statis'] == BookVolume.STATUS_STOCK:
+        volume['user_id'] = user['_id']
+        volume['renter'] = user['login']
+        volume['rental_time'] = now()
+        volume['status'] = BookVolume.STATUS_LEND
+        volume.save()
+        user['credit'] -= book['credit']
+        user.save()
+        recording(book, volume, user)
+    return_url = url_for('.detail', book_id=book['_id'])
+    return redirect(return_url)
 
 
 @blueprint.route('/category')

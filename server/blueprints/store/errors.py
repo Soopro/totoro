@@ -19,9 +19,9 @@ class BookNotEnoughCredit(NotFound):
     status_message = 'BOOK_NOT_ENOUGH_CREDIT'
 
 
-class BookReachBorrowLimit(NotFound):
+class BookReachRentLimit(NotFound):
     response_code = 500004
-    status_message = 'BOOK_REACH_BORROW_LIMIT'
+    status_message = 'BOOK_REACH_RENT_LIMIT'
 
 
 class CategoryNotFound(NotFound):

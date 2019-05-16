@@ -10,7 +10,11 @@ from utils.response import output_json
 @output_json
 def list_volumes():
     user = g.curr_user
-    volumes = current_app.mongodb.BookVolume.find_lend_by_uid(user['_id'])
+    volumes = current_app.mongodb.\
+        BookVolume.find_lend_by_uid(user['_id'])
+    pending_vols = current_app.mongodb.\
+        BookVolume.find_pending_by_uid(user['_id'])
+    volumes = pending_vols + volumes
     return [output_volume(vol) for vol in volumes]
 
 
@@ -27,7 +31,7 @@ def output_volume(vol):
     return {
         'id': vol['_id'],
         'code': vol['code'],
-        'borrower': vol['borrower'],
+        'renter': vol['renter'],
         'meta': vol['meta'],
         'status': vol['status'],
         'creation': vol['creation'],
@@ -39,7 +43,6 @@ def output_record(record):
     return {
         'id': record['_id'],
         'volume': record['volume'],
-        'borrower': record['borrower'],
         'meta': record['meta'],
         'status': record['status'],
         'creation': record['creation'],

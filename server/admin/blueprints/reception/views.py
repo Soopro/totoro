@@ -12,6 +12,8 @@ from flask import (Blueprint,
 from admin.decorators import login_required
 from utils.misc import now
 
+from helpers.record import recording
+
 
 blueprint = Blueprint('reception', __name__, template_folder='pages')
 
@@ -41,13 +43,13 @@ def checkout():
             flash('Not enough credit.', 'warning')
         elif volume['status'] == BookVolume.STATUS_STOCK:
             volume['user_id'] = user['_id']
-            volume['borrower'] = user['login']
-            volume['borrowing_time'] = now()
+            volume['renter'] = user['login']
+            volume['rental_time'] = now()
             volume['status'] = BookVolume.STATUS_LEND
             volume.save()
             user['credit'] -= book['credit']
             user.save()
-            _recording(book, volume, user)
+            recording(book, volume, user)
             flash('Checkout.')
         else:
             flash('Book volume already lend by {}'.format(user['login']),
@@ -74,11 +76,11 @@ def checkin():
     if volume:
         if volume['status'] == BookVolume.STATUS_LEND:
             volume['user_id'] = None
-            volume['borrower'] = u''
-            volume['borrowing_time'] = 0
+            volume['renter'] = u''
+            volume['rental_time'] = 0
             volume['status'] = BookVolume.STATUS_STOCK
             volume.save()
-            _recording(book, volume, user, True)
+            recording(book, volume, user, True)
             flash('Checkin.')
         else:
             flash('Book volume is in stock', 'warning')
@@ -99,21 +101,3 @@ def _find_book_volume(book_slug, volume_code):
     volume = current_app.mongodb.\
         BookVolume.find_one_by_bookid_code(book['_id'], volume_code)
     return book, volume
-
-
-def _recording(book, volume, user, checkin=False):
-    BookRecord = current_app.mongodb.BookRecord
-    record = BookRecord()
-    record['user_id'] = user['_id']
-    record['book_id'] = book['_id']
-    record['borrower'] = user['login']
-    record['volume'] = volume['code']
-    record['meta'] = {
-        'title': book['meta'].get('title', '-')
-    }
-    if checkin:
-        record['status'] = BookRecord.STATUS_CHECKIN
-    else:
-        record['status'] = BookRecord.STATUS_CHECKOUT
-    record.save()
-    return record

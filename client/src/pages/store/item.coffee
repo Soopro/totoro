@@ -24,6 +24,11 @@ core.Page
         book: book
 
   # hanlders
-  borrow: (e)->
+  checkout: (e)->
     self = @
-    console.log slug
+    slug = e.currentTarget.dataset.slug
+    return if not slug
+    app.nav.go
+      route: core.config.paths.checkout
+      args:
+        slug: slug

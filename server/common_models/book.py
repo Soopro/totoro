@@ -138,8 +138,8 @@ class BookVolume(BaseDocument):
         'user_id': ObjectId,
         'scope': unicode,
         'code': unicode,
-        'borrower': unicode,  # user login
-        'borrowing_time': int,  # timestamp for the time borrowing
+        'renter': unicode,  # renter address
+        'rental_time': int,  # timestamp of the time rented
         'meta': dict,  # a copy of book meta
         'status': int,
         'creation': int,
@@ -148,8 +148,8 @@ class BookVolume(BaseDocument):
     required_fields = ['book_id', 'scope', 'code']
     default_values = {
         'user_id': None,
-        'borrower': u'',
-        'borrowing_time': 0,
+        'renter': u'',
+        'rental_time': 0,
         'meta': {},
         'creation': now,
         'updated': now,
@@ -164,7 +164,7 @@ class BookVolume(BaseDocument):
             'fields': ['user_id', 'status'],
         },
         {
-            'fields': ['borrowing_time'],
+            'fields': ['rental_time'],
         },
         {
             'fields': ['user_id'],
@@ -229,7 +229,7 @@ class BookVolume(BaseDocument):
         }
         if duration:
             query.update({
-                'borrowing_time': {
+                'rental_time': {
                     '$ne': 0,
                     '$lt': now() - duration,
                 }
@@ -273,7 +273,6 @@ class BookRecord(BaseDocument):
         'book_id': ObjectId,
         'user_id': ObjectId,
         'volume': unicode,  # volume code
-        'borrower': unicode,  # user login
         'meta': dict,
         'status': int,
         'creation': int,
@@ -282,7 +281,6 @@ class BookRecord(BaseDocument):
     sensitive_fields = ['meta']
     required_fields = ['book_id', 'user_id', 'volume']
     default_values = {
-        'borrower': u'',
         'meta': {},
         'creation': now,
         'updated': now,

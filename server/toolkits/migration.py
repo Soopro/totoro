@@ -28,4 +28,8 @@ def migration(cfg_type='default'):
     BookVolumeMigration(mongodb.BookVolume).\
         migrate_all(collection=mongodb.BookVolume.collection)
 
+    # configuration
+    ConfigMigration(mongodb.Configuration).\
+        migrate_all(collection=mongodb.Configuration.collection)
+
     return True

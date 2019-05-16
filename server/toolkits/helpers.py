@@ -3,11 +3,12 @@ from __future__ import absolute_import
 
 from document import MongodbConn
 
-from common_models import (User, Book, BookRecord, BookVolume, Term, Media)
+from common_models import (User, Book, BookRecord, BookVolume, Term, Media,
+                           Configuration)
 
 
 models = [
-    User, Book, BookRecord, BookVolume, Term, Media
+    User, Book, BookRecord, BookVolume, Term, Media, Configuration
 ]
 
 

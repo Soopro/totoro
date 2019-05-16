@@ -23,9 +23,9 @@ def index():
         'books': current_app.mongodb.Book.find().count(),
     }
     overtime_vols = []
-    if configure['borrowing_time_limit']:
+    if configure['rental_time_limit']:
         vol_list = current_app.mongodb.\
-            BookVolume.find_overtime(configure['borrowing_time_limit'])
+            BookVolume.find_overtime(configure['rental_time_limit'])
         for vol in vol_list:
             vol['overtime'] = True
             overtime_vols.append(vol)

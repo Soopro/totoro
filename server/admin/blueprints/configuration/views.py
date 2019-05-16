@@ -34,12 +34,12 @@ def index():
 def update():
     title = request.form.get('title')
     favicon = request.form.get('favicon')
-    borrowing_time_limit = request.form.get('borrowing_time_limit')
+    rental_time_limit = request.form.get('rental_time_limit')
     mina_app_id = request.form.get('mina_app_id')
     mina_app_secret = request.form.get('mina_app_secret')
 
     configure = g.configure
-    configure['borrowing_time_limit'] = parse_int(borrowing_time_limit, 0, 0)
+    configure['rental_time_limit'] = parse_int(rental_time_limit, 0, 0)
     configure['meta'].update({
         'title': title,
         'favicon': favicon if '://' in favicon else u''
