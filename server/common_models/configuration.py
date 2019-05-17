@@ -7,6 +7,9 @@ from utils.misc import now
 
 class Configuration(BaseDocument):
 
+    MINI_REFERRER_URL = 'https://servicewechat.com'
+    MINI_DEV_USER_AGENT = 'wechatdevtools'
+
     structure = {
         'mina_app_id': unicode,
         'mina_app_secret': unicode,
