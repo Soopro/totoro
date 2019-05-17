@@ -238,6 +238,11 @@ class BookVolume(BaseDocument):
             'status': self.STATUS_PENDING,
         }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
+    def find_pending(self):
+        return self.find({
+            'status': self.STATUS_PENDING,
+        }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+
     def find_overtime(self, duration=2592000):
         query = {
             'status': self.STATUS_LEND,
@@ -272,22 +277,28 @@ class BookVolume(BaseDocument):
             'status': self.STATUS_STOCK
         }).count()
 
-    def count_lend(self, user_id, book_id=None):
+    def count_lend(self, user_id=None, book_id=None):
         _query = {
-            'user_id': ObjectId(user_id),
             'status': self.STATUS_LEND
         }
+        if user_id:
+            _query.update({
+                'user_id': ObjectId(user_id)
+            })
         if book_id:
             _query.update({
                 'book_id': ObjectId(book_id),
             })
         return self.find(_query).count()
 
-    def count_pending(self, user_id, book_id=None):
+    def count_pending(self, user_id=None, book_id=None):
         _query = {
-            'user_id': ObjectId(user_id),
             'status': self.STATUS_PENDING
         }
+        if user_id:
+            _query.update({
+                'user_id': ObjectId(user_id)
+            })
         if book_id:
             _query.update({
                 'book_id': ObjectId(book_id),

@@ -195,7 +195,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
           {% if vol.status == 0 %}
-          <div class="alert alert-warning">Pending</div>
+          <div class="alert alert-warning">Pending: {{vol.renter}}</div>
           {% elif vol.status == 1 %}
           <div class="alert alert-info">in Stock</div>
           {% elif vol.status == 2 %}

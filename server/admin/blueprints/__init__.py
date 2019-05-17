@@ -23,6 +23,3 @@ def register_blueprints(app):
 
     from admin.blueprints.book import blueprint as book_module
     app.register_blueprint(book_module, url_prefix='/book')
-
-    from admin.blueprints.reception import blueprint as reception_module
-    app.register_blueprint(reception_module, url_prefix='/reception')
