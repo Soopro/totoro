@@ -12,7 +12,7 @@ restUser = require('restapi/user.js')
 App
   project:
     name: 'Totoro'
-    version: '0.1.1'
+    version: '0.1.2'
     creator: [
       'Redyyu'
     ]
