@@ -79,9 +79,8 @@ def detail(book_id):
     volumes = []
     overtime_limit = configure['rental_time_limit']
     for vol in vol_list:
-        if overtime_limit:
-            vol['overtime'] = vol['rental_time'] != 0 and \
-                vol['rental_time'] <= overtime_limit
+        if overtime_limit and vol['rental_time'] != 0:
+            vol['overtime'] = now() - overtime_limit > vol['rental_time']
         else:
             vol['overtime'] = False
         volumes.append(vol)
