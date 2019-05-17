@@ -12,7 +12,7 @@ restUser = require('restapi/user.js')
 App
   project:
     name: 'Totoro'
-    version: '0.1.0'
+    version: '0.1.1'
     creator: [
       'Redyyu'
     ]
@@ -25,6 +25,11 @@ App
     console.info self.project.name
     console.info self.project.version
     console.info self.project.creator.join(', ')
+    if utils.isDefined(opts.query.debug)
+      if opts.query.api
+        core.config.baseURL.api = opts.query.api
+        console.info 'Debug Mode'
+        console.info 'APIUrl is ' + core.config.baseURL.api
 
 
   onShow: (opts)->

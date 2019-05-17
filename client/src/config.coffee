@@ -1,7 +1,7 @@
 # Config
 config =
   baseURL:
-    api: 'http://192.168.1.147:9000'
+    api: 'https://api.totoro.namabi.com'
 
   paths:
     index: '/pages/index/index'
