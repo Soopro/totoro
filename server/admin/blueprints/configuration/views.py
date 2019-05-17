@@ -33,7 +33,7 @@ def index():
 @login_required
 def update():
     title = request.form.get('title')
-    favicon = request.form.get('favicon')
+    favicon = request.form.get('favicon', u'')
     rental_time_limit = request.form.get('rental_time_limit')
     mina_app_id = request.form.get('mina_app_id')
     mina_app_secret = request.form.get('mina_app_secret')
