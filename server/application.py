@@ -1,7 +1,7 @@
 # coding=utf-8
 from __future__ import absolute_import
 
-from flask import Flask, request, g, current_app, send_from_directory, abort
+from flask import Flask, request, g, current_app, send_from_directory
 from redis import ConnectionPool, Redis
 from mongokit import Connection as MongodbConn
 
@@ -137,20 +137,6 @@ def create_app(config_name='default'):
             if not configure:
                 raise PermissionDenied('configure')
             g.configure = configure
-
-            ref_url = current_app.mongodb.Configuration.MINI_REFERRER_URL
-            if current_app.debug:
-                print 'referrer_url:', ref_url
-                print 'request.referrer:', request.referrer
-                print '---------------------------'
-            if request.referrer and request.referrer.startswith(ref_url):
-                ref_path = request.referrer.replace(ref_url, '').strip('/')
-                mina_app_id = ref_path.split('/')[0]
-                if mina_app_id != configure['mina_app_id']:
-                    abort(403)
-            else:
-                abort(403)
-                return
 
     # uploads
     @app.route('{}/<path:filepath>'.format(app.config['UPLOADS_URL_PATH']))

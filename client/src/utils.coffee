@@ -63,6 +63,22 @@ isNumber = (obj) ->
 isFunction = (obj)->
   return typeof(obj) is 'function'
 
+isUndefined = (obj)->
+  return obj is undefined
+
+isDefined = (obj)->
+  return obj isnt undefined
+
+isUrl = (url, regex) ->
+  if typeof(url) isnt 'string'
+    return false
+  if regex is '*'
+    regex = /^[\w]+:[a-zA-Z0-9\/]/i
+  else if not (regex instanceof RegExp)
+    regex = /^([\w]+:)?\/\/[a-zA-Z0-9]/i
+  return url.match(regex)
+
+
 # --- time ---
 format_date = (timestamp, with_time) ->
   if timestamp
@@ -87,6 +103,33 @@ format_date = (timestamp, with_time) ->
 
 now = ->
   return parseInt(Date.now() / 1000)
+
+
+# ---- parse int ----
+parse_int = (num, _default, _natural) ->
+  if _default is undefined
+    _default = 0
+
+  if _natural is undefined
+    _natural = false
+
+  _default = parseInt(_default) or 0
+  if typeof(_natural) isnt 'boolean'
+    _natural = parseInt(_natural) or 0
+
+  try
+    num = parseInt(num)
+    num = _default if isNaN(num)
+  catch
+    num = _default
+
+  if _natural is 0
+    num = Math.max(num, 0)
+  else if _natural
+    num = Math.max(num, 1)
+
+  return num
+
 
 # --- file ---
 guess_file_name = (path)->
@@ -419,6 +462,9 @@ module.exports =
   isFunction: isFunction
   isNumber: isNumber
   isString: isString
+  isDefined: isDefined
+  isUndefined: isUndefined
+  isUrl: isUrl
   format_date: format_date
   now: now
   list: list

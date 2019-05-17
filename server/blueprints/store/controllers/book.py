@@ -20,10 +20,10 @@ from ..errors import (BookNotFound,
 @output_json
 def list_books():
     offset = parse_int(get_args('offset'), 0, 0)
-    limit = parse_int(get_args('limit'), 24, 1)
+    limit = parse_int(get_args('limit'), 12, 1)
     term = get_args('term')
     timestamp = get_args('t', Struct.Int)
-
+    print 'offset', offset
     books = current_app.mongodb.Book.find_activated(term, timestamp)
     p = make_offset_paginator(books, offset, limit)
     return attach_extend(

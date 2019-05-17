@@ -58,7 +58,7 @@ core.Page
       t: self.timestamp
     .then (results)->
       self.setData
-        books: results
+        books: self.data.books.concat(results)
         has_more: Boolean(results[0] and results[0]._more)
     .finally ->
       self.setData

@@ -5,7 +5,7 @@ from flask import Blueprint, request
 
 from utils.misc import route_inject
 
-from ..inspection import verify_jwt
+from ..inspection import verify_jwt, verify_remote
 
 from .routes import urlpatterns
 
@@ -28,6 +28,7 @@ open_api_endpoints = [
 
 @blueprint.before_request
 def before():
+    verify_remote()
     if request.endpoint in open_api_endpoints:
         pass
     else:
