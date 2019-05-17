@@ -54,7 +54,6 @@ core.Page
       self.setData
         profile: profile
         gender: profile.meta.gender
-      wx.showToast
-        title: '成功',
-        icon: 'success',
-        duration: 1200
+      core.toast
+        title: '已保存'
+        icon: 'success'

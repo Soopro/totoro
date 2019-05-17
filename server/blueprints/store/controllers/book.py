@@ -104,10 +104,11 @@ def output_single_book(book):
     output = output_book(book)
     user = g.curr_user
     User = current_app.mongodb.User
-    vol_count = current_app.mongodb.\
-        BookVolume.count_stocked(book['_id'])
+    vol_count = current_app.mongodb.BookVolume.count_stocked(book['_id'])
+    overlend = current_app.mongodb.BookVolume.check_overlend(user['_id'])
     output.update({
         'activated': user['status'] == User.STATUS_ACTIVATED,
+        'overlend': overlend,
         'vol_count': vol_count,
     })
     return output

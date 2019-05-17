@@ -132,6 +132,7 @@ class BookVolume(BaseDocument):
     STATUS_PENDING, STATUS_STOCK, STATUS_LEND = 0, 1, 2
 
     MAX_QUERY = 60
+    MAX_LEND = 6
 
     structure = {
         'book_id': ObjectId,
@@ -262,6 +263,13 @@ class BookVolume(BaseDocument):
             'user_id': ObjectId(user_id),
             'status': self.STATUS_LEND
         }).count()
+
+    def check_overlend(self, user_id):
+        lend_count = self.find({
+            'user_id': ObjectId(user_id),
+            'status': self.STATUS_LEND
+        }).count()
+        return lend_count >= self.MAX_LEND
 
 
 class BookRecord(BaseDocument):

@@ -64,13 +64,58 @@
       </button>
       <button class="flex sider-left"
               type="accent"
-              bind:tap="borrow"
+              bind:tap="open_sheet"
               disabled="{{book.activated != 1 || book.vol_count <= 0}}"
               data-book="{{book}}">
-        立刻借阅
+        <block wx:if="{{book.activated == 1}}">
+          <text wx:if="{{book.vol_count <= 0}}">没有存货</text>
+          <text wx:else>立刻借阅</text>
+        <block wx:else>
+          <text>未激活会员</text>
+        </block>
       </button>
     </view>
   </view>
 </view>
 
 </block>
+
+
+<component-bottomsheet status="{{sheet_status}}">
+  <!-- shopping address -->
+  <view class="panel">
+    <view class="container">
+      <block wx:if="{{address_authorized}}">
+        <button class="flex-row align-items-center"
+                bind:tap="get_shipping_address">
+          <view class="ico lg accent ico-delivery" />
+          <view class="flex body-text accent margin text-nowrap">
+            {{consignee ? consignee.recipient: '选取收获地址'}}
+          </view>
+          <view class="ico lg primary ico-arrow-right" />
+        </button>
+      </block>
+
+      <block wx:else>
+        <button class="flex-row align-items-center"
+                bindopensetting="check_address_authorization"
+                open-type="openSetting">
+          <view class="ico lg accent ico-delivery" />
+          <view class="flex text accent margin">
+            请打开收货地址授权
+          </view>
+          <view class="ico lg primary ico-arrow-right" />
+        </button>
+      </block>
+      <view class="padding">
+        <button class="raised accent"
+                bind:tap="checkout"
+                data-book="{{book}}"
+                data-address="{{consignee.recipient}}"
+                disabled="{{!consignee.recipient}}">借 阅</button>
+      </view>
+    </view>
+
+  </view>
+
+</component-bottomsheet>

@@ -57,35 +57,38 @@
       </view>
     </block>
     <block wx:else>
-      <view class="card"
+      <view class="space-margin"
             wx:for="{{volumes}}"
             wx:for-item="vol"
             wx:key="index"
             bind:tap="open"
             data-slug="{{vol.slug}}">
-
-        <view class="card-title">
-          <view class="card-title-media">
-            <image src="{{vol.meta.figure || image.default_img}}"
-                   background-size="cover"
-                   background-position="center center"/>
-          </view>
-          <view class="card-title-text">
-            <view class="title space-margin">{{vol.meta.title}}</view>
-            <view class="caption">
-              {{'处理中...' ? vol.status == 0 : '借阅'}}
+        <view class="card">
+          <view class="card-title">
+            <view class="card-title-media">
+              <image src="{{vol.meta.figure || image.default_img}}"
+                     background-size="cover"
+                     background-position="center center"/>
             </view>
-            <view class="body-text">
-              {{f.date_formatted(borrowing_time)}}
+            <view class="card-title-text">
+              <view class="caption">
+                {{f.date_formatted(vol.rental_time)}}
+              </view>
+              <view class="title text-truncate">
+                {{vol.meta.title}}
+              </view>
+              <view class="body-text primary">
+                {{vol.status == 0 ? '处理中...' : '借阅'}}
+              </view>
             </view>
           </view>
         </view>
-
       </view>
     </block>
   </view>
 
-  <view wx:elif="{{scene == 1}}">
+  <view class="container"
+        wx:elif="{{scene == 1}}">
     <block wx:if="{{records.length == 0}}">
       <view class="holder flex-column centered">
         <view class="text-center">
@@ -94,13 +97,17 @@
       </view>
     </block>
     <block wx:else>
-      <view class="card"
+      <view class="space-margin"
             wx:for="{{records}}"
             wx:for-item="record"
             wx:key="index">
-        <view class="card-title">
-          <view class="card-title-text">
-            <view class="title space-margin">{{record.meta.title}}</view>
+        <view class="card">
+          <view class="card-title">
+            <view class="card-title-text">
+              <view class="body-text text-truncate">
+                {{f.date_formatted(record.updated)}} - {{record.meta.title}}
+              </view>
+            </view>
           </view>
         </view>
       </view>

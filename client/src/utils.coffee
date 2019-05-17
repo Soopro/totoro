@@ -34,7 +34,8 @@ _equals = (obj1, obj2, deep)->
 
 _format_num = (n)->
   n = n.toString()
-  return n[1] ? n : '0' + n
+  n = if n[1] then n else ('0' + n)
+  return n
 
 
 # --- is ---
@@ -63,7 +64,11 @@ isFunction = (obj)->
   return typeof(obj) is 'function'
 
 # --- time ---
-format_time = (date) ->
+format_date = (timestamp, with_time) ->
+  if timestamp
+    date = new Date(timestamp)
+  else
+    date = new Date()
   year = date.getFullYear()
   month = date.getMonth() + 1
   day = date.getDate()
@@ -72,8 +77,13 @@ format_time = (date) ->
   second = date.getSeconds()
 
   date = [year, month, day].map(_format_num).join('/')
-  time = [hour, minute, second].map(f_format_num).join(':')
-  return date + ' ' + time
+  time = [hour, minute, second].map(_format_num).join(':')
+  if with_time
+    output = date + ' ' + time
+  else
+    output = date
+  return output
+
 
 now = ->
   return parseInt(Date.now() / 1000)
@@ -409,7 +419,7 @@ module.exports =
   isFunction: isFunction
   isNumber: isNumber
   isString: isString
-  format_time: format_time
+  format_date: format_date
   now: now
   list: list
   list2dict: list2dict

@@ -46,12 +46,19 @@ filter_html_entity = (str)->
 
 # dateformat
 filter_date_formatted = (timestamp)->
+  if timestamp.toString().length == 10
+    timestamp = timestamp * 1000
   date = getDate(timestamp)
   year = date.getFullYear()
   month = date.getMonth() + 1
   day = date.getDate()
 
-  return [year, month, day].map(_format_num).join('-')
+  _num = (n)->
+    n = n.toString()
+    n = if n[1] then n else ('0' + n)
+    return n
+
+  return [year, month, day].map(_num).join('-')
 
 
 module.exports =

@@ -17,29 +17,28 @@ PageEnhanced = (opts)->
   onLoadFn = opts.onLoad or (opts)->
   onShowFn = opts.onShow or ->
 
-  opts.onLoad = (opts)->
+  opts.onLoad = (param)->
     self = @
-    result =
-      if utils.isFunction(opts.beforeLoad)
-      then opts.beforeLoad()
-      else null
-    if utils.isObject(result) and utils.isFunction(result.then)
-      result.then ->
-        onLoadFn.call self, opts
+    if utils.isFunction(opts.beforeLoad)
+      Promise.resolve()
+      .then ->
+        opts.beforeLoad()
+      .then ->
+        onLoadFn.call self, param
     else
-      onLoadFn.call self, opts
+      onLoadFn.call self, param
 
   opts.onShow = ->
     self = @
-    result =
-      if utils.isFunction(opts.beforeShow)
-      then opts.beforeShow()
-      else null
-    if utils.isObject(result) and utils.isFunction(result.then)
+    if utils.isFunction(opts.beforeShow)
+      Promise.resolve()
+      .then ->
+        opts.beforeShow()
       result.then ->
         onShowFn.call self
     else
       onShowFn.call self
+
   return Page(opts)
 
 
@@ -63,30 +62,14 @@ requests.config.common.interceptor = (opts)->
   return opts
 
 
-# authorize before run
-authorize_run = (opts, callback, fail_callback)->
+# authorize
+get_authorize = (scope_name, callback)->
   opts = {} if not opts
-  if not utils.isFunction(callback)
-    callback = ->
-  if not utils.isFunction(fail_callback)
-    fail_callback = ->
-
   wx.getSetting
     success: (data) ->
-      if data.authSetting[opts.scope]
-        callback(data)
-      else if opts.required
-        if data.authSetting[opts.scope] is undefined
-          callback(data)
-        else if data.authSetting[opts.scope] is false
-          wx.openSetting
-            success: (op_data)->
-              if op_data.authSetting[opts.scope]
-                callback(data)
-            fail: (error)->
-              fail_callback(error)
+      callback(data.authSetting[scope_name])
     fail: (error)->
-      fail_callback(error)
+      callback(null, error)
 
 
 # form validator
@@ -125,6 +108,76 @@ form_validator =
     for k, v of ffv
       ffv.$error = true if v is false
     return ffv
+
+
+# reform
+reform_consignee = (info)->
+  payload =
+    name: info.userName
+    detail: info.detailInfo
+    tel: info.telNumber
+    province: info.provinceName
+    city: info.cityName
+    county: info.countyName
+    postal_code: info.postalCode
+    recipient: [
+      info.userName
+      info.telNumber
+      info.provinceName
+      info.cityName
+      info.countyName
+      info.detailInfo
+      '[' + info.postalCode + ']'
+    ].join(' ')
+  return payload
+
+
+reform_userinfo = (userinfo)->
+  if not userinfo
+    userinfo = {}
+  _gender_map =
+    1: 1  # male
+    2: 0  # female
+    0: 2  # unknow
+  info =
+    country: userinfo.country or ''
+    province: userinfo.province or ''
+    city: userinfo.city or ''
+    language: userinfo.language or 'zh_CN'
+    name: userinfo.nickName or ''
+    avatar: userinfo.avatarUrl or ''
+    gender: _gender_map[userinfo.gender] or 2
+  return info
+
+
+purify_content_img = (text, cls_name) ->
+  cls_name = 'img' if not cls_name
+  text.replace /<img\s.*?>/ig, (img)->
+    if img.includes(' class=')
+      regex = /class=[\"\'](.*?)[\"\']/
+      replace = 'class="$1 ' + cls_name + '"'
+    else
+      regex = /\<img\s(.*?)>/
+      replace = '<img class="' + cls_name + '" $1 >'
+    return img.replace(regex, replace)
+
+
+# toast
+toast = (opts, callback)->
+  opts = {} if not opts
+  if not opts.duration
+    opts.duration = 2400
+  wx.showToast
+    title: opts.title or ''
+    icon: opts.icon or 'none'
+    image: opts.image
+    duration: opts.duration
+    mask: opts.mask or true
+    complete: ->
+      if utils.isFunction(callback)
+        setTimeout ->
+          callback()
+        , opts.duration
 
 
 # model
@@ -182,6 +235,10 @@ module.exports =
   config: config
   session: session
   image: image
-  authorize_run: authorize_run
+  get_authorize: get_authorize
   form_validator: form_validator
+  reform_consignee: reform_consignee
+  reform_userinfo: reform_userinfo
+  purify_content_img: purify_content_img
+  toast: toast
   dialog: dialog

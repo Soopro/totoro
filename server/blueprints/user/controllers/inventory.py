@@ -32,6 +32,7 @@ def output_volume(vol):
         'id': vol['_id'],
         'code': vol['code'],
         'renter': vol['renter'],
+        'rental_time': vol['rental_time'],
         'meta': vol['meta'],
         'status': vol['status'],
         'creation': vol['creation'],
