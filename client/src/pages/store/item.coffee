@@ -63,5 +63,13 @@ core.Page
   checkout: (e)->
     self = @
     book = e.currentTarget.dataset.book
-    return if not book
-
+    consignee = e.currentTarget.dataset.consignee
+    return if not book or not consignee
+    restStore.book.checkout(book.slug, consignee)
+    .then (book)->
+      self.setData
+        book: book
+        sheet_status: false
+      core.toast
+        title: '已借阅'
+        icon: 'success'

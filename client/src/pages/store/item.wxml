@@ -65,11 +65,13 @@
       <button class="flex sider-left"
               type="accent"
               bind:tap="open_sheet"
-              disabled="{{book.activated != 1 || book.vol_count <= 0}}"
+              disabled="{{book.activated != 1 || book.in_stock <= 0 || book.in_inventory > 0}}"
               data-book="{{book}}">
         <block wx:if="{{book.activated == 1}}">
-          <text wx:if="{{book.vol_count <= 0}}">没有存货</text>
+          <text wx:if="{{book.in_stock <= 0}}">没有存货</text>
+          <text wx:elif="{{book.in_inventory > 0}}">已经借了</text>
           <text wx:else>立刻借阅</text>
+        </block>
         <block wx:else>
           <text>未激活会员</text>
         </block>
@@ -83,7 +85,7 @@
 
 <component-bottomsheet status="{{sheet_status}}">
   <!-- shopping address -->
-  <view class="panel">
+  <view class="shelf-bottomsheet">
     <view class="container">
       <block wx:if="{{address_authorized}}">
         <button class="flex-row align-items-center"
@@ -95,7 +97,6 @@
           <view class="ico lg primary ico-arrow-right" />
         </button>
       </block>
-
       <block wx:else>
         <button class="flex-row align-items-center"
                 bindopensetting="check_address_authorization"
@@ -107,11 +108,11 @@
           <view class="ico lg primary ico-arrow-right" />
         </button>
       </block>
-      <view class="padding">
-        <button class="raised accent"
+      <view class="padding flex-row">
+        <button class="raised accent flex"
                 bind:tap="checkout"
                 data-book="{{book}}"
-                data-address="{{consignee.recipient}}"
+                data-consignee="{{consignee}}"
                 disabled="{{!consignee.recipient}}">借 阅</button>
       </view>
     </view>

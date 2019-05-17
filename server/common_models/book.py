@@ -201,6 +201,20 @@ class BookVolume(BaseDocument):
             'status': self.STATUS_STOCK,
         })
 
+    def find_one_lend_by_bookid_uid(self, book_id, user_id):
+        return self.find_one({
+            'book_id': ObjectId(book_id),
+            'user_id': ObjectId(user_id),
+            'status': self.STATUS_STOCK,
+        })
+
+    def find_one_pending_by_bookid_uid(self, book_id, user_id):
+        return self.find_one({
+            'book_id': ObjectId(book_id),
+            'user_id': ObjectId(user_id),
+            'status': self.STATUS_PENDING,
+        })
+
     def find_by_bookid(self, book_id):
         return self.find({
             'book_id': ObjectId(book_id),
@@ -258,11 +272,27 @@ class BookVolume(BaseDocument):
             'status': self.STATUS_STOCK
         }).count()
 
-    def count_lend(self, user_id):
-        return self.find({
+    def count_lend(self, user_id, book_id=None):
+        _query = {
             'user_id': ObjectId(user_id),
             'status': self.STATUS_LEND
-        }).count()
+        }
+        if book_id:
+            _query.update({
+                'book_id': ObjectId(book_id),
+            })
+        return self.find(_query).count()
+
+    def count_pending(self, user_id, book_id=None):
+        _query = {
+            'user_id': ObjectId(user_id),
+            'status': self.STATUS_PENDING
+        }
+        if book_id:
+            _query.update({
+                'book_id': ObjectId(book_id),
+            })
+        return self.find(_query).count()
 
     def check_overlend(self, user_id):
         lend_count = self.find({

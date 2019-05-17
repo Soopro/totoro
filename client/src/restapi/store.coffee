@@ -12,6 +12,9 @@ search_books = (data)->
 get_book = (book_slug)->
   requests.get('/store/book/'+book_slug)
 
+checkout_book = (book_slug, data)->
+  requests.post('/store/book/'+book_slug, data)
+
 list_category = (args)->
   requests.get('/store/category', args)
 
@@ -25,6 +28,7 @@ module.exports =
   book:
     list: list_books
     get: get_book
+    checkout: checkout_book
     search: search_books
   category:
     list: list_category
