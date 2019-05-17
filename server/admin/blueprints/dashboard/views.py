@@ -113,16 +113,6 @@ def checkin():
     return redirect(return_url)
 
 
-@blueprint.route('/confirm_rent/<vol_id>')
-@login_required
-def confirm_rent(vol_id):
-    BookVolume = current_app.mongodb.BookVolume
-    volume = BookVolume.find_one_by_id(vol_id)
-    if volume['status'] == BookVolume.STATUS_PENDING:
-        volume['status'] = BookVolume.STATUS_LEND
-        volume.save()
-
-
 # helpers
 def _find_book_volume(book_slug, volume_code):
     if not book_slug or not volume_code:

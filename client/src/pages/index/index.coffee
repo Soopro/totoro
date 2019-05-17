@@ -23,8 +23,11 @@ core.Page
       self.setData
         profile: profile
         logged: true
-      self.inv_volumes()
-      self.inv_records()
+
+  onShow: deco.login_required (opts)->
+    self = @
+    self.inv_volumes()
+    self.inv_records()
 
 
   # hanlders

@@ -289,6 +289,17 @@ def checkout_volume(book_id, vol_id):
     return redirect(return_url)
 
 
+@blueprint.route('/<book_id>/volume/<vol_id>/confirm')
+@login_required
+def confirm_volume(book_id, vol_id):
+    BookVolume = current_app.mongodb.BookVolume
+    volume = BookVolume.find_one_by_bookid_id(book_id, vol_id)
+    if volume['status'] == BookVolume.STATUS_PENDING:
+        volume['status'] = BookVolume.STATUS_LEND
+        volume.save()
+    return redirect(request.referrer)
+
+
 @blueprint.route('/category')
 @login_required
 def category():
