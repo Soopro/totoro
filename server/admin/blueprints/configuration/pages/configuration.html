@@ -6,7 +6,7 @@
 {% block body %}
 <section class="container">
   <div class="row">
-    {{envs}}
+    {{envs.SECRET_KEY}}
     <!-- configure -->
     <form class="col-md-6"
           action="{{url_for('.update')}}"
