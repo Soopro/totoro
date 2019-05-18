@@ -13,6 +13,9 @@ core.Page
     image: core.image
 
   # lifecycle
+  onShareAppMessage: ->
+    app.share()
+
   onLoad: (opts)->
     self = @
     self.check_address_authorization()
