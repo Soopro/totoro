@@ -16,7 +16,7 @@ from utils.request import get_remote_addr
 from utils.misc import hmac_sha, parse_int
 
 from admin.decorators import login_required
-import envs
+
 
 blueprint = Blueprint('configuration', __name__, template_folder='pages')
 
@@ -26,8 +26,7 @@ blueprint = Blueprint('configuration', __name__, template_folder='pages')
 def index():
     configure = g.configure
     configure['mina_app_secret'] = configure.decrypt('mina_app_secret')
-
-    return render_template('configuration.html', configure=configure, envs=envs)
+    return render_template('configuration.html', configure=configure)
 
 
 @blueprint.route('/', methods=['POST'])
