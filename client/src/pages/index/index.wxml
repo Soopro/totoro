@@ -12,9 +12,9 @@
              src="{{profile.meta.avatar || '/img/avatar.png'}}"
              background-size="cover"
              background-position="center center"/>
-      <view class="avatar-name">{{profile.meta.name || profile.login}}</view>
-      <view class="caption {{profile.status != 1 ? 'draft' : ''}}">
-        {{profile.status == 1 ? profile.credit : '未激活'}}
+      <view class="padding">{{profile.meta.name || profile.login}}</view>
+      <view class="body-text-2 accent">
+        我有 {{profile.status == 1 ? profile.credit : '未激活'}} 个U币
       </view>
     </button>
     <button class="avatar-btn"
@@ -25,7 +25,7 @@
              src="/img/avatar.png"
              background-size="cover"
              background-position="center center"/>
-      <view class="avatar-name">注册会员</view>
+      <view class="padding">注册会员</view>
     </button>
   </view>
 
@@ -51,7 +51,7 @@
         <view class="text-center">
           <view class="draft subhead">没有借阅</view>
           <button class="raised"
-                  type="accent"
+                  type="primary"
                   bind:tap="go_library">去找本书吧？</button>
         </view>
       </view>

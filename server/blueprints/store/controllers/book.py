@@ -114,5 +114,6 @@ def output_single_book(book):
         'overlend': overlend,
         'in_stock': in_stock,
         'in_inventory': in_lend + in_pending,
+        'not_enough_credit': user['credit'] < book['credit']
     })
     return output

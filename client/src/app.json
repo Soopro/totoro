@@ -7,7 +7,7 @@
     "pages/error/error"
   ],
   "window": {
-    "navigationBarTitleText": "✦ UnicornEnglish ✦",
+    "navigationBarTitleText": "✦ 独角兽英语绘本馆 ✦",
     "navigationBarTextStyle": "white",
     "navigationBarBackgroundColor": "#3cf",
     "backgroundColor": "#3cf"
@@ -23,13 +23,13 @@
         "iconPath": "/img/ic_account.png",
         "selectedIconPath": "/img/ic_account_on.png",
         "pagePath": "pages/index/index",
-        "text": "Account"
+        "text": "账号"
       },
       {
         "iconPath": "/img/ic_list.png",
         "selectedIconPath": "/img/ic_list_on.png",
         "pagePath": "pages/store/index",
-        "text": "Library"
+        "text": "图书馆"
       }
     ]
   }

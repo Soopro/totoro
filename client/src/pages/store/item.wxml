@@ -54,7 +54,7 @@
 
 <!-- bottombar -->
 <view class="bottombar">
-  <view class="bottombar-inner accent">
+  <view class="bottombar-inner primary">
     <view class="row">
       <button class="icon-btn raised"
               type="accent"
@@ -62,15 +62,16 @@
               open-type="contact">
         <view class="ico ico-chat" />
       </button>
-      <button class="flex sider-left"
-              type="accent"
+      <button class="flex sider-left raised"
+              type="primary"
               bind:tap="open_sheet"
               disabled="{{book.activated != 1 || book.in_stock <= 0 || book.in_inventory > 0}}"
               data-book="{{book}}">
         <block wx:if="{{book.activated == 1}}">
           <text wx:if="{{book.in_stock <= 0}}">没有存货</text>
           <text wx:elif="{{book.in_inventory > 0}}">已经借了</text>
-          <text wx:else>立刻借阅</text>
+          <text wx:elif="{{book.not_enough_credit <= 0}}">你的U币不够了</text>
+          <text wx:else>花费 {{book.credit}} U币借阅</text>
         </block>
         <block wx:else>
           <text>未激活会员</text>

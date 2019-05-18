@@ -4,9 +4,10 @@
 <view class="container">
   <form bindsubmit="search">
     <view class="flex-row align-items-center">
-      <input class="flex"
-             name="keywords"
-             placeholder="输入图书名称" />
+      <view class="indent-padding flex">
+        <input name="keywords"
+               placeholder="输入书名关键字" />
+      </view>
       <button class="raised"
               type="accent"
               form-type="submit"
@@ -14,7 +15,7 @@
         <text>搜索</text>
       </button>
       <button class="raised"
-              type="accent"
+              type="primary"
               bind:tap="scan"
               size="sm">
         <text>扫描</text>
@@ -40,7 +41,9 @@
         <view class="card-title">
           <view class="card-title-text">
             <view class="title text-truncate">{{book.meta.title}}</view>
-            <text class="accent caption">需花费 {{book.credit}} U币</text>
+            <view class="accent caption">
+              需花费 <text class="primary">{{book.credit}}</text> U币
+            </view>
           </view>
         </view>
       </view>
