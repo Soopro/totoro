@@ -52,11 +52,10 @@ core.Page
     self = @
     book = e.currentTarget.dataset.book
     return if not book
-
     if book.overlend
       core.toast
         title: '你不能同时借那么多书'
-    else if book.not_enough_credit
+    else if not book.is_afford
       core.toast
         title: '你的U币不够'
     else
