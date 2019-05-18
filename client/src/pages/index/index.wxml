@@ -61,8 +61,8 @@
             wx:for="{{volumes}}"
             wx:for-item="vol"
             wx:key="index"
-            bind:tap="open"
-            data-slug="{{vol.slug}}">
+            bind:tap="enter"
+            data-vol="{{vol}}">
         <view class="card">
           <view class="card-title">
             <view class="card-title-media">

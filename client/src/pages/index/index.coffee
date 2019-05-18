@@ -80,6 +80,17 @@ core.Page
           self._join(encrypted_data, iv)
         , true
 
+  enter: (e)->
+    self = @
+    vol = e.currentTarget.dataset.slug
+    console.log vol
+    return if not slug
+    app.nav.go
+      route: core.config.paths.item
+      args:
+        slug: vol.scope
+
+  # helpers
   _join: (encrypted_data, iv)->
     self = @
     restUser.register

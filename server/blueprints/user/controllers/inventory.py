@@ -30,6 +30,7 @@ def list_records():
 def output_volume(vol):
     return {
         'id': vol['_id'],
+        'scope': vol['scope'],
         'code': vol['code'],
         'renter': vol['renter'],
         'rental_time': vol['rental_time'],
