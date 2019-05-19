@@ -7,6 +7,7 @@ from mongokit import Connection as MongodbConn
 
 import traceback
 import logging
+from logging.handlers import RotatingFileHandler
 
 from utils.encoders import Encoder
 from utils.files import ensure_dirs
@@ -59,6 +60,29 @@ def create_app(config_name='default'):
     # logging
     if app.config.get('UNITTEST') is True:
         app.logger.setLevel(logging.FATAL)
+    else:
+        error_file_handler = RotatingFileHandler(
+            app.config.get('LOGGING')['error']['file'],
+            maxBytes=app.config.get('LOGGING_ROTATING_MAX_BYTES'),
+            backupCount=app.config.get('LOGGING_ROTATING_BACKUP_COUNT')
+        )
+
+        error_file_handler.setLevel(logging.WARNING)
+        error_file_handler.setFormatter(
+            logging.Formatter(app.config.get('LOGGING')['error']['format'])
+        )
+
+        info_file_handler = RotatingFileHandler(
+            app.config.get('LOGGING')['info']['file'],
+            maxBytes=app.config.get('LOGGING_ROTATING_MAX_BYTES'),
+            backupCount=app.config.get('LOGGING_ROTATING_BACKUP_COUNT')
+        )
+        info_file_handler.setLevel(logging.INFO)
+        info_file_handler.setFormatter(logging.Formatter(
+            app.config.get('LOGGING')['info']['format']
+        ))
+        app.logger.addHandler(error_file_handler)
+        app.logger.addHandler(info_file_handler)
 
     # database connections
     rds_pool = ConnectionPool(host=app.config.get('REDIS_HOST'),

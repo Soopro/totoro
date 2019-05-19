@@ -46,6 +46,22 @@ class Config(object):
     JWT_AUTH_HEADER_KEY = 'Authorization'
     JWT_AUTH_HEADER_PREFIX = 'Bearer'
 
+    # logging
+    LOGGING = {
+        'error': {
+            'format': '%(asctime)s %(levelname)s: %(message)s' +
+                      ' [in %(pathname)s:%(lineno)d]',
+            'file': os.path.join(LOG_FOLDER, 'totoro_error.log')
+        },
+        'info': {
+            'format': '%(asctime)s %(levelname)s: %(message)s' +
+                      ' [in %(pathname)s:%(lineno)d]',
+            'file': os.path.join(LOG_FOLDER, 'totoro_info.log')
+        }
+    }
+    LOGGING_ROTATING_MAX_BYTES = 64 * 1024 * 1024
+    LOGGING_ROTATING_BACKUP_COUNT = 6
+
     # expirations
     REGISTER_EXPIRATION = 3600 * 3
     RESET_PWD_EXPIRATION = 3600 * 3
