@@ -71,7 +71,10 @@
         <text wx:if="{{book.in_stock <= 0}}">没有存货</text>
         <text wx:elif="{{book.in_inventory > 0}}">已经借了</text>
         <text wx:elif="{{!book.is_afford}}">你的UCoin不够</text>
-        <text wx:else>花费 {{book.credit}} UCoin借阅</text>
+        <block wx:else>
+          <text>现在借阅</text>
+          <text class="caption">(消耗{{book.credit}}UCoin)</text>
+        </block>
       </button>
       <button class="flex sider-left raised"
               type="primary"
@@ -100,7 +103,7 @@
         <button class="flex-row align-items-center"
                 bind:tap="get_shipping_address">
           <view class="ico lg accent ico-delivery" />
-          <view class="flex body-text accent margin text-nowrap">
+          <view class="flex body-text accent margin text-truncate">
             {{consignee ? consignee.recipient: '选取收获地址'}}
           </view>
           <view class="ico lg primary ico-arrow-right" />
