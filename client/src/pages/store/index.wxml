@@ -33,7 +33,7 @@
           wx:key="index">
       <view class="card"
             bind:tap="enter"
-            data-slug="{{book.slug}}">
+            data-path="{{book.slug}}">
         <image class="item-figure"
                src="{{book.meta.figure}}"
                mode="aspectFill"

@@ -103,7 +103,6 @@ def checkin():
             volume['rental_time'] = 0
             volume['status'] = BookVolume.STATUS_STOCK
             volume.save()
-            recording(book, volume, user, True)
             flash('Checkin.')
         else:
             flash('Book volume is in stock', 'warning')

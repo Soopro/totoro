@@ -44,8 +44,8 @@ def output_volume(vol):
 def output_record(record):
     return {
         'id': record['_id'],
+        'scope': record['scope'],
         'volume': record['volume'],
-        'book_slug': record['volume'].split('/')[0],
         'meta': record['meta'],
         'status': record['status'],
         'creation': record['creation'],

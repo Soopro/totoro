@@ -20,7 +20,7 @@ core.Page
   onLoad: deco.login_required (opts)->
     self = @
     self.check_address_authorization()
-    self.get_book(opts.slug)
+    self.get_book(opts.path)
 
   # methods
   get_book: (slug)->

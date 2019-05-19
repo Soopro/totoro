@@ -246,7 +246,6 @@ def checkin_volume(book_id, vol_id):
     book = _find_book(book_id)
     BookVolume = current_app.mongodb.BookVolume
     volume = BookVolume.find_one_by_bookid_id(book_id, vol_id)
-    user = current_app.mongodb.User.find_one_by_id(volume['user_id'])
     status_list = [BookVolume.STATUS_LEND, BookVolume.STATUS_PENDING]
     if volume and volume['status'] in status_list:
         volume['user_id'] = None
@@ -254,7 +253,6 @@ def checkin_volume(book_id, vol_id):
         volume['rental_time'] = 0
         volume['status'] = BookVolume.STATUS_STOCK
         volume.save()
-        recording(book, volume, user, True)
     return_url = url_for('.detail', book_id=book['_id'])
     return redirect(return_url)
 

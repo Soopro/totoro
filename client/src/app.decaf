@@ -131,7 +131,6 @@ App
             .then (auth)->
               self.login_status = false
               core.session.set('token', auth.token, auth.expires_in - 60)
-              core.session.set('user_activated', auth.is_activated)
               callback(auth.token)
             .catch (error)->
               self.login_status = false

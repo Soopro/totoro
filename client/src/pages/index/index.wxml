@@ -62,7 +62,7 @@
             wx:for-item="vol"
             wx:key="index"
             bind:tap="enter"
-            data-slug="{{vol.scope}}">
+            data-path="{{vol.scope}}">
         <view class="card">
           <view class="card-title">
             <view class="card-title-media">
@@ -103,7 +103,7 @@
             wx:key="index">
         <view class="card"
               bind:tap="enter"
-              data-slug="{{record.book_slug}}">
+              data-path="{{record.path}}">
           <view class="card-title">
             <view class="card-title-text">
               <view class="body-text text-truncate">

@@ -11,20 +11,17 @@ def recording(book, volume, user, checkin=False):
         current_app.logger.warn(e)
 
 
-def _recording(book, volume, user, is_checkin):
+def _recording(book, volume, user):
     BookRecord = current_app.mongodb.BookRecord
     record = BookRecord()
     record['user_id'] = user['_id']
     record['book_id'] = book['_id']
+    record['scope'] = book['slug']
     record['volume'] = u''.format(book['slug'], volume['code'])
     record['customer'] = user['login']
     record['meta'] = {
         'title': book['meta'].get('title') or u'-',
         'customer': user['meta'].get('name') or user['login']
     }
-    if is_checkin:
-        record['status'] = BookRecord.STATUS_CHECKIN
-    else:
-        record['status'] = BookRecord.STATUS_CHECKOUT
     record.save()
     return record

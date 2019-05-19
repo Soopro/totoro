@@ -319,8 +319,9 @@ class BookRecord(BaseDocument):
     MAX_QUERY = 60
 
     structure = {
-        'book_id': ObjectId,
         'user_id': ObjectId,
+        'book_id': ObjectId,
+        'scope': unicode,  # book slug
         'volume': unicode,  # volume code
         'customer': unicode,  # user login
         'meta': dict,
@@ -329,7 +330,7 @@ class BookRecord(BaseDocument):
         'updated': int,
     }
     sensitive_fields = ['meta']
-    required_fields = ['book_id', 'user_id', 'volume', 'customer']
+    required_fields = ['user_id', 'book_id', 'scope', 'volume', 'customer']
     default_values = {
         'meta': {},
         'creation': now,

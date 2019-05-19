@@ -92,19 +92,19 @@ core.Page
     wx.scanCode
       success: (data) ->
         try
-          slug = data.result.split('/')[0]
+          path = data.result.split('/')[0]
         catch
           return
         app.nav.go
           route: core.config.paths.item
           args:
-            slug: slug
+            path: path
 
   enter: (e)->
     self = @
-    slug = e.currentTarget.dataset.slug
-    return if not slug
+    path = e.currentTarget.dataset.path
+    return if not path
     app.nav.go
       route: core.config.paths.item
       args:
-        slug: slug
+        path: path

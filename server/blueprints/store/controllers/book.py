@@ -64,7 +64,7 @@ def checkout_book(book_slug):
         volume.save()
         user['credit'] -= book['credit']
         user.save()
-        recording(book, volume, user, True)
+        recording(book, volume, user)
     else:
         raise BookNotEnoughVolume
 
