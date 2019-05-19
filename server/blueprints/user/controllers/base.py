@@ -25,8 +25,7 @@ def login():
     try:
         mina_session = mina.get_session(code)
     except Exception as e:
-        _msg = u'{}: {} {}'.format(e.message, e.errmsg, e.errcode)
-        current_app.logger.error(_msg)
+        current_app.logger.error(e.message)
         raise UserMinaSessionError(e)
 
     User = current_app.mongodb.User

@@ -9,6 +9,11 @@ core.Page
   # lifecycle
   onLoad: (opts)->
     self = @
+    if not opts
+      self.setData
+        errmsg: opts.errmsg
+        errcode: opts.errcode
+        hint: opts.hint
 
   # hendler
   back: ->

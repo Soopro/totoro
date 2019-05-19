@@ -53,6 +53,7 @@ requests.config.common.interceptor = (opts)->
     console.error(res)
     wx.redirectTo
       url: config.paths.error
+      args: res
 
   opts.header = opts.header or {}
   token = session.get('token')

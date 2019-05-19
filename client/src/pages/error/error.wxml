@@ -13,5 +13,11 @@
         </button>
       </view>
     </view>
+    <view class="draft"
+          wx:if="{{errmsg}}">
+      <view class="caption">{{errmsg}}</view>
+      <view class="caption">{{errcode}}</view>
+      <view class="caption">{{hint}}</view>
+    </view>
   </view>
 </view>
