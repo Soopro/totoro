@@ -65,9 +65,15 @@ def detail(user_id=None):
         {'key': User.STATUS_BANNED, 'text': 'Banned'}
     ]
     records = current_app.mongodb.BookRecord.find_by_uid(user['_id'])
+    lend_volumes = current_app.mongodb.\
+        BookVolume.find_lend_by_uid(user['_id'])
+    pending_volumes = current_app.mongodb.\
+        BookVolume.find_pending_by_uid(user['_id'])
+    volumes = list(lend_volumes) + list(pending_volumes)
     return render_template('user_detail.html',
                            user=user,
                            records=list(records),
+                           volumes=volumes,
                            allowed_status=allowed_status)
 
 

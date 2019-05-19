@@ -48,6 +48,9 @@ core.Page
     meta.name = form_data.name
     meta.contact = form_data.contact
     meta.gender = self.data.gender
+    meta.email = form_data.email
+    meta.child_name = form_data.child_name
+    meta.child_age = form_data.child_age
     restUser.profile.update
       meta: meta
     .then (profile)->

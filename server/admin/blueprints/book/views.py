@@ -104,9 +104,10 @@ def update(book_id):
     tags = request.form.get('tags', u'')
     terms = request.form.getlist('terms') or []
     credit = request.form.get('credit', 0)
-    value = request.form.get('value', 0)
+    value = request.form.get('value', u'')
     figure = request.form.get('figure', u'')
     previews = request.form.get('previews', u'')
+    rating = request.form.get('rating', 0)
     memo = request.form.get('memo', u'')
     status = request.form.get('status')
 
@@ -116,7 +117,7 @@ def update(book_id):
     book['tags'] = [tag.strip() for tag in tags.split('|')
                     if tag.strip()]
     book['terms'] = [term.strip() for term in terms if term.strip()]
-    # book['rating'] = parse_int(rating)
+    book['rating'] = parse_int(rating)
     book['meta'].update({
         'title': title,
         'author': author,
@@ -127,7 +128,7 @@ def update(book_id):
                      if preview.strip()],
     })
     book['credit'] = parse_int(credit)
-    book['value'] = parse_int(value)
+    book['value'] = value
     book['status'] = parse_int(status)
     book['memo'] = memo
     book.save()

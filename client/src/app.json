@@ -23,13 +23,13 @@
         "iconPath": "/img/ic_account.png",
         "selectedIconPath": "/img/ic_account_on.png",
         "pagePath": "pages/index/index",
-        "text": "账号"
+        "text": "会员"
       },
       {
         "iconPath": "/img/ic_list.png",
         "selectedIconPath": "/img/ic_list_on.png",
         "pagePath": "pages/store/index",
-        "text": "图书馆"
+        "text": "绘本"
       }
     ]
   }

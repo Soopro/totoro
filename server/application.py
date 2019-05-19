@@ -29,7 +29,7 @@ from blueprints import register_blueprints
 from config import config
 import envs
 
-__version_info__ = ('0', '1', '0')
+__version_info__ = ('0', '1', '6')
 __version__ = '.'.join(__version_info__)
 
 

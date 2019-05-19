@@ -24,11 +24,31 @@
       </div>
       <div>
         <h5>Gender:</h5>
-        <p>{{user.meta.gender}}</p>
+        <p>
+          {% if user.meta.gender == 1 %}
+          Male
+          {% elif user.meta.gender == 0 %}
+          Femail
+          {% else %}
+          Unknow
+          {% endif %}
+        </p>
       </div>
       <div>
         <h5>Contact:</h5>
-        <p>{{user.meta.contact}}</p>
+        <p>{{user.meta.contact or '-'}}</p>
+      </div>
+      <div>
+        <h5>Child Name:</h5>
+        <p>{{user.meta.child_name or '-'}}</p>
+      </div>
+      <div>
+        <h5>Child Age:</h5>
+        <p>{{user.meta.child_age or '-'}}</p>
+      </div>
+      <div>
+        <h5>Email:</h5>
+        <p>{{user.meta.email or '-'}}</p>
       </div>
 
       <div class="form-group">
@@ -84,6 +104,43 @@
 
     <!-- record -->
     <div class="col-md-5 col-md-offset-1">
+      <h3>Volumes ({{volumes|length}})</h3>
+      <br>
+      {% for vol in volumes %}
+      <div class="panel panel-default">
+        <div class="panel-body">
+          {% if vol.status == 0 %}
+          <div class="alert alert-warning">Pending: {{vol.renter}}</div>
+          {% elif vol.status == 2 %}
+          <div class="alert {{'alert-danger' if vol.overtime else 'alert-success'}}">{{vol.renter}}</div>
+          {% endif %}
+          <div class="row">
+            <div class="col-md-4">
+              <div class="qr-code"
+               qr-text="{{vol.scope}}/{{vol.code}}"></div>
+            </div>
+            <div class="col-md-8">
+              <h5>{{vol.scope|upper}}</h5>
+              <h5>{{vol.code}}</h5>
+            </div>
+          </div>
+          <div>
+            <a class="btn btn-primary"
+               target="_blank"
+               href="{{url_for('book.detail', book_id=vol.book_id)}}">
+              Go Book
+            </a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>
+  <br><br>
+  <hr>
+  <div class="row">
+    <div class="col-md-5 col-md-offset-1">
       <h3>Records ({{records|length}})</h3>
       <br>
       {% for record in records %}
@@ -101,10 +158,7 @@
       </div>
       {% endfor %}
     </div>
-
   </div>
-  <br><br>
-
 </section>
 
 {% endblock %}

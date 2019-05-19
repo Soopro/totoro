@@ -14,7 +14,7 @@
              background-position="center center"/>
       <view class="padding">{{profile.meta.name || profile.login}}</view>
       <view class="body-text-2 accent">
-        我有 {{profile.status == 1 ? profile.credit : '未激活'}} 个U币
+        {{profile.status == 1 ? profile.credit : '未激活'}} UCoin
       </view>
     </button>
     <button class="avatar-btn"
@@ -34,10 +34,10 @@
     <view class="nav">
       <button class="nav-item"
               bind:tap="switch_scene"
-              data-scene="0">我借的书</button>
+              data-scene="0">我正在读</button>
       <button class="nav-item"
               bind:tap="switch_scene"
-              data-scene="1">历史记录</button>
+              data-scene="1">我读过的</button>
       <button class="nav-item"
               bind:tap="edit_profile">我的信息</button>
     </view>
@@ -92,7 +92,7 @@
     <block wx:if="{{records.length == 0}}">
       <view class="holder flex-column centered">
         <view class="text-center">
-          <view class="draft subhead">没有记录</view>
+          <view class="draft subhead">没有看过任何书</view>
         </view>
       </view>
     </block>

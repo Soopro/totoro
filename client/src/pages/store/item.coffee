@@ -1,5 +1,6 @@
 core = require('../../core.js')
 utils = require('../../utils.js')
+deco = require('../../decorators.js')
 restStore = require('../../restapi/store.js')
 
 
@@ -16,7 +17,7 @@ core.Page
   onShareAppMessage: ->
     app.share()
 
-  onLoad: (opts)->
+  onLoad: deco.login_required (opts)->
     self = @
     self.check_address_authorization()
     self.get_book(opts.slug)
@@ -60,7 +61,7 @@ core.Page
         title: '你不能同时借那么多书'
     else if not book.is_afford
       core.toast
-        title: '你的U币不够'
+        title: '你的UCoin不够'
     else
       self.setData
         sheet_status: true

@@ -65,17 +65,25 @@
       <button class="flex sider-left raised"
               type="primary"
               bind:tap="open_sheet"
-              disabled="{{book.activated != 1 || book.in_stock <= 0 || book.in_inventory > 0 || !book.is_afford}}"
+              wx:if="{{book.activated == 1}}"
+              disabled="{{book.in_stock <= 0 || book.in_inventory > 0 || !book.is_afford}}"
               data-book="{{book}}">
-        <block wx:if="{{book.activated == 1}}">
-          <text wx:if="{{book.in_stock <= 0}}">没有存货</text>
-          <text wx:elif="{{book.in_inventory > 0}}">已经借了</text>
-          <text wx:elif="{{!book.is_afford}}">你的U币不够</text>
-          <text wx:else>花费 {{book.credit}} U币借阅</text>
-        </block>
-        <block wx:else>
-          <text>未激活会员</text>
-        </block>
+        <text wx:if="{{book.in_stock <= 0}}">没有存货</text>
+        <text wx:elif="{{book.in_inventory > 0}}">已经借了</text>
+        <text wx:elif="{{!book.is_afford}}">你的UCoin不够</text>
+        <text wx:else>花费 {{book.credit}} UCoin借阅</text>
+      </button>
+      <button class="flex sider-left raised"
+              type="primary"
+              bind:tap="join"
+              wx:elif="{{book.activated == 0}}">
+        <text>请先成为会员</text>
+      </button>
+      <button class="flex sider-left raised"
+              type="warn"
+              disabled
+              wx:else>
+        <text>你被禁用了</text>
       </button>
     </view>
   </view>

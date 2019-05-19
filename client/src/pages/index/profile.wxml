@@ -11,7 +11,7 @@
       <text class="accent padding">{{profile.login}}</text>
     </view>
     <view class="margin">
-      <view class="label">U币:</view>
+      <view class="label">UCoin:</view>
       <text class="accent padding">{{profile.credit}}</text>
     </view>
     <view class="margin">
@@ -20,10 +20,25 @@
              name="name"/>
     </view>
     <view class="margin">
+      <view class="label">孩子的称呼:</view>
+      <input value="{{profile.meta.child_name}}"
+             name="child_name"/>
+    </view>
+    <view class="margin">
+      <view class="label">孩子的年龄:</view>
+      <input value="{{profile.meta.child_age}}"
+             name="child_age"/>
+    </view>
+    <view class="margin">
       <view class="label">联系方式:</view>
       <input value="{{profile.meta.contact}}"
              placeholder="{{profile.login}}"
              name="contact" />
+    </view>
+    <view class="margin">
+      <view class="label">Email:</view>
+      <input value="{{profile.meta.email}}"
+             name="email" />
     </view>
     <view class="margin">
       <picker bindchange="gender_change"

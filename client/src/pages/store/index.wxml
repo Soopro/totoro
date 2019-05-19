@@ -42,7 +42,7 @@
           <view class="card-title-text">
             <view class="title text-truncate">{{book.meta.title}}</view>
             <view class="accent caption">
-              需花费 <text class="primary">{{book.credit}}</text> U币
+              需花费 <text class="primary">{{book.credit}}</text> UCoin
             </view>
           </view>
         </view>
