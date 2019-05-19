@@ -314,8 +314,6 @@ class BookVolume(BaseDocument):
 
 
 class BookRecord(BaseDocument):
-    STATUS_CHECKIN, STATUS_CHECKOUT = (0, 1)
-
     MAX_QUERY = 60
 
     structure = {
@@ -325,7 +323,6 @@ class BookRecord(BaseDocument):
         'volume': unicode,  # volume code
         'customer': unicode,  # user login
         'meta': dict,
-        'status': int,
         'creation': int,
         'updated': int,
     }
@@ -335,7 +332,6 @@ class BookRecord(BaseDocument):
         'meta': {},
         'creation': now,
         'updated': now,
-        'status': STATUS_CHECKIN,
     }
     indexes = [
         {
