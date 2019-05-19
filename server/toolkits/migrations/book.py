@@ -7,20 +7,19 @@ from mongokit import DocumentMigration
 class BookMigration(DocumentMigration):
 
     def allmigration01_change_value(self):
-        if not self.status:
-            for doc in self.collection.find({'value': {'$exists': True}}):
-                print 'book:', doc['_id']
-                self.target = {'_id': doc['_id']}
-                self.update = {
-                    '$set': {
-                        'value': unicode(doc['value']),
-                    },
-                }
-                self.collection.update(self.target,
-                                       self.update,
-                                       multi=True,
-                                       safe=True)
-                print 'change value:', doc['slug']
+        for doc in self.collection.find({'value': {'$exists': True}}):
+            print 'book:', doc['_id']
+            self.target = {'_id': doc['_id']}
+            self.update = {
+                '$set': {
+                    'value': unicode(doc['value']),
+                },
+            }
+            self.collection.update(self.target,
+                                   self.update,
+                                   multi=True,
+                                   safe=True)
+            print 'change value:', doc['slug']
 
 
 class BookVolumeMigration(DocumentMigration):
