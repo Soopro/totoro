@@ -11,11 +11,9 @@ mimetypes.add_type('image/svg+xml', '.svg')
 # text/javascript is obsolete.
 # Use application/javascript instead which is default.
 
-# secert key
-with open('secret.key') as f:
-    SECRET_KEY = f.read()
 
 # config env
+SECRET_KEY = os.getenv('TOTORO_SECRET_KEY', None)
 CONFIG_NAME = os.getenv('TOTORO_CONFIG_NAME', None)
 
 MONGO_PORT_27017_TCP_ADDR = os.getenv('MONGO_PORT_27017_TCP_ADDR', None)

@@ -27,6 +27,8 @@ def login():
     except Exception as e:
         _msg = u'{}: {} {}'.format(e.message, e.errmsg, e.errcode)
         current_app.logger.error(_msg)
+        import envs
+        current_app.logger.error(envs.SECRET_KEY)
         raise UserMinaSessionError(e)
 
     User = current_app.mongodb.User
