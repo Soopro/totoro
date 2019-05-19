@@ -101,7 +101,9 @@
             wx:for="{{records}}"
             wx:for-item="record"
             wx:key="index">
-        <view class="card">
+        <view class="card"
+              bind:tap="enter"
+              data-slug="{{record.book_slug}}">
           <view class="card-title">
             <view class="card-title-text">
               <view class="body-text text-truncate">

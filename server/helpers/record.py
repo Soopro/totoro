@@ -16,7 +16,7 @@ def _recording(book, volume, user, is_checkin):
     record = BookRecord()
     record['user_id'] = user['_id']
     record['book_id'] = book['_id']
-    record['volume'] = volume['code']
+    record['volume'] = u''.format(book['slug'], volume['code'])
     record['customer'] = user['login']
     record['meta'] = {
         'title': book['meta'].get('title') or u'-',

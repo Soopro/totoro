@@ -45,6 +45,7 @@ def output_record(record):
     return {
         'id': record['_id'],
         'volume': record['volume'],
+        'book_slug': record['volume'].split('/')[0],
         'meta': record['meta'],
         'status': record['status'],
         'creation': record['creation'],
