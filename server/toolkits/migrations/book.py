@@ -9,6 +9,7 @@ class BookMigration(DocumentMigration):
     def allmigration01_change_value(self):
         if not self.status:
             for doc in self.collection.find():
+                print 'book:', doc['_id']
                 self.target = {'_id': doc['_id']}
                 self.update = {
                     '$set': {
