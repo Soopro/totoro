@@ -82,13 +82,12 @@ core.Page
 
   enter: (e)->
     self = @
-    vol = e.currentTarget.dataset.slug
-    console.log vol
+    slug = e.currentTarget.dataset.slug
     return if not slug
     app.nav.go
       route: core.config.paths.item
       args:
-        slug: vol.scope
+        slug: slug
 
   # helpers
   _join: (encrypted_data, iv)->
