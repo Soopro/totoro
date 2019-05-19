@@ -2,6 +2,7 @@
 *.py[odc]
 peon.json
 .idea
+secret.key
 
 # Packages
 *.egg
