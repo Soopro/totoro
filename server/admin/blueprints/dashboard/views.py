@@ -62,8 +62,8 @@ def checkout():
     if book and volume:
         if user['credit'] < book['credit']:
             flash('Not enough credit.', 'warning')
-        elif user['status'] != current_app.mongodb.User.STATUS_ACTIVATED:
-            flash('user not activated', 'warning')
+        elif user['status'] != current_app.mongodb.User.STATUS_BEGINNER:
+            flash('user not vip', 'warning')
         elif volume['status'] == BookVolume.STATUS_STOCK:
             volume['user_id'] = user['_id']
             volume['renter'] = user['login']

@@ -267,8 +267,8 @@ def checkout_volume(book_id, vol_id):
     user = current_app.mongodb.User.find_one_by_login(login)
     if not user:
         raise Exception('user not found')
-    elif user['status'] != current_app.mongodb.User.STATUS_ACTIVATED:
-        raise Exception('user not activated')
+    elif user['status'] != current_app.mongodb.User.STATUS_VIP:
+        raise Exception('user not vip')
     elif user['credit'] < book['credit']:
         raise Exception('Not enough credit.')
 

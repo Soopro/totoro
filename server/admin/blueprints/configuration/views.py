@@ -33,7 +33,8 @@ def index():
 @login_required
 def update():
     title = request.form.get('title')
-    favicon = request.form.get('favicon', u'')
+    weclome_msg = request.form.get('weclome_msg', u'')
+    register_msg = request.form.get('register_msg', u'')
     rental_time_limit = request.form.get('rental_time_limit')
     mina_app_id = request.form.get('mina_app_id')
     mina_app_secret = request.form.get('mina_app_secret')
@@ -42,7 +43,8 @@ def update():
     configure['rental_time_limit'] = parse_int(rental_time_limit, 0, 0)
     configure['meta'].update({
         'title': title,
-        'favicon': favicon if '://' in favicon else u''
+        'weclome_msg': weclome_msg,
+        'register_msg': register_msg
     })
     configure['mina_app_id'] = mina_app_id
     configure.encrypt('mina_app_secret', mina_app_secret)

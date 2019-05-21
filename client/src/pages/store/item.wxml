@@ -80,7 +80,7 @@
               type="primary"
               bind:tap="join"
               wx:elif="{{book.activated == 0}}">
-        <text>请先成为会员</text>
+        <text>请成为VIP会员后借阅</text>
       </button>
       <button class="flex sider-left raised"
               type="warn"

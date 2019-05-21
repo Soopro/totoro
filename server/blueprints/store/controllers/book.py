@@ -110,7 +110,7 @@ def output_single_book(book):
         BookVolume.count_pending(user['_id'], book['_id'])
     overlend = current_app.mongodb.BookVolume.check_overlend(user['_id'])
     output.update({
-        'activated': user['status'] == User.STATUS_ACTIVATED,
+        'activated': user['status'] == User.STATUS_VIP,
         'overlend': overlend,
         'in_stock': in_stock,
         'in_inventory': in_lend + in_pending,

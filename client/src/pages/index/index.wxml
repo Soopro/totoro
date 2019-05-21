@@ -1,7 +1,7 @@
 <wxs src="../../filters.wxs" module="f"></wxs>
 
 
-<block wx:if="{{logged && profile.login}}">
+<block wx:if="{{logged}}">
   <!-- avatar -->
   <view class="panel avatar-panel">
     <button class="avatar-btn"
@@ -28,6 +28,9 @@
       <view class="padding">注册会员</view>
     </button>
   </view>
+</block>
+
+<block wx:if="{{logged && profile.login && profile.status == 1}}">
 
   <!-- inventory -->
   <view class="container">
@@ -38,11 +41,8 @@
       <button class="nav-item"
               bind:tap="switch_scene"
               data-scene="1">我读过的</button>
-      <button class="nav-item"
-              bind:tap="edit_profile">我的信息</button>
     </view>
   </view>
-
 
   <view class="container"
         wx:if="{{scene == 0}}">
@@ -117,19 +117,37 @@
   </view>
 </block>
 
-<block wx:elif="{{logged && profile.id && !profile.login}}">
+<block wx:elif="{{logged && (!profile.login || profile.status == 0)}}">
   <view class="container">
     <view class="holder flex-column centered">
-      <button class="avatar-btn"
-              open-type="getPhoneNumber"
-              bindgetphonenumber="join">
-        <view class="padding">
-          <image class="avatar"
-                 src="/img/avatar.png"
-                 background-size="cover"
-                 background-position="center center"/>
-        </view>
-        <view class="title accent padding">请注册成为会员</view>
+      <view wx:if="{{profile.login}}">
+        {{configure.meta.welcome_message}}
+      </view>
+      <view wx:else>
+        {{configure.meta.register_message}}
+      </view>
+      <button class="icon-btn raised"
+              type="accent"
+              size="lg"
+              open-type="contact">
+        <view class="ico ico-chat" />
+        <text>详情请咨询客服</text>
+      </button>
+    </view>
+  </view>
+</block>
+
+<block wx:elif="{{logged && profile.status == 2)}}">
+  <view class="container">
+    <view class="holder flex-column centered">
+      <view>
+        您的账号已经被禁用了
+      </view>
+      <button class="icon-btn raised"
+              type="primary"
+              open-type="contact">
+        <view class="ico ico-chat" />
+        <text>请联系客服解禁</text>
       </button>
     </view>
   </view>

@@ -6,7 +6,7 @@ from utils.misc import now
 
 
 class User(BaseDocument):
-    STATUS_DEACTIVATED, STATUS_ACTIVATED, STATUS_BANNED = (0, 1, 2)
+    STATUS_BEGINNER, STATUS_VIP, STATUS_BANNED = (0, 1, 2)
 
     MAX_QUERY = 120
 
@@ -31,7 +31,7 @@ class User(BaseDocument):
         'meta': {},
         'creation': now,
         'updated': now,
-        'status': STATUS_DEACTIVATED
+        'status': STATUS_BEGINNER
     }
     indexes = [
         {
@@ -84,7 +84,7 @@ class User(BaseDocument):
         # login can on exists once.
         return self.collection.update(
             {'openid': {'$ne': openid}, 'login': login},
-            {'$set': {'login': u'', 'status': self.STATUS_DEACTIVATED}},
+            {'$set': {'login': u'', 'status': self.STATUS_BEGINNER}},
             multi=True)
 
     def count_used(self):

@@ -46,7 +46,7 @@ def login():
     return {
         'token': token,
         'expires_in': expires_in,
-        'is_activated': user['status'] == User.STATUS_ACTIVATED
+        'is_vip': user['status'] == User.STATUS_VIP
     }
 
 

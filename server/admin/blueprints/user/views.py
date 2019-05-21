@@ -60,8 +60,8 @@ def detail(user_id=None):
 
     user = _find_user(user_id)
     allowed_status = [
-        {'key': User.STATUS_DEACTIVATED, 'text': 'Deactivated'},
-        {'key': User.STATUS_ACTIVATED, 'text': 'Activated'},
+        {'key': User.STATUS_BEGINNER, 'text': 'Beginner'},
+        {'key': User.STATUS_VIP, 'text': 'VIP'},
         {'key': User.STATUS_BANNED, 'text': 'Banned'}
     ]
     records = current_app.mongodb.BookRecord.find_by_uid(user['_id'])
