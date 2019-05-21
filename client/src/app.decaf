@@ -34,7 +34,6 @@ App
 
   onShow: (opts)->
     self = @
-    self.init()
     self.login()
 
 
@@ -45,48 +44,6 @@ App
   nav: new Navigation()
 
   # methods
-  init_status: false
-  init: (callback) ->
-    self = @
-    if not utils.isFunction(callback)
-      callback = ->
-    if self.init_status
-      # other process is try to init
-      _loop = 60
-      interval_id = setInterval ->
-        if not self.init_status and self.configure
-          clearInterval(interval_id)
-          callback(self.configure)
-        else if _loop < 0
-          clearInterval(interval_id)
-          self._raise_error()
-          return
-        else
-          _loop -= 1
-      , 600
-    else
-      # try to init
-      _init = (callback, retry)->
-        retry = if not utils.isNumber(retry) then 0 else retry + 1
-        if retry >= core.config.retry
-          self._raise_error()
-          return
-        else if retry > 0
-          console.info 'retry:', retry
-        self.init_status = true
-
-        restStore.configure.get()
-        .then (configure)->
-          self.init_status = false
-          self.configure = configure
-          callback(self.configure)
-        .catch (error)->
-          self.init_status = false
-          _init(callback, retry)
-
-      _init(callback)
-
-
   login_status: false
   login: (callback, force)->
     self = @
@@ -129,9 +86,10 @@ App
             restUser.login
               code: data.code
             .then (auth)->
+              self.info = auth.info
               self.login_status = false
               core.session.set('token', auth.token, auth.expires_in - 60)
-              callback(auth.token)
+              callback()
             .catch (error)->
               self.login_status = false
               _login(callback, retry)
@@ -144,15 +102,7 @@ App
 
   share: (opts)->
     self = @
-    if not opts
-      try
-        opts =
-          title: self.configure.meta.title
-          src: self.configure.meta.share_img
-          path: null
-      catch e
-        opts = {}
-
+    opts = {} if not opts
     share_opts =
       title: opts.title
       imageUrl: opts.src
@@ -160,9 +110,6 @@ App
 
     return share_opts
 
-  sync_profile: (userinfo)->
-    restUser.profile.update
-      meta: core.reform_userinfo(userinfo)
 
   # helpers
   _raise_error: ->

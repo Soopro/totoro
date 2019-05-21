@@ -2,6 +2,7 @@ core = require('../../core.js')
 deco = require('../../decorators.js')
 utils = require('../../utils.js')
 restUser = require('../../restapi/user.js')
+restStore = require('../../restapi/store.js')
 
 
 app = getApp()
@@ -9,6 +10,7 @@ app = getApp()
 core.Page
   data:
     image: core.image
+    html: '<p>Fuck</p>'
     profile: {}
     records: []
     volumes: []
@@ -18,6 +20,10 @@ core.Page
   # lifecycle
   onLoad: deco.login_required (opts)->
     self = @
+    restStore.configure.get()
+    .then (configure)->
+      self.setData
+        info: configure.meta
     restUser.profile.get()
     .then (profile)->
       self.setData
@@ -61,7 +67,8 @@ core.Page
 
   sync_profile: (e)->
     self = @
-    app.sync_profile(e.detail.userInfo)
+    restUser.profile.update
+      meta: core.reform_userinfo(e.detail.userInfo)
     .then (profile)->
       self.setData
         profile: profile

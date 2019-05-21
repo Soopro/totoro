@@ -14,7 +14,7 @@
              background-position="center center"/>
       <view class="padding">{{profile.meta.name || profile.login}}</view>
       <view class="body-text-2 accent">
-        {{profile.status == 1 ? profile.credit : '未激活'}} UCoin
+        {{profile.status == 1 ? 'VIP ' + profile.credit + ' UCoin' : '一般会员'}}
       </view>
     </button>
     <button class="avatar-btn"
@@ -117,33 +117,32 @@
   </view>
 </block>
 
-<block wx:elif="{{logged && (!profile.login || profile.status == 0)}}">
+<block wx:elif="{{logged && (!profile.login || profile.status == 0) }}">
   <view class="container">
-    <view class="holder flex-column centered">
-      <view wx:if="{{profile.login}}">
-        {{configure.meta.welcome_message}}
-      </view>
-      <view wx:else>
-        {{configure.meta.register_message}}
-      </view>
-      <button class="icon-btn raised"
+    <view class="holder flex-column centered text-center">
+      <rich-text class="padding margin body-text"
+                 nodes="{{info.welcome_msg}}"
+                 wx:if="{{profile.login}}"></rich-text>
+      <rich-text class="padding margin body-text"
+                 nodes="{{info.register_msg}}"
+                 wx:else></rich-text>
+      <button class="raised"
               type="accent"
-              size="lg"
               open-type="contact">
         <view class="ico ico-chat" />
-        <text>详情请咨询客服</text>
+        <text>咨询客服</text>
       </button>
     </view>
   </view>
 </block>
 
-<block wx:elif="{{logged && profile.status == 2)}}">
+<block wx:elif="{{logged && profile.status == 2}}">
   <view class="container">
     <view class="holder flex-column centered">
-      <view>
+      <view class="padding text-center">
         您的账号已经被禁用了
       </view>
-      <button class="icon-btn raised"
+      <button class="raised"
               type="primary"
               open-type="contact">
         <view class="ico ico-chat" />

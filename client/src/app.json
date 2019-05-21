@@ -1,7 +1,6 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/index/profile",
     "pages/store/index",
     "pages/store/item",
     "pages/error/error"

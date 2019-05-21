@@ -5,8 +5,7 @@ from flask import g, current_app, abort, request
 from bson import ObjectId
 from utils.auth import load_token, load_payload
 
-from apiresps.errors import (Unauthorized,
-                             PermissionDenied)
+from apiresps.errors import (Unauthorized)
 
 
 def verify_jwt():
@@ -22,8 +21,6 @@ def verify_jwt():
 
     if not user:
         raise Unauthorized('not found')
-    elif user['status'] == User.STATUS_BANNED:
-        raise PermissionDenied('banned')
     g.curr_session_key = payload['session_key']
     g.curr_user = user
 
