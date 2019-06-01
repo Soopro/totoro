@@ -424,7 +424,8 @@ def download():
         for book in books:
             writer.writerow(_create_field())
 
-    return send_from_directory(tmp_dir, csv_file_name, as_attachment=True)
+    return send_from_directory(tmp_dir, csv_file_name,
+                               as_attachment=True, cache_timeout=1)
 
 
 # helpers
