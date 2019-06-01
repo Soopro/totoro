@@ -399,16 +399,20 @@ def download():
         for fkey in fieldnames:
             if '.' in fkey:
                 _k = fkey.split('.')[-1]
-                _field[fkey] = book['meta'].get(_k) or u''
+                _field[fkey] = book['meta'].get(_k) or u'-'
             else:
-                _field[fkey] = book.get(fkey) or u''
+                _field[fkey] = book.get(fkey) or u'-'
             if isinstance(_field[fkey], basestring):
                 _field[fkey] = _field[fkey].replace('|', u';')
                 _field[fkey] = _field[fkey].encode('utf-8')
             elif isinstance(_field[fkey], list):
-                _field[fkey] = u', '.join(_field[fkey]).encode('utf-8')
+                _field[fkey] = u'; '.join(_field[fkey]).encode('utf-8')
             else:
                 _field[fkey] = str(_field[fkey])
+            try:
+                _field[fkey].replace('\n', '')
+            except Exception:
+                pass
         return _field
 
     with open(tmp_csv_file, 'w') as f:
