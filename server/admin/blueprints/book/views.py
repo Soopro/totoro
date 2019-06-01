@@ -8,8 +8,10 @@ from flask import (Blueprint,
                    url_for,
                    redirect,
                    render_template,
+                   send_from_directory,
                    g)
 import os
+import csv
 
 from utils.model import make_paginator
 from utils.short_url import encode_short_url
@@ -374,6 +376,42 @@ def print_volumes():
     return render_template('print_volumes.html',
                            volumes=list(volumes),
                            p=paginator)
+
+
+# download csv
+@blueprint.route('/download')
+@login_required
+def download():
+    books = current_app.mongodb.Book.find_all()
+
+    csv_file_name = 'books.csv'
+    tmp_dir = current_app.config.get('TEMPORARY_FOLDER')
+    tmp_csv_file = os.path.join(tmp_dir, csv_file_name)
+    fieldnames = ['slug', 'tags', 'terms', 'credit', 'rating', 'value',
+                  'meta.title', 'meta.author', 'meta.publisher',
+                  'meta.description', 'meta.figure']
+
+    def _create_field():
+        _field = {}
+        for fkey in fieldnames:
+            if '.' in fkey:
+                _k = fkey.split('.')[-1]
+                _field[fkey] = book['meta'].get(_k) or u''
+            else:
+                _field[fkey] = book.get(fkey) or u''
+            _field[fkey] = _field[fkey].replace('|', u'')
+        return _field
+
+    with open(tmp_csv_file, 'w') as f:
+        writer = csv.DictWriter(f,
+                                fieldnames=fieldnames,
+                                delimiter='|',
+                                quoting=csv.QUOTE_ALL)
+        writer.writerheader()
+        for book in books:
+            writer.writerow(_create_field())
+
+    return send_from_directory(tmp_dir, csv_file_name)
 
 
 # helpers
