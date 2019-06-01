@@ -97,7 +97,7 @@ class Book(BaseDocument):
         }).limit(self.MAX_QUERY)
 
     def find_all(self):
-        return self.find().sort('creation', INDEX_DESC).limit(self.MAX_QUERY)
+        return self.find().sort('creation', INDEX_DESC)
 
     def search(self, keys, timestamp=None):
         _query = {
@@ -258,7 +258,7 @@ class BookVolume(BaseDocument):
         return cursor.limit(self.MAX_QUERY)
 
     def find_all(self):
-        return self.find().sort('book_id', INDEX_DESC).limit(self.MAX_QUERY)
+        return self.find().sort('book_id', INDEX_DESC)
 
     def refresh_meta(self, book_id, scope, meta):
         # login can on exists once.
@@ -361,7 +361,7 @@ class BookRecord(BaseDocument):
         }).sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
 
     def find_all(self):
-        return self.find().sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+        return self.find().sort('updated', INDEX_DESC)
 
     def count_used(self):
         return self.find().count()

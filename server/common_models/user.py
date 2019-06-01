@@ -51,7 +51,7 @@ class User(BaseDocument):
     ]
 
     def find_all(self):
-        return self.find().sort('creation', INDEX_DESC).limit(self.MAX_QUERY)
+        return self.find().sort('creation', INDEX_DESC)
 
     def find_activated(self):
         return self.find({

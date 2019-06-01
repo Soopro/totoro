@@ -54,4 +54,4 @@ class Media(BaseDocument):
         })
 
     def find_all(self):
-        return self.find().sort('updated', INDEX_DESC).limit(self.MAX_QUERY)
+        return self.find().sort('updated', INDEX_DESC)
