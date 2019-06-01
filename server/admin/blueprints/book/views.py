@@ -405,6 +405,8 @@ def download():
             if isinstance(_field[fkey], basestring):
                 _field[fkey] = _field[fkey].replace('|', u';')
                 _field[fkey] = _field[fkey].encode('utf-8')
+            elif isinstance(_field[fkey], list):
+                _field[fkey] = u', '.join(_field[fkey]).encode('utf-8')
             else:
                 _field[fkey] = str(_field[fkey])
         return _field
