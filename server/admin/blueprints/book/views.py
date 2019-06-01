@@ -382,9 +382,12 @@ def print_volumes():
 @blueprint.route('/download')
 @login_required
 def download():
+    paged = request.args.get('paged', 1)
     books = current_app.mongodb.Book.find_all()
 
-    csv_file_name = 'books.csv'
+    p = make_paginator(books, paged, 1200)
+
+    csv_file_name = 'books-({}-{}).csv'.format(p.current_page, p.num_pages)
     tmp_dir = current_app.config.get('TEMPORARY_FOLDER')
     tmp_csv_file = os.path.join(tmp_dir, csv_file_name)
     fieldnames = ['slug', 'tags', 'terms', 'credit', 'rating', 'value',
@@ -399,19 +402,23 @@ def download():
                 _field[fkey] = book['meta'].get(_k) or u''
             else:
                 _field[fkey] = book.get(fkey) or u''
-            _field[fkey] = _field[fkey].replace('|', u'')
+            if isinstance(_field[fkey], basestring):
+                _field[fkey] = _field[fkey].replace('|', u';')
+                _field[fkey] = _field[fkey].encode('utf-8')
+            else:
+                _field[fkey] = str(_field[fkey])
         return _field
 
     with open(tmp_csv_file, 'w') as f:
         writer = csv.DictWriter(f,
                                 fieldnames=fieldnames,
-                                delimiter='|',
+                                delimiter=',',
                                 quoting=csv.QUOTE_ALL)
-        writer.writerheader()
+        writer.writeheader()
         for book in books:
             writer.writerow(_create_field())
 
-    return send_from_directory(tmp_dir, csv_file_name)
+    return send_from_directory(tmp_dir, csv_file_name, as_attachment=True)
 
 
 # helpers
