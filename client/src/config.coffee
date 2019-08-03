@@ -1,7 +1,7 @@
 # Config
 config =
   baseURL:
-    api: 'https://api.totoro.namabi.com'
+    api: 'https://api-test.totoro.namabi.com'
 
   paths:
     index: '/pages/index/index'
